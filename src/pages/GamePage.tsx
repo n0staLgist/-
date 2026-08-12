@@ -100,7 +100,7 @@ export function GamePage() {
     <main className="game-shell">
       {stage !== 'start' && <GameHeader chapter={chapter} soundOn={soundOn} onSoundToggle={toggleSound} onRestart={restart} />}
       {stage === 'start' && <StartScreen onStart={start} />}
-      {stage === 'intro' && <RoomScene packed={[]} note="" onPack={() => undefined} onNotebook={() => undefined} />}
+      {stage === 'intro' && <RoomScene packed={[]} note="" isInteractive={false} onPack={() => undefined} onNotebook={() => undefined} />}
       {stage === 'room' && <RoomScene packed={packed} note={note} onPack={packItem} onNotebook={() => setStage('notebook')} />}
       {stage === 'notebook' && <NotebookScene onEnter={() => { setStage('meeting'); showDialogue(notebookLines, 'yard'); }} />}
       {stage === 'meeting' && <NotebookScene onEnter={() => undefined} />}
