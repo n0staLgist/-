@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ColorReveal } from '../components/game/ColorReveal';
+import { BlueRoomScene } from '../components/game/BlueRoomScene';
 import { DialogueBox } from '../components/game/DialogueBox';
 import { FinaleScene } from '../components/game/FinaleScene';
 import { GameHeader } from '../components/game/GameHeader';
@@ -7,7 +8,6 @@ import { NotebookScene } from '../components/game/NotebookScene';
 import { RedClassScene } from '../components/game/RedClassScene';
 import { RoomScene } from '../components/game/RoomScene';
 import { StartScreen } from '../components/game/StartScreen';
-import { StoryChapter } from '../components/game/StoryChapter';
 import { TaskCard } from '../components/game/TaskCard';
 import { YardScene } from '../components/game/YardScene';
 import { blueRoomScenes, redClassScenes } from '../game/chapters';
@@ -108,7 +108,7 @@ export function GamePage() {
       {stage === 'yellowReveal' && <ColorReveal color="yellow" title="Жёлтый" text="Цвет окон, мела и того вечера, когда тебя позвали домой." nextChapter="Открыть красный класс" onContinue={() => setStage('red')} />}
       {stage === 'red' && <RedClassScene scenes={redClassScenes} sceneIndex={storyIndex} onNext={() => advanceStory(redClassScenes.length, 'redReveal')} />}
       {stage === 'redReveal' && <ColorReveal color="red" title="Красный" text="Не цвет стыда и исправлений. Цвет смелости оставить важное видимым." nextChapter="Войти в синюю комнату" onContinue={() => setStage('blue')} />}
-      {stage === 'blue' && <StoryChapter chapter="Глава III" color="blue" scenes={blueRoomScenes} sceneIndex={storyIndex} onNext={() => advanceStory(blueRoomScenes.length, 'finale')} />}
+      {stage === 'blue' && <BlueRoomScene scenes={blueRoomScenes} sceneIndex={storyIndex} onNext={() => advanceStory(blueRoomScenes.length, 'finale')} />}
       {stage === 'finale' && <FinaleScene onRestart={restart} />}
       {activeTask && <TaskCard task={activeTask} onComplete={finishTask} />}
       {dialogue.length > 0 && lineIndex < dialogue.length - 1 && <DialogueBox line={dialogue[lineIndex]} current={lineIndex} total={dialogue.length - 1} onNext={nextLine} />}
