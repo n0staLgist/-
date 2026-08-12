@@ -1,4 +1,5 @@
 import type { StoryScene } from '../../game/types';
+import { useAdvanceKeys } from '../../game/useAdvanceKeys';
 
 type BlueRoomSceneProps = {
   scenes: StoryScene[];
@@ -7,6 +8,7 @@ type BlueRoomSceneProps = {
 };
 
 export function BlueRoomScene({ scenes, sceneIndex, onNext }: BlueRoomSceneProps) {
+  useAdvanceKeys(onNext);
   const scene = scenes[sceneIndex];
   const trapped = sceneIndex === 3;
   const freed = sceneIndex >= 4;

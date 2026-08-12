@@ -1,4 +1,5 @@
 import type { StoryScene } from '../../game/types';
+import { useAdvanceKeys } from '../../game/useAdvanceKeys';
 
 type RedClassSceneProps = {
   scenes: StoryScene[];
@@ -7,6 +8,7 @@ type RedClassSceneProps = {
 };
 
 export function RedClassScene({ scenes, sceneIndex, onNext }: RedClassSceneProps) {
+  useAdvanceKeys(onNext);
   const scene = scenes[sceneIndex];
   const erased = sceneIndex >= 3;
   const restored = sceneIndex >= 4;

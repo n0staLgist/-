@@ -18,6 +18,11 @@ export const roomItems: Record<RoomItem, { label: string; memory: string }> = {
 export const introLines: DialogueLine[] = [
   { text: 'В детстве нам казалось: завтра обязательно будет таким, каким мы его придумали.' },
   { speaker: 'Мама, из коридора', text: 'Разбери последний ящик. Завтра переезжаем.' },
+  { speaker: 'Ая', text: 'Посмотри, что я нарисовала!' },
+  { speaker: 'Ты', text: 'Ая, давай потом. Я сейчас занят.' },
+  { speaker: 'Ая', text: 'Обещаешь?' },
+  { speaker: 'Ты', text: 'Обещаю.' },
+  { text: 'Дверь тихо закрывается. Обычное обещание — одно из тех, которые легко отдать будущему.' },
 ];
 
 export const notebookLines: DialogueLine[] = [
@@ -60,4 +65,3 @@ export const endingLines: DialogueLine[] = [
   { speaker: 'Штрих', text: 'Нас — завтра.' },
   { text: 'Первый цвет вернулся. Где-то дальше шелестит следующая страница.' },
 ];
-

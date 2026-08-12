@@ -1,4 +1,5 @@
 import type { DialogueLine } from '../../game/types';
+import { useAdvanceKeys } from '../../game/useAdvanceKeys';
 
 type DialogueBoxProps = {
   line: DialogueLine;
@@ -8,6 +9,8 @@ type DialogueBoxProps = {
 };
 
 export function DialogueBox({ line, current, total, onNext }: DialogueBoxProps) {
+  useAdvanceKeys(onNext);
+
   return (
     <section className="dialogue" aria-live="polite">
       {line.speaker && <span className="dialogue__speaker">{line.speaker}</span>}
@@ -16,7 +19,7 @@ export function DialogueBox({ line, current, total, onNext }: DialogueBoxProps) 
         {current === total - 1 ? 'Продолжить' : 'Дальше'}
         <span aria-hidden="true">→</span>
       </button>
+      <small className="dialogue__key-hint">Enter / Пробел</small>
     </section>
   );
 }
-
