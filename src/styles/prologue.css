@@ -5,7 +5,7 @@
 .opening-screen__copy small { color: #746d62; font-size: 11px; letter-spacing: 0; text-transform: uppercase; }
 .opening-screen__copy h1 { max-width: 100%; margin: 8px 0 24px; font: 700 clamp(76px, 14vw, 154px)/.95 Caveat, cursive; letter-spacing: 0; transform: rotate(-2deg); }
 .opening-screen__copy p { margin: 0 0 30px; font: 600 22px/1.35 Caveat, cursive; }
-.opening-screen__copy button { padding: 10px 0 7px; border: 0; border-bottom: 2px solid #39352f; color: #302d27; background: transparent; font: 600 15px Inter, sans-serif; cursor: pointer; }
+.opening-screen__copy button { padding: 10px 0 7px; border: 0; border-bottom: 2px solid #39352f; color: #302d27; background: transparent; font: 700 19px Caveat, cursive; cursor: pointer; }
 .opening-screen__copy button span { display: inline-block; margin-left: 8px; transition: transform .2s ease; }
 .opening-screen__copy button:hover span { transform: translateX(5px); }
 .opening-screen__pencil-mark { position: absolute; width: 120px; height: 28px; border-top: 2px solid #625d5466; transform: rotate(-8deg); }
@@ -19,7 +19,7 @@
 .is-leaving .prologue-camera--side { animation: side-camera-out 3.2s ease-in both; }
 .is-leaving .prologue-camera--top { animation: top-camera-in 3.2s ease-in both; }
 .prologue-evening { position: absolute; inset: 0; background: linear-gradient(100deg, #29466726, transparent 42%), linear-gradient(transparent 45%, #170e0875); pointer-events: none; }
-.prologue-time { position: absolute; z-index: 4; top: 13%; left: 50%; margin: 0; color: #f2e7d2; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; transform: translateX(-50%); animation: time-fades 4s both; }
+.prologue-time { position: absolute; z-index: 4; top: 13%; left: 50%; margin: 0; color: #f2e7d2; font-size: 15px; text-transform: uppercase; transform: translateX(-50%); animation: time-fades 4s both; }
 .seated-hero { position: absolute; z-index: 3; left: 27%; top: 39%; width: 32%; height: 56%; object-fit: contain; filter: drop-shadow(4px 6px 3px #39291f66); animation: seated-arrives 1s both; }
 .aya-back { position: absolute; z-index: 5; left: 58%; top: 30%; width: 17%; height: 63%; object-fit: contain; filter: drop-shadow(4px 6px 3px #39291f66); animation: aya-from-door 2.1s ease-out both; }
 .is-leaving .aya-back { animation: aya-to-door 1.8s ease-in both; }
