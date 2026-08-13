@@ -1,6 +1,7 @@
 import type { StoryScene } from '../../game/types';
 import { useAdvanceKeys } from '../../game/useAdvanceKeys';
 import { useTypewriter } from '../../game/useTypewriter';
+import { SpeakerPortrait } from './SpeakerPortrait';
 
 type BlueRoomSceneProps = {
   scenes: StoryScene[];
@@ -13,9 +14,9 @@ export function BlueRoomScene({ scenes, sceneIndex, onNext }: BlueRoomSceneProps
   const { visibleText, isComplete, complete } = useTypewriter(scene.dialogue);
   const advance = isComplete ? onNext : complete;
   useAdvanceKeys(advance);
-  const trapped = sceneIndex === 3;
-  const freed = sceneIndex >= 4;
-  const smiling = sceneIndex >= 5;
+  const trapped = sceneIndex === 4 || sceneIndex === 5;
+  const freed = sceneIndex >= 6;
+  const smiling = sceneIndex >= 7;
 
   return (
     <section className={`blue-room blue-room--${sceneIndex}`}>
@@ -37,14 +38,14 @@ export function BlueRoomScene({ scenes, sceneIndex, onNext }: BlueRoomSceneProps
         <span className="room-streak__arm room-streak__arm--right" />
         <span className="room-streak__leg room-streak__leg--left" />
         <span className="room-streak__leg room-streak__leg--right" />
-        {sceneIndex >= 2 && <span className="paper-tears"><i /><i /></span>}
+        {sceneIndex >= 3 && <span className="paper-tears"><i /><i /></span>}
       </div>
 
       <article className="blue-room__copy">
         <span className="eyebrow">Глава III · {scene.label}</span>
         <h1>{scene.title}</h1>
         <p>{scene.text}</p>
-        <blockquote><b>{scene.speaker}</b>{visibleText}<i className={isComplete ? '' : 'typewriter-caret'} aria-hidden="true" /></blockquote>
+        <blockquote><SpeakerPortrait speaker={scene.speaker} /><b>{scene.speaker}</b>{visibleText}<i className={isComplete ? '' : 'typewriter-caret'} aria-hidden="true" /></blockquote>
         {isComplete && <button className="pencil-button" onClick={onNext}>{scene.action}</button>}
         <div className="blue-room__progress">
           {scenes.map((item, index) => <i className={index <= sceneIndex ? 'is-filled' : ''} key={item.title} />)}

@@ -123,7 +123,7 @@ export function GamePage() {
       {stage === 'notebook' && <NotebookScene revealTitle onEnter={() => setStage('childhood')} />}
       {stage === 'childhood' && <ChildhoodMemory onFinish={() => { setStage('meeting'); showDialogue(notebookLines, 'yard'); }} />}
       {stage === 'meeting' && <NotebookScene onEnter={() => undefined} />}
-      {stage === 'yard' && <YardScene completed={completed} onTask={setActiveTask} onFinish={() => showDialogue(endingLines, 'yellowReveal')} />}
+      {stage === 'yard' && <YardScene completed={completed} isInteractive={!activeTask && dialogue.length === 0} onTask={setActiveTask} onFinish={() => showDialogue(endingLines, 'yellowReveal')} />}
       {stage === 'yellowReveal' && <ColorReveal color="yellow" title="Жёлтый" text="Цвет окон, мела и того вечера, когда тебя позвали домой." nextChapter="Открыть красный класс" onContinue={() => setStage('red')} />}
       {stage === 'red' && <RedClassScene scenes={redClassScenes} sceneIndex={storyIndex} onNext={() => advanceStory(redClassScenes.length, 'redReveal')} />}
       {stage === 'redReveal' && <ColorReveal color="red" title="Красный" text="Не цвет стыда и исправлений. Цвет смелости оставить важное видимым." nextChapter="Войти в синюю комнату" onContinue={() => setStage('blue')} />}

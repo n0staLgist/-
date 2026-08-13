@@ -50,13 +50,13 @@ export function playWritingTick() {
   if (!context) context = audioContext;
   const oscillator = audioContext.createOscillator();
   const gain = audioContext.createGain();
-  oscillator.type = 'triangle';
-  oscillator.frequency.setValueAtTime(520 + Math.random() * 90, audioContext.currentTime);
-  gain.gain.setValueAtTime(0.012, audioContext.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.025);
+  oscillator.type = 'square';
+  oscillator.frequency.setValueAtTime(360 + Math.random() * 70, audioContext.currentTime);
+  gain.gain.setValueAtTime(0.026, audioContext.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.035);
   oscillator.connect(gain).connect(audioContext.destination);
   oscillator.start();
-  oscillator.stop(audioContext.currentTime + 0.03);
+  oscillator.stop(audioContext.currentTime + 0.04);
 }
 
 export function playPageTurn() {

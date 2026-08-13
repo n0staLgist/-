@@ -17,16 +17,16 @@ export const roomItems: Record<RoomItem, { label: string; memory: string }> = {
 
 export const introLines: DialogueLine[] = [
   { speaker: 'Мама, из коридора', text: 'Разбери, пожалуйста, последний ящик. Завтра переезжаем.' },
-  { speaker: 'Ая', text: 'Посмотришь, что я нарисовала?' },
+  { speaker: 'Ая (младшая сестра)', text: 'Посмотришь, что я нарисовала?' },
   { speaker: 'Ты', text: 'Сейчас не могу. Давай потом.' },
-  { speaker: 'Ая', text: 'Завтра?' },
+  { speaker: 'Ая (младшая сестра)', text: 'Завтра?' },
   { speaker: 'Ты', text: 'Завтра. Обещаю.' },
 ];
 
 export const notebookLines: DialogueLine[] = [
   { speaker: 'Ты', text: 'Штрих… что с тобой?' },
   { speaker: 'Штрих', text: 'Ты вернулся.' },
-  { speaker: 'Ты', text: 'У тебя под глазами…' },
+  { speaker: 'Ты', text: 'Я не рисовал тебе слёзы.' },
   { speaker: 'Штрих', text: 'Сегодня уже завтра?' },
   { text: 'Несколько секунд слышно только шорох страницы.' },
   { speaker: 'Ты', text: 'Я не знаю.' },
@@ -52,7 +52,7 @@ export const taskCopy: Record<YardTask, { title: string; hint: string; memory: D
   },
   window: {
     title: 'Зажечь свет',
-    hint: 'Найди тёмное окно и верни ему тепло.',
+    hint: 'Медленно потяни свет вправо и удержи тепло в окне.',
     memory: [
       { speaker: 'Ты', text: 'На кухне горел свет. Мама готовила ужин, а по радио играла тихая песня.' },
       { speaker: 'Штрих', text: 'Я помню этот свет. Ты всегда возвращался, когда он загорался.' },

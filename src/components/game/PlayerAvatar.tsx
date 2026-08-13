@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import heroWalkSprite from '../../assets/game/hero-four-direction-v1.png';
+import heroWalkSprite from '../../assets/game/hero-four-direction-v3.png';
 import type { FacingDirection, RoomPosition } from '../../game/useRoomMovement';
 import '../../styles/playerAvatar.css';
 
@@ -15,7 +15,7 @@ type PlayerStyle = CSSProperties & {
 };
 
 export function PlayerAvatar({ position, facing, isMoving }: PlayerAvatarProps) {
-  const depthScale = 0.88 + ((position.y - 28) / 64) * 0.2;
+  const depthScale = 0.96 + ((position.y - 28) / 64) * 0.12;
   const style: PlayerStyle = {
     left: `${position.x}%`,
     top: `${position.y}%`,

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useAdvanceKeys } from '../../game/useAdvanceKeys';
 import { useTypewriter } from '../../game/useTypewriter';
 import type { DialogueLine } from '../../game/types';
+import notebookChildhood from '../../assets/game/notebook-childhood-v4.png';
+import { SpeakerPortrait } from './SpeakerPortrait';
 import '../../styles/childhoodMemory.css';
 
 type ChildhoodMemoryProps = {
@@ -32,18 +34,12 @@ export function ChildhoodMemory({ onFinish }: ChildhoodMemoryProps) {
 
   return (
     <section className={`childhood-memory ${isClosing ? 'is-closing' : ''}`}>
+      <div className="time-transition">Несколько лет назад</div>
       <div className="childhood-memory__desk">
-        <div className="childhood-memory__page">
-          <span className="childhood-memory__era">Несколько лет назад</span>
-          <span className="childhood-memory__title">Штрих и его мир</span>
-          <div className="childhood-streak" aria-label="Незаконченный рисунок Штриха">
-            <i className="childhood-streak__head" /><i className="childhood-streak__body" />
-            <i className="childhood-streak__arm" /><i className="childhood-streak__leg" /><i className="childhood-streak__leg" />
-          </div>
-          <div className="child-hand child-hand--left" /><div className="child-hand child-hand--right"><i /></div>
-        </div>
+        <img className="childhood-memory__art" src={notebookChildhood} alt="Детские руки рисуют нового Штриха без слёз" />
       </div>
       <article className="childhood-memory__dialogue">
+        <SpeakerPortrait speaker={line.speaker} childhood />
         <small>{line.speaker}</small>
         <p>{visibleText}<i className={isComplete ? '' : 'typewriter-caret'} aria-hidden="true" /></p>
         {isComplete && <button onClick={advance}>{isClosing ? 'Закрыть тетрадь' : 'Дальше'} <span>→</span></button>}

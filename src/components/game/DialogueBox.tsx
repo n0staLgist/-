@@ -1,6 +1,7 @@
 import type { DialogueLine } from '../../game/types';
 import { useAdvanceKeys } from '../../game/useAdvanceKeys';
 import { useTypewriter } from '../../game/useTypewriter';
+import { SpeakerPortrait } from './SpeakerPortrait';
 
 type DialogueBoxProps = {
   line: DialogueLine;
@@ -16,6 +17,7 @@ export function DialogueBox({ line, current, total, onNext }: DialogueBoxProps) 
 
   return (
     <section className="dialogue" aria-live="polite">
+      <SpeakerPortrait speaker={line.speaker} />
       {line.speaker && <span className="dialogue__speaker">{line.speaker}</span>}
       <p>{visibleText}<i className={isComplete ? '' : 'typewriter-caret'} aria-hidden="true" /></p>
       {isComplete && <button className="dialogue__next" onClick={onNext}>

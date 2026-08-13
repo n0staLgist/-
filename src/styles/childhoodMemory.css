@@ -1,6 +1,8 @@
 .childhood-memory { position: fixed; z-index: 35; inset: 0; overflow: hidden; color: #342f27; background: radial-gradient(circle at 50% 35%, #c69a58, #53371e 80%); animation: childhood-arrives .8s both; }
 .childhood-memory::after { content: ''; position: absolute; inset: 0; opacity: .14; background: repeating-linear-gradient(6deg, transparent 0 5px, #28190e 6px); pointer-events: none; }
 .childhood-memory__desk { position: absolute; inset: 0; display: grid; place-items: center; padding-bottom: 120px; transition: transform .8s, filter .8s; }
+.childhood-memory__art { width: min(86vw, calc(70vh * 16 / 9)); max-height: 70vh; object-fit: contain; box-shadow: 0 18px 70px #211308a8; transform: rotate(-.3deg); }
+.time-transition { position: absolute; z-index: 8; inset: 0; display: grid; place-items: center; color: #f1e6ce; background: #17130e; font-size: clamp(30px, 6vw, 58px); animation: time-card 2.2s both; pointer-events: none; }
 .childhood-memory__page { position: relative; width: min(680px, 88vw); height: min(480px, 60vh); overflow: hidden; background-color: #eee0bc; background-image: linear-gradient(#7693a827 1px, transparent 1px), linear-gradient(90deg, #7693a827 1px, transparent 1px); background-size: 25px 25px; box-shadow: 0 18px 70px #211308a8; transform: rotate(-1deg); }
 .childhood-memory__page::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 49.5%, #5b473222 50%, transparent 50.8%); }
 .childhood-memory__title { position: absolute; top: 7%; left: 50%; font: 700 30px Caveat, cursive; transform: translateX(-50%) rotate(-2deg); }
@@ -22,5 +24,6 @@
 .childhood-memory__dialogue button { position: absolute; right: 22px; bottom: 20px; border: 0; color: #824630; background: none; font-weight: 700; cursor: pointer; }
 .childhood-memory.is-closing .childhood-memory__desk { filter: brightness(.45); transform: perspective(800px) rotateX(72deg) scale(.92); transform-origin: bottom; }
 @keyframes childhood-arrives { from { opacity: 0; } }
+@keyframes time-card { 0%, 55% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }
 @keyframes drawing-appears { from { opacity: 0; filter: blur(5px); clip-path: inset(0 100% 0 0); } }
 @media (max-width: 700px) { .childhood-memory__desk { padding-bottom: 145px; }.childhood-memory__page { height: 55vh; }.childhood-memory__dialogue { bottom: 12px; min-height: 150px; padding: 22px 22px 52px; }.childhood-memory__dialogue button { right: 20px; bottom: 15px; }.child-hand { transform: scale(.75) rotate(22deg); }.child-hand--right { transform: scale(.75) rotate(-28deg); } }
