@@ -1,6 +1,7 @@
 let context: AudioContext | null = null;
 let ambience: OscillatorNode[] = [];
 let master: GainNode | null = null;
+let effectsEnabled = true;
 
 export function startAmbience() {
   if (ambience.length > 0) return;
@@ -24,6 +25,7 @@ export function startAmbience() {
 }
 
 export function setAmbienceEnabled(enabled: boolean) {
+  effectsEnabled = enabled;
   if (!context || !master) {
     if (enabled) startAmbience();
     return;
@@ -42,3 +44,34 @@ export function stopAmbience() {
   master = null;
 }
 
+export function playWritingTick() {
+  if (!effectsEnabled) return;
+  const audioContext = context ?? new AudioContext();
+  if (!context) context = audioContext;
+  const oscillator = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+  oscillator.type = 'triangle';
+  oscillator.frequency.setValueAtTime(520 + Math.random() * 90, audioContext.currentTime);
+  gain.gain.setValueAtTime(0.012, audioContext.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.025);
+  oscillator.connect(gain).connect(audioContext.destination);
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + 0.03);
+}
+
+export function playPageTurn() {
+  if (!effectsEnabled) return;
+  const audioContext = context ?? new AudioContext();
+  if (!context) context = audioContext;
+  const buffer = audioContext.createBuffer(1, audioContext.sampleRate * 0.18, audioContext.sampleRate);
+  const samples = buffer.getChannelData(0);
+  for (let index = 0; index < samples.length; index += 1) {
+    samples[index] = (Math.random() * 2 - 1) * (1 - index / samples.length);
+  }
+  const source = audioContext.createBufferSource();
+  const gain = audioContext.createGain();
+  gain.gain.value = 0.045;
+  source.buffer = buffer;
+  source.connect(gain).connect(audioContext.destination);
+  source.start();
+}

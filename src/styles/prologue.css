@@ -13,22 +13,19 @@
 .prologue-scene { position: absolute; inset: 0; min-height: 100svh; display: grid; place-items: center; overflow: hidden; background: #100e0b; }
 .prologue-map { position: relative; width: min(100vw, calc(100svh * 16 / 9)); aspect-ratio: 16 / 9; overflow: hidden; background: #17130e; }
 .prologue-camera { position: absolute; inset: 0; opacity: 0; background-position: center; background-size: cover; background-repeat: no-repeat; }
-.prologue-camera--corridor, .prologue-camera--side { background-image: url('../assets/game/moving-room-simple-v2.jpg'); }
-.prologue-camera--top { background-image: url('../assets/game/moving-room-topdown.png'); }
-.is-corridor .prologue-camera--corridor { opacity: 1; background-position: 82% center; transform: scale(1.18); filter: brightness(.42); }
+.prologue-camera--side { background-image: url('../assets/game/moving-room-side-v3.png'); }
+.prologue-camera--top { background-image: url('../assets/game/moving-room-topdown-v2.png'); }
 .is-side-view .prologue-camera--side { opacity: 1; animation: side-camera-in .75s ease-out both; }
 .is-leaving .prologue-camera--side { animation: side-camera-out 3.2s ease-in both; }
 .is-leaving .prologue-camera--top { animation: top-camera-in 3.2s ease-in both; }
 .prologue-evening { position: absolute; inset: 0; background: linear-gradient(100deg, #29466726, transparent 42%), linear-gradient(transparent 45%, #170e0875); pointer-events: none; }
-.seated-hero { position: absolute; z-index: 3; left: 27%; top: 39%; width: 32%; height: 56%; object-fit: contain; filter: drop-shadow(4px 6px 3px #39291f66); animation: seated-arrives 1s both; }
-.corridor-frame { position: absolute; z-index: 4; inset: 0; overflow: hidden; background: linear-gradient(90deg, #17120e 0 22%, transparent 22% 78%, #17120e 78%), linear-gradient(#17120e 0 9%, transparent 9% 91%, #17120e 91%); }
-.corridor-doorway { position: absolute; left: 22%; right: 22%; top: 7%; bottom: 8%; border: clamp(16px, 2vw, 30px) solid #3a2a1f; border-bottom-width: 8px; box-shadow: inset 0 0 45px #0008, 0 0 70px #000a; }
-.aya-corridor { position: absolute; z-index: 5; left: 50%; bottom: -15%; width: 24%; height: 72%; object-fit: contain; filter: drop-shadow(5px 8px 5px #0007); transform: translateX(-50%); animation: aya-through-door 3.4s ease-in-out both; }
-.aya-side { --aya-direction: 1; position: absolute; z-index: 5; left: 48%; top: 31%; width: 17%; aspect-ratio: 1 / 1.6; overflow: hidden; transform: scaleX(var(--aya-direction)); transform-origin: center bottom; filter: drop-shadow(4px 6px 3px #39291f66); }
-.aya-side span { display: block; width: 100%; height: 100%; background: var(--aya-walk-sprite) 0 center / 400% 100% no-repeat; }
+.seated-hero { position: absolute; z-index: 3; left: 18%; top: 43%; width: 28%; height: 52%; object-fit: contain; filter: drop-shadow(4px 6px 3px #39291f66); animation: seated-arrives 1s both; }
+.aya-side { --aya-direction: 1; position: absolute; z-index: 5; left: 45%; top: 36%; width: 15%; aspect-ratio: 1 / 1.6; overflow: hidden; transform: scaleX(var(--aya-direction)); transform-origin: center bottom; filter: saturate(.78) contrast(.94) sepia(.1) drop-shadow(4px 6px 3px #39291f66); }
+.aya-side span { display: block; width: 100%; height: 100%; background: var(--aya-walk-sprite) 33.333% center / 400% 100% no-repeat; }
 .is-side-entering .aya-side { animation: aya-side-arrives 2.2s ease-out both; }
-.is-side-entering .aya-side span, .is-leaving .aya-side span { animation: aya-side-steps .55s steps(1) infinite; }
+.is-side-entering .aya-side span { animation: aya-side-steps .55s steps(1) 4; }
 .is-leaving .aya-side { --aya-direction: -1; animation: aya-side-leaves 2.1s ease-in both; }
+.is-leaving .aya-side span { animation: aya-side-steps .55s steps(1) 4; }
 .is-leaving .seated-hero { animation: hero-fades-for-camera 2.8s both; }
 .cinema-bar { position: absolute; z-index: 55; left: 0; right: 0; height: 5.5vh; background: #0e0d0b; pointer-events: none; }
 .cinema-bar--top { top: 0; }.cinema-bar--bottom { bottom: 0; }
@@ -36,9 +33,8 @@
 @keyframes side-camera-out { 0%, 62% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes top-camera-in { 0%, 65% { opacity: 0; transform: scale(1.08); } 100% { opacity: 1; transform: scale(1); } }
 @keyframes seated-arrives { from { opacity: 0; transform: translateY(12px); } }
-@keyframes aya-through-door { 0% { opacity: 0; transform: translate(-50%, 32%) scale(1.16); } 18% { opacity: 1; } 100% { transform: translate(-50%, -18%) scale(.72); } }
-@keyframes aya-side-arrives { from { opacity: 0; left: 86%; transform: scale(.82); } to { opacity: 1; left: 48%; transform: scale(1); } }
-@keyframes aya-side-leaves { from { left: 48%; transform: scaleX(-1); } to { opacity: 0; left: 88%; transform: scaleX(-1) scale(.82); } }
+@keyframes aya-side-arrives { from { opacity: 0; left: 89%; transform: scale(.82); } to { opacity: 1; left: 45%; transform: scale(1); } }
+@keyframes aya-side-leaves { from { left: 45%; transform: scaleX(-1); } to { opacity: 0; left: 90%; transform: scaleX(-1) scale(.82); } }
 @keyframes aya-side-steps { 0%, 24.99% { background-position: 0 center; } 25%, 49.99% { background-position: 33.333% center; } 50%, 74.99% { background-position: 66.667% center; } 75%, 100% { background-position: 100% center; } }
 @keyframes hero-fades-for-camera { 0%, 56% { opacity: 1; } 78%, 100% { opacity: 0; filter: brightness(.66) drop-shadow(8px 10px 7px #0008); } }
 @media (max-width: 700px) { .opening-screen::before { background-position: 120% 94%; background-size: 82vw; }.opening-screen__copy { align-self: start; width: 78vw; padding-top: 18vh; }.opening-screen__copy h1 { margin-bottom: 14px; font-size: 76px; }.opening-screen__copy p { max-width: 220px; }.aya-side { width: 24%; }.seated-hero { width: 46%; left: 9%; } }

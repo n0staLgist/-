@@ -1,5 +1,6 @@
 import type { StoryScene } from '../../game/types';
 import { useAdvanceKeys } from '../../game/useAdvanceKeys';
+import { useTypewriter } from '../../game/useTypewriter';
 
 type BlueRoomSceneProps = {
   scenes: StoryScene[];
@@ -8,8 +9,10 @@ type BlueRoomSceneProps = {
 };
 
 export function BlueRoomScene({ scenes, sceneIndex, onNext }: BlueRoomSceneProps) {
-  useAdvanceKeys(onNext);
   const scene = scenes[sceneIndex];
+  const { visibleText, isComplete, complete } = useTypewriter(scene.dialogue);
+  const advance = isComplete ? onNext : complete;
+  useAdvanceKeys(advance);
   const trapped = sceneIndex === 3;
   const freed = sceneIndex >= 4;
   const smiling = sceneIndex >= 5;
@@ -41,8 +44,8 @@ export function BlueRoomScene({ scenes, sceneIndex, onNext }: BlueRoomSceneProps
         <span className="eyebrow">Глава III · {scene.label}</span>
         <h1>{scene.title}</h1>
         <p>{scene.text}</p>
-        <blockquote><b>{scene.speaker}</b>{scene.dialogue}</blockquote>
-        <button className="pencil-button" onClick={onNext}>{scene.action}</button>
+        <blockquote><b>{scene.speaker}</b>{visibleText}<i className={isComplete ? '' : 'typewriter-caret'} aria-hidden="true" /></blockquote>
+        {isComplete && <button className="pencil-button" onClick={onNext}>{scene.action}</button>}
         <div className="blue-room__progress">
           {scenes.map((item, index) => <i className={index <= sceneIndex ? 'is-filled' : ''} key={item.title} />)}
         </div>

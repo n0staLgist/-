@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import heroWalkSprite from '../../assets/game/hero-walk-simple-v3.png';
+import heroWalkSprite from '../../assets/game/hero-four-direction-v1.png';
 import type { FacingDirection, RoomPosition } from '../../game/useRoomMovement';
 import '../../styles/playerAvatar.css';
 

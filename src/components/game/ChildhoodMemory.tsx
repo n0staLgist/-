@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAdvanceKeys } from '../../game/useAdvanceKeys';
+import { useTypewriter } from '../../game/useTypewriter';
 import type { DialogueLine } from '../../game/types';
 import '../../styles/childhoodMemory.css';
 
@@ -20,17 +21,20 @@ const promiseLines: DialogueLine[] = [
 export function ChildhoodMemory({ onFinish }: ChildhoodMemoryProps) {
   const [lineIndex, setLineIndex] = useState(0);
   const isClosing = lineIndex === promiseLines.length - 1;
+  const line = promiseLines[lineIndex];
+  const { visibleText, isComplete, complete } = useTypewriter(line.text);
   const advance = () => {
+    if (!isComplete) return complete();
     if (isClosing) onFinish();
     else setLineIndex((current) => current + 1);
   };
   useAdvanceKeys(advance);
 
-  const line = promiseLines[lineIndex];
   return (
     <section className={`childhood-memory ${isClosing ? 'is-closing' : ''}`}>
       <div className="childhood-memory__desk">
         <div className="childhood-memory__page">
+          <span className="childhood-memory__era">Несколько лет назад</span>
           <span className="childhood-memory__title">Штрих и его мир</span>
           <div className="childhood-streak" aria-label="Незаконченный рисунок Штриха">
             <i className="childhood-streak__head" /><i className="childhood-streak__body" />
@@ -41,8 +45,8 @@ export function ChildhoodMemory({ onFinish }: ChildhoodMemoryProps) {
       </div>
       <article className="childhood-memory__dialogue">
         <small>{line.speaker}</small>
-        <p>{line.text}</p>
-        <button onClick={advance}>{isClosing ? 'Закрыть тетрадь' : 'Дальше'} <span>→</span></button>
+        <p>{visibleText}<i className={isComplete ? '' : 'typewriter-caret'} aria-hidden="true" /></p>
+        {isComplete && <button onClick={advance}>{isClosing ? 'Закрыть тетрадь' : 'Дальше'} <span>→</span></button>}
       </article>
     </section>
   );

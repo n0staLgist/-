@@ -1,5 +1,6 @@
 import type { StoryScene } from '../../game/types';
 import { useAdvanceKeys } from '../../game/useAdvanceKeys';
+import { useTypewriter } from '../../game/useTypewriter';
 
 type RedClassSceneProps = {
   scenes: StoryScene[];
@@ -8,8 +9,10 @@ type RedClassSceneProps = {
 };
 
 export function RedClassScene({ scenes, sceneIndex, onNext }: RedClassSceneProps) {
-  useAdvanceKeys(onNext);
   const scene = scenes[sceneIndex];
+  const { visibleText, isComplete, complete } = useTypewriter(scene.dialogue);
+  const advance = isComplete ? onNext : complete;
+  useAdvanceKeys(advance);
   const erased = sceneIndex >= 3;
   const restored = sceneIndex >= 4;
 
@@ -34,8 +37,8 @@ export function RedClassScene({ scenes, sceneIndex, onNext }: RedClassSceneProps
         <span className="eyebrow">Глава II · {scene.label}</span>
         <h1>{scene.title}</h1>
         <p>{scene.text}</p>
-        <blockquote><b>{scene.speaker}</b>{scene.dialogue}</blockquote>
-        <button className="pencil-button" onClick={onNext}>{scene.action}</button>
+        <blockquote><b>{scene.speaker}</b>{visibleText}<i className={isComplete ? '' : 'typewriter-caret'} aria-hidden="true" /></blockquote>
+        {isComplete && <button className="pencil-button" onClick={onNext}>{scene.action}</button>}
         <div className="story-card__progress">
           {scenes.map((item, index) => <i className={index <= sceneIndex ? 'is-filled' : ''} key={item.title} />)}
         </div>

@@ -5,5 +5,7 @@
 .notebook-page.is-cover::before { content: ''; position: absolute; inset: 8%; border: 2px solid #51483a; box-shadow: inset 0 0 0 7px #8e6d4228; }
 .shtrikh-present { position: absolute; left: 50%; top: 53%; width: min(46%, 330px); max-height: 70%; object-fit: contain; transform: translate(-50%, -50%); mix-blend-mode: multiply; animation: shtrikh-drift 2.2s steps(2) infinite; }
 .notebook-page.is-present .notebook-title { top: 4%; font-size: clamp(17px, 3vw, 26px); }
+.present-day-label { position: absolute; z-index: 2; top: 12%; left: 8%; color: #8a6046; font: 700 18px Caveat, cursive; transform: rotate(-3deg); animation: present-label 2s both; }
 @keyframes title-reveal { 0% { opacity: 0; } 16%, 70% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }
 @keyframes shtrikh-drift { 50% { transform: translate(-50%, -50%) rotate(.35deg); } }
+@keyframes present-label { from { opacity: 0; } 35% { opacity: 0; } }

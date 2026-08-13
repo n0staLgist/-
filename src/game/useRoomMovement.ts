@@ -3,7 +3,7 @@ import { isRoomPositionWalkable } from './roomGeometry';
 
 export type RoomPosition = { x: number; y: number };
 export type MoveDirection = readonly [number, number];
-export type FacingDirection = 'left' | 'right';
+export type FacingDirection = 'down' | 'up' | 'left' | 'right';
 
 const SPEED = 18;
 const START_POSITION: RoomPosition = { x: 86, y: 56 };
@@ -15,7 +15,7 @@ const DIRECTIONS: Record<string, MoveDirection> = {
 export function useRoomMovement(enabled: boolean, onInteract: (position: RoomPosition) => void) {
   const [position, setPosition] = useState(START_POSITION);
   const [isMoving, setIsMoving] = useState(false);
-  const [facing, setFacing] = useState<FacingDirection>('left');
+  const [facing, setFacing] = useState<FacingDirection>('down');
   const positionRef = useRef(position);
   const pressedKeys = useRef(new Set<string>());
   const touchDirection = useRef<MoveDirection | null>(null);
@@ -69,7 +69,10 @@ export function useRoomMovement(enabled: boolean, onInteract: (position: RoomPos
       const length = Math.hypot(dx, dy);
       const moving = length > 0;
       setIsMoving((current) => current === moving ? current : moving);
-      if (dx) setFacing((current) => current === (dx < 0 ? 'left' : 'right') ? current : (dx < 0 ? 'left' : 'right'));
+      const nextFacing: FacingDirection | null = Math.abs(dx) > Math.abs(dy)
+        ? (dx < 0 ? 'left' : 'right')
+        : dy !== 0 ? (dy < 0 ? 'up' : 'down') : null;
+      if (nextFacing) setFacing((current) => current === nextFacing ? current : nextFacing);
       if (moving) {
         const distance = SPEED * Math.min(time - previousTime, 32) / 1000;
         setPosition((current) => {
