@@ -16,7 +16,7 @@ export const roomItems: Record<RoomItem, { label: string; memory: string }> = {
 };
 
 export const introLines: DialogueLine[] = [
-  { speaker: 'Мама, из коридора', text: 'Разбери последний ящик. Завтра переезжаем.' },
+  { speaker: 'Мама, из коридора', text: 'Разбери, пожалуйста, последний ящик. Завтра переезжаем.' },
   { speaker: 'Ая', text: 'Посмотришь, что я нарисовала?' },
   { speaker: 'Ты', text: 'Сейчас не могу. Давай потом.' },
   { speaker: 'Ая', text: 'Завтра?' },
@@ -24,10 +24,10 @@ export const introLines: DialogueLine[] = [
 ];
 
 export const notebookLines: DialogueLine[] = [
+  { speaker: 'Ты', text: 'Штрих… что с тобой?' },
   { speaker: 'Штрих', text: 'Сегодня уже завтра?' },
-  { speaker: 'Штрих', text: 'Ты обещал дорисовать мой мир. Я ждал.' },
-  { speaker: 'Ты', text: 'Прости. Я совсем забыл эту тетрадь.' },
-  { speaker: 'Штрих', text: 'Тетрадь — может быть. Но двор ты помнишь?' },
+  { speaker: 'Ты', text: 'У тебя… слёзы.' },
+  { speaker: 'Штрих', text: 'Потом. Сначала пойдём во двор. Там пропал первый цвет.' },
 ];
 
 export const taskCopy: Record<YardTask, { title: string; hint: string; memory: DialogueLine[] }> = {

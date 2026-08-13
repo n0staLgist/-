@@ -13,9 +13,9 @@ type RoomSceneProps = {
 };
 
 const itemPositions: Record<RoomItem, RoomPosition> = {
-  cassette: { x: 42, y: 80 }, photo: { x: 47, y: 82 }, diary: { x: 53, y: 80 },
+  cassette: { x: 43, y: 82 }, photo: { x: 49, y: 82 }, diary: { x: 56, y: 80 },
 };
-const notebookPosition: RoomPosition = { x: 49, y: 68 };
+const notebookPosition: RoomPosition = { x: 41, y: 68 };
 const distance = (first: RoomPosition, second: RoomPosition) => Math.hypot(first.x - second.x, first.y - second.y);
 const ITEM_REACH = 8;
 const NOTEBOOK_REACH = 11;

@@ -4,11 +4,10 @@ type CollisionZone = { left: number; right: number; top: number; bottom: number 
 
 const PLAYER_PADDING = { x: 1.5, y: 1.7 };
 const FURNITURE: CollisionZone[] = [
-  { left: 11, right: 20, top: 27, bottom: 45 }, // свёрнутый ковёр
-  { left: 19, right: 34, top: 26, bottom: 36 }, // батарея
-  { left: 39, right: 55, top: 25, bottom: 35 }, // стол и стул
-  { left: 58, right: 81, top: 25, bottom: 34 }, // коробки у стены
-  { left: 41, right: 57, top: 52, bottom: 74 }, // открытая коробка
+  { left: 13, right: 27, top: 27, bottom: 45 }, // батарея
+  { left: 36, right: 57, top: 23, bottom: 44 }, // стол и стул
+  { left: 58, right: 82, top: 25, bottom: 44 }, // коробки у стены
+  { left: 32, right: 50, top: 53, bottom: 73 }, // открытая коробка
 ];
 
 const isInside = (position: RoomPosition, zone: CollisionZone) => (
@@ -19,11 +18,8 @@ const isInside = (position: RoomPosition, zone: CollisionZone) => (
 );
 
 const isInsideFloor = ({ x, y }: RoomPosition) => {
-  if (y < 28 || y > 93) return false;
-  const progress = (y - 28) / 65;
-  const leftEdge = 13 - progress * 7;
-  const rightEdge = 87 + progress * 7;
-  return x >= leftEdge && x <= rightEdge;
+  if (y < 36 || y > 94) return false;
+  return x >= 4 && x <= 94;
 };
 
 export function isRoomPositionWalkable(position: RoomPosition) {

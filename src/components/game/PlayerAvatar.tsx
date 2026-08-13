@@ -1,6 +1,5 @@
 import type { CSSProperties } from 'react';
-import heroSprite from '../../assets/game/hero-topdown.png';
-import heroWalkSprite from '../../assets/game/hero-walk.png';
+import heroWalkSprite from '../../assets/game/hero-walk-simple-v3.png';
 import type { FacingDirection, RoomPosition } from '../../game/useRoomMovement';
 import '../../styles/playerAvatar.css';
 
@@ -26,8 +25,7 @@ export function PlayerAvatar({ position, facing, isMoving }: PlayerAvatarProps) 
 
   return (
     <div className={`player-avatar ${isMoving ? 'is-walking' : ''}`} data-facing={facing} style={style} aria-label="Герой">
-      <img className="player-avatar__idle" src={heroSprite} alt="" draggable={false} />
-      <span className="player-avatar__walk" aria-hidden="true" />
+      <span className="player-avatar__sprite" aria-hidden="true" />
     </div>
   );
 }

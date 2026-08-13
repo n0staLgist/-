@@ -37,7 +37,7 @@ export function GamePage() {
   useEffect(() => () => stopAmbience(), []);
   useEffect(() => {
     if (stage !== 'prologueExit') return;
-    const handoff = window.setTimeout(() => setStage('room'), 1900);
+    const handoff = window.setTimeout(() => setStage('room'), 3200);
     return () => window.clearTimeout(handoff);
   }, [stage]);
 
