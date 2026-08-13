@@ -1,15 +1,33 @@
 type MovementControlsProps = {
-  onMove: (dx: number, dy: number) => void;
+  onMoveStart: (dx: number, dy: number) => void;
+  onMoveEnd: () => void;
   onInteract: () => void;
 };
 
-export function MovementControls({ onMove, onInteract }: MovementControlsProps) {
+const directions = [
+  { className: 'move-up', label: 'Идти вверх', symbol: '↑', x: 0, y: -1 },
+  { className: 'move-left', label: 'Идти влево', symbol: '←', x: -1, y: 0 },
+  { className: 'move-down', label: 'Идти вниз', symbol: '↓', x: 0, y: 1 },
+  { className: 'move-right', label: 'Идти вправо', symbol: '→', x: 1, y: 0 },
+];
+
+export function MovementControls({ onMoveStart, onMoveEnd, onInteract }: MovementControlsProps) {
   return (
     <div className="movement-controls" aria-label="Управление персонажем">
-      <button className="move-up" onClick={() => onMove(0, -1)} aria-label="Идти вверх">↑</button>
-      <button className="move-left" onClick={() => onMove(-1, 0)} aria-label="Идти влево">←</button>
-      <button className="move-down" onClick={() => onMove(0, 1)} aria-label="Идти вниз">↓</button>
-      <button className="move-right" onClick={() => onMove(1, 0)} aria-label="Идти вправо">→</button>
+      {directions.map(({ className, label, symbol, x, y }) => (
+        <button
+          className={className}
+          key={className}
+          onPointerDown={(event) => {
+            event.currentTarget.setPointerCapture(event.pointerId);
+            onMoveStart(x, y);
+          }}
+          onPointerUp={onMoveEnd}
+          onPointerCancel={onMoveEnd}
+          onLostPointerCapture={onMoveEnd}
+          aria-label={label}
+        >{symbol}</button>
+      ))}
       <button className="move-action" onClick={onInteract} aria-label="Взаимодействовать">E</button>
     </div>
   );

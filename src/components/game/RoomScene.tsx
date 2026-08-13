@@ -27,7 +27,7 @@ export function RoomScene({ packed, note, isInteractive = true, onPack, onNotebo
       .sort((a, b) => distance(position, itemPositions[a]) - distance(position, itemPositions[b]))[0];
     if (nearest && distance(position, itemPositions[nearest]) < 15) onPack(nearest);
   }, [allPacked, onNotebook, onPack, packed]);
-  const { position, move } = useRoomMovement(isInteractive, interact);
+  const { position, isMoving, facing, startMoving, stopMoving } = useRoomMovement(isInteractive, interact);
 
   const nearbyItem = (Object.keys(itemPositions) as RoomItem[])
     .find((item) => !packed.includes(item) && distance(position, itemPositions[item]) < 15);
@@ -47,9 +47,9 @@ export function RoomScene({ packed, note, isInteractive = true, onPack, onNotebo
       ))}
       <button className={`notebook-hotspot ${allPacked ? 'is-visible' : ''} ${nearNotebook ? 'is-near' : ''}`} onClick={onNotebook} disabled={!nearNotebook}>Открыть тетрадь</button>
       {isInteractive && <>
-        <div className="player-mark" style={{ left: `${position.x}%`, top: `${position.y}%` }}><i /></div>
+        <div className={`player-mark ${isMoving ? 'is-walking' : ''}`} data-facing={facing} style={{ left: `${position.x}%`, top: `${position.y}%` }}><i /><b /></div>
         <p className={`interaction-hint ${(nearbyItem || nearNotebook) ? 'is-ready' : ''}`}>{nearbyItem ? `E · Взять: ${roomItems[nearbyItem].label}` : nearNotebook ? 'E · Открыть тетрадь' : 'WASD / стрелки · идти'}</p>
-        <MovementControls onMove={move} onInteract={() => interact(position)} />
+        <MovementControls onMoveStart={startMoving} onMoveEnd={stopMoving} onInteract={() => interact(position)} />
       </>}
       {note && <p className="memory-note">{note}</p>}
     </section>
