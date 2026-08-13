@@ -1,0 +1,26 @@
+.room-memory { position: fixed; z-index: 40; inset: 0; display: grid; place-items: center; overflow: hidden; padding: 24px; color: #352e24; background: #17130ede; backdrop-filter: blur(8px) saturate(.6); animation: memory-arrives .7s both; }
+.room-memory::before { content: ''; position: absolute; inset: 0; opacity: .18; background-image: repeating-linear-gradient(0deg, transparent 0 4px, #eee4ca 5px); mix-blend-mode: screen; }
+.room-memory__light { position: absolute; width: min(80vw, 850px); aspect-ratio: 1; border-radius: 50%; background: #d59c5030; filter: blur(25px); animation: memory-light 3s ease-in-out infinite; }
+.room-memory__paper { position: relative; width: min(620px, 92vw); min-height: 480px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px; text-align: center; background: #eee1c2; box-shadow: 0 25px 90px #000b; transform: rotate(-.4deg); }
+.room-memory__paper::before { content: ''; position: absolute; inset: 13px; border: 1px solid #7d6a4a32; pointer-events: none; }
+.room-memory__eyebrow { color: #9f6540; font-size: 10px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+.room-memory h2 { margin: 10px 0 5px; font: 700 45px/.9 Caveat, cursive; }
+.room-memory blockquote { max-width: 440px; margin: 18px 0 10px; font: 600 23px/1.25 Caveat, cursive; }
+.room-memory p { max-width: 440px; margin: 0 0 24px; color: #716552; font-size: 13px; line-height: 1.55; }
+.room-memory button { border: 0; border-bottom: 1px solid #7d3f2d; padding: 8px 2px; color: #7d3f2d; background: none; font-weight: 700; cursor: pointer; }
+.room-memory button span { padding-left: 8px; }.room-memory small { margin-top: 10px; color: #958977; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; }
+.memory-object { position: relative; width: 145px; height: 105px; margin: 22px 0 5px; filter: drop-shadow(5px 7px 0 #4c3d2725); }
+.room-memory--cassette .memory-object { border: 5px solid #514b41; border-radius: 7px; background: #c9af7d; transform: rotate(-3deg); }
+.room-memory--cassette .memory-object::before { content: ''; position: absolute; top: 18px; left: 19px; width: 96px; height: 35px; border: 3px solid #514b41; background: #eee1bd; }
+.room-memory--cassette .memory-object i { position: absolute; z-index: 1; top: 28px; width: 18px; height: 18px; border: 3px solid #514b41; border-radius: 50%; }
+.room-memory--cassette .memory-object i:first-child { left: 31px; }.room-memory--cassette .memory-object i:nth-child(2) { right: 31px; }
+.room-memory--cassette .memory-object::after { content: ''; position: absolute; left: 31px; bottom: 10px; width: 73px; height: 22px; border: 3px solid #514b41; transform: perspective(30px) rotateX(5deg); }
+.room-memory--photo .memory-object { overflow: hidden; border: 9px solid #e8d9b8; border-bottom-width: 25px; background: linear-gradient(#bd7c4f 0 48%, #5d744d 49% 64%, #a4864e 65%); box-shadow: 0 0 0 2px #665b4c; transform: rotate(4deg); }
+.room-memory--photo .memory-object::before { content: ''; position: absolute; left: 20px; bottom: 22px; width: 24px; height: 32px; border-radius: 50% 50% 5px 5px; background: #403c36; box-shadow: 70px 6px 0 -3px #403c36; }
+.room-memory--photo .memory-object::after { content: ''; position: absolute; top: 13px; right: 16px; width: 22px; height: 22px; border-radius: 50%; background: #e6c267; box-shadow: 0 0 18px #f4dc8f; }
+.room-memory--diary .memory-object { border: 3px solid #514b41; border-radius: 2px 8px 8px 2px; background: repeating-linear-gradient(#e8d9b7 0 17px, #829ca840 18px 19px); transform: rotate(-5deg); }
+.room-memory--diary .memory-object::before { content: '3  алгебра\A 5  рисование'; white-space: pre; position: absolute; top: 19px; left: 23px; color: #5b5144; font: 700 16px/2 Caveat, cursive; text-align: left; }
+.room-memory--diary .memory-object::after { content: ''; position: absolute; right: 18px; bottom: 8px; width: 28px; height: 48px; border: 2px solid #876f43; border-radius: 100% 0; opacity: .65; transform: rotate(24deg); }
+@keyframes memory-arrives { from { opacity: 0; clip-path: inset(48% 0); } }
+@keyframes memory-light { 50% { opacity: .6; transform: scale(1.08); } }
+@media (max-width: 700px) { .room-memory__paper { min-height: 0; padding: 35px 25px; }.memory-object { transform: scale(.82) !important; margin: 8px 0 0; }.room-memory blockquote { margin-top: 8px; font-size: 21px; } }

@@ -1,0 +1,5 @@
+.game-title-reveal { position: fixed; z-index: 60; inset: 0; display: grid; place-content: center; color: #ede0c2; text-align: center; background: #17130e; animation: title-reveal 3.4s both; }
+.game-title-reveal::before { content: ''; position: absolute; inset: 0; opacity: .15; background-image: repeating-linear-gradient(0deg, transparent 0 5px, #f0e5cb 6px); }
+.game-title-reveal small { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; }
+.game-title-reveal h1 { margin: 5px 0 0; font: 700 clamp(80px, 15vw, 150px)/.8 Caveat, cursive; }
+@keyframes title-reveal { 0% { opacity: 0; } 16%, 70% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }

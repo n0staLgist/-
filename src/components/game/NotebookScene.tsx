@@ -1,8 +1,14 @@
-type NotebookSceneProps = { onEnter: () => void };
+import '../../styles/notebookReveal.css';
 
-export function NotebookScene({ onEnter }: NotebookSceneProps) {
+type NotebookSceneProps = {
+  onEnter: () => void;
+  revealTitle?: boolean;
+};
+
+export function NotebookScene({ onEnter, revealTitle = false }: NotebookSceneProps) {
   return (
     <section className="notebook-scene">
+      {revealTitle && <div className="game-title-reveal"><small>интерактивная история</small><h1>До завтра</h1></div>}
       <div className="notebook-page">
         <div className="streak" aria-label="Штрих — нарисованный человечек">
           <span className="streak__head"><i /><i /><b /></span>
@@ -19,4 +25,3 @@ export function NotebookScene({ onEnter }: NotebookSceneProps) {
     </section>
   );
 }
-

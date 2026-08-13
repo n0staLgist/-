@@ -1,0 +1,31 @@
+.opening-screen { min-height: 100svh; display: grid; place-items: center; color: #d9d0bd; background: #12110e; }
+.opening-screen::before { content: ''; position: absolute; inset: 0; opacity: .14; background: radial-gradient(circle at 50% 45%, #a8854e, transparent 36%); animation: opening-breathe 4s ease-in-out infinite; }
+.opening-screen__copy { z-index: 1; display: grid; justify-items: center; gap: 20px; padding: 30px; text-align: center; }
+.opening-screen__copy p { margin: 0; font: 500 18px/1.4 Caveat, cursive; letter-spacing: .02em; }
+.opening-screen__copy button { padding: 10px 28px; border: 1px solid #cfbea080; color: #eee4d0; background: transparent; cursor: pointer; transition: .25s; }
+.opening-screen__copy button:hover { color: #211d17; background: #e1d2b7; }
+.opening-screen__copy small { color: #8e8576; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+.opening-screen__line { width: 1px; height: 48px; background: linear-gradient(transparent, #d6c4a3, transparent); }
+.prologue-scene { position: absolute; inset: 0; min-height: 100svh; overflow: hidden; background: #17130e; }
+.prologue-scene__room { position: absolute; inset: -2%; background: url('../assets/game/moving-room.png') center/cover; animation: prologue-room 8s ease-out both; }
+.prologue-scene__evening { position: absolute; inset: 0; background: linear-gradient(90deg, #24354b33, transparent 38%), linear-gradient(transparent 45%, #120d08a8); }
+.prologue-scene__hero { position: absolute; z-index: 3; right: 22%; bottom: 14%; width: 24px; height: 52px; filter: drop-shadow(0 5px 4px #0009); animation: hero-arrives 1.4s .4s both; }
+.prologue-scene__hero::before, .prologue-scene__aya::before { content: ''; position: absolute; top: 0; left: 5px; width: 14px; height: 15px; border: 2px solid #d9c9a7; border-radius: 50%; background: #3e382e; }
+.prologue-scene__hero i, .prologue-scene__aya i { position: absolute; top: 16px; left: 10px; width: 4px; height: 26px; background: #d9c9a7; }
+.prologue-scene__hero b, .prologue-scene__hero b::after, .prologue-scene__aya b, .prologue-scene__aya b::after { content: ''; position: absolute; top: 40px; left: 10px; width: 3px; height: 12px; background: #d9c9a7; transform: rotate(13deg); transform-origin: top; }
+.prologue-scene__hero b::after, .prologue-scene__aya b::after { top: 0; left: 2px; transform: rotate(-26deg); }
+.prologue-scene__aya { position: absolute; z-index: 3; right: 8%; bottom: 15%; width: 22px; height: 45px; opacity: 0; transform: translateX(40px); transition: opacity .7s, transform .7s; }
+.prologue-scene__aya::before { width: 12px; height: 13px; }
+.prologue-scene__aya i { top: 14px; height: 23px; }
+.prologue-scene__aya b, .prologue-scene__aya b::after { top: 35px; height: 10px; }
+.prologue-scene__aya span { position: absolute; top: 20px; left: -8px; width: 18px; height: 14px; border: 1px solid #cdbd9c; background: #eee1c5; transform: rotate(-8deg); }
+.prologue-scene__aya.is-present { opacity: 1; transform: translateX(0); }
+.prologue-scene__aya.is-leaving { opacity: 0; transform: translateX(42px); }
+.prologue-scene__time { position: absolute; z-index: 4; top: 15%; left: 50%; margin: 0; color: #f2e7d2; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; transform: translateX(-50%); animation: time-fades 3.5s both; }
+.cinema-bar { position: absolute; z-index: 10; left: 0; right: 0; height: 5.5vh; background: #0e0d0b; }
+.cinema-bar--top { top: 0; }.cinema-bar--bottom { bottom: 0; }
+@keyframes opening-breathe { 50% { opacity: .24; } }
+@keyframes prologue-room { from { opacity: 0; transform: scale(1.05); } to { opacity: 1; transform: scale(1); } }
+@keyframes hero-arrives { from { opacity: 0; transform: translateX(35px); } }
+@keyframes time-fades { 0%, 65% { opacity: 0; } 75% { opacity: 1; } 100% { opacity: 0; } }
+@media (max-width: 700px) { .prologue-scene__room { background-position: 50% center; }.prologue-scene__hero { right: 25%; }.prologue-scene__aya { right: 7%; } }

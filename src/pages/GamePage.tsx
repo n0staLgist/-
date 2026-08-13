@@ -1,21 +1,26 @@
 import { useEffect, useState } from 'react';
 import { ColorReveal } from '../components/game/ColorReveal';
 import { BlueRoomScene } from '../components/game/BlueRoomScene';
+import { ChildhoodMemory } from '../components/game/ChildhoodMemory';
 import { DialogueBox } from '../components/game/DialogueBox';
 import { FinaleScene } from '../components/game/FinaleScene';
 import { GameHeader } from '../components/game/GameHeader';
 import { NotebookScene } from '../components/game/NotebookScene';
+import { PrologueScene } from '../components/game/PrologueScene';
 import { RedClassScene } from '../components/game/RedClassScene';
 import { RoomScene } from '../components/game/RoomScene';
+import { RoomMemory } from '../components/game/RoomMemory';
 import { StartScreen } from '../components/game/StartScreen';
 import { TaskCard } from '../components/game/TaskCard';
 import { YardScene } from '../components/game/YardScene';
 import { blueRoomScenes, redClassScenes } from '../game/chapters';
 import { setAmbienceEnabled, startAmbience, stopAmbience } from '../game/audio';
-import { endingLines, introLines, notebookLines, roomItems, taskCopy } from '../game/story';
+import { endingLines, introLines, notebookLines, taskCopy } from '../game/story';
 import type { DialogueLine, RoomItem, YardTask } from '../game/types';
+import '../styles/prologue.css';
+import '../styles/roomMemory.css';
 
-type Stage = 'start' | 'intro' | 'room' | 'notebook' | 'meeting' | 'yard' |
+type Stage = 'start' | 'prologue' | 'room' | 'notebook' | 'childhood' | 'meeting' | 'yard' |
   'yellowReveal' | 'red' | 'redReveal' | 'blue' | 'finale';
 
 export function GamePage() {
@@ -26,7 +31,7 @@ export function GamePage() {
   const [completed, setCompleted] = useState<YardTask[]>([]);
   const [activeTask, setActiveTask] = useState<YardTask | null>(null);
   const [storyIndex, setStoryIndex] = useState(0);
-  const [note, setNote] = useState('');
+  const [activeMemory, setActiveMemory] = useState<RoomItem | null>(null);
   const [soundOn, setSoundOn] = useState(true);
 
   useEffect(() => () => stopAmbience(), []);
@@ -46,14 +51,13 @@ export function GamePage() {
 
   const start = () => {
     if (soundOn) startAmbience();
-    setStage('intro');
+    setStage('prologue');
     showDialogue(introLines, 'room');
   };
 
   const packItem = (item: RoomItem) => {
-    setPacked((items) => [...items, item]);
-    setNote(roomItems[item].memory);
-    window.setTimeout(() => setNote(''), 3400);
+    setPacked((items) => items.includes(item) ? items : [...items, item]);
+    setActiveMemory(item);
   };
 
   const finishTask = () => {
@@ -61,6 +65,7 @@ export function GamePage() {
     const task = activeTask;
     setCompleted((tasks) => [...tasks, task]);
     setActiveTask(null);
+    setActiveMemory(null);
     showDialogue(taskCopy[task].memory, 'yard');
   };
 
@@ -94,15 +99,18 @@ export function GamePage() {
       ? 'Глава III · Синяя комната'
       : stage === 'yard' || stage === 'yellowReveal'
         ? 'Глава I · Жёлтый двор'
-        : 'До завтра';
+        : stage === 'notebook' || stage === 'meeting'
+          ? 'Найденная тетрадь'
+          : 'Комната · сегодняшний вечер';
 
   return (
     <main className="game-shell">
-      {stage !== 'start' && <GameHeader chapter={chapter} soundOn={soundOn} onSoundToggle={toggleSound} onRestart={restart} />}
+      {stage !== 'start' && stage !== 'prologue' && stage !== 'childhood' && <GameHeader chapter={chapter} soundOn={soundOn} onSoundToggle={toggleSound} onRestart={restart} />}
       {stage === 'start' && <StartScreen onStart={start} />}
-      {stage === 'intro' && <RoomScene packed={[]} note="" isInteractive={false} onPack={() => undefined} onNotebook={() => undefined} />}
-      {stage === 'room' && <RoomScene packed={packed} note={note} onPack={packItem} onNotebook={() => setStage('notebook')} />}
-      {stage === 'notebook' && <NotebookScene onEnter={() => { setStage('meeting'); showDialogue(notebookLines, 'yard'); }} />}
+      {stage === 'prologue' && <PrologueScene lineIndex={lineIndex} />}
+      {stage === 'room' && <RoomScene packed={packed} isInteractive={!activeMemory} onPack={packItem} onNotebook={() => setStage('notebook')} />}
+      {stage === 'notebook' && <NotebookScene revealTitle onEnter={() => setStage('childhood')} />}
+      {stage === 'childhood' && <ChildhoodMemory onFinish={() => { setStage('meeting'); showDialogue(notebookLines, 'yard'); }} />}
       {stage === 'meeting' && <NotebookScene onEnter={() => undefined} />}
       {stage === 'yard' && <YardScene completed={completed} onTask={setActiveTask} onFinish={() => showDialogue(endingLines, 'yellowReveal')} />}
       {stage === 'yellowReveal' && <ColorReveal color="yellow" title="Жёлтый" text="Цвет окон, мела и того вечера, когда тебя позвали домой." nextChapter="Открыть красный класс" onContinue={() => setStage('red')} />}
@@ -111,6 +119,7 @@ export function GamePage() {
       {stage === 'blue' && <BlueRoomScene scenes={blueRoomScenes} sceneIndex={storyIndex} onNext={() => advanceStory(blueRoomScenes.length, 'finale')} />}
       {stage === 'finale' && <FinaleScene onRestart={restart} />}
       {activeTask && <TaskCard task={activeTask} onComplete={finishTask} />}
+      {activeMemory && <RoomMemory item={activeMemory} onClose={() => setActiveMemory(null)} />}
       {dialogue.length > 0 && lineIndex < dialogue.length - 1 && <DialogueBox line={dialogue[lineIndex]} current={lineIndex} total={dialogue.length - 1} onNext={nextLine} />}
     </main>
   );

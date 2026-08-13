@@ -6,7 +6,6 @@ import { MovementControls } from './MovementControls';
 
 type RoomSceneProps = {
   packed: RoomItem[];
-  note: string;
   isInteractive?: boolean;
   onPack: (item: RoomItem) => void;
   onNotebook: () => void;
@@ -18,7 +17,7 @@ const itemPositions: Record<RoomItem, RoomPosition> = {
 const notebookPosition: RoomPosition = { x: 55, y: 77 };
 const distance = (first: RoomPosition, second: RoomPosition) => Math.hypot(first.x - second.x, first.y - second.y);
 
-export function RoomScene({ packed, note, isInteractive = true, onPack, onNotebook }: RoomSceneProps) {
+export function RoomScene({ packed, isInteractive = true, onPack, onNotebook }: RoomSceneProps) {
   const allPacked = packed.length === 3;
   const interact = useCallback((position: RoomPosition) => {
     if (allPacked && distance(position, notebookPosition) < 15) return onNotebook();
@@ -51,7 +50,6 @@ export function RoomScene({ packed, note, isInteractive = true, onPack, onNotebo
         <p className={`interaction-hint ${(nearbyItem || nearNotebook) ? 'is-ready' : ''}`}>{nearbyItem ? `E · Взять: ${roomItems[nearbyItem].label}` : nearNotebook ? 'E · Открыть тетрадь' : 'WASD / стрелки · идти'}</p>
         <MovementControls onMoveStart={startMoving} onMoveEnd={stopMoving} onInteract={() => interact(position)} />
       </>}
-      {note && <p className="memory-note">{note}</p>}
     </section>
   );
 }
