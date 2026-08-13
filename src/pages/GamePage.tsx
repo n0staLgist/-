@@ -8,6 +8,7 @@ import { GameHeader } from '../components/game/GameHeader';
 import { NotebookScene } from '../components/game/NotebookScene';
 import { PrologueScene } from '../components/game/PrologueScene';
 import { RedClassScene } from '../components/game/RedClassScene';
+import { ReturnToRoomScene } from '../components/game/ReturnToRoomScene';
 import { RoomScene } from '../components/game/RoomScene';
 import { RoomMemory } from '../components/game/RoomMemory';
 import { StartScreen } from '../components/game/StartScreen';
@@ -21,7 +22,7 @@ import '../styles/prologue.css';
 import '../styles/roomMemory.css';
 
 type Stage = 'start' | 'prologue' | 'prologueExit' | 'room' | 'notebook' | 'childhood' | 'meeting' | 'yard' |
-  'yellowReveal' | 'red' | 'redReveal' | 'blue' | 'finale';
+  'yellowReveal' | 'red' | 'redReveal' | 'blue' | 'return' | 'finale';
 
 export function GamePage() {
   const [stage, setStage] = useState<Stage>('start');
@@ -102,8 +103,10 @@ export function GamePage() {
 
   const chapter = stage === 'red' || stage === 'redReveal'
     ? 'Глава II · Красный класс'
-    : stage === 'blue' || stage === 'finale'
+    : stage === 'blue'
       ? 'Глава III · Синяя комната'
+      : stage === 'return' || stage === 'finale'
+        ? 'Возвращение · сегодняшний вечер'
       : stage === 'yard' || stage === 'yellowReveal'
         ? 'Глава I · Жёлтый двор'
         : stage === 'notebook' || stage === 'meeting'
@@ -124,7 +127,8 @@ export function GamePage() {
       {stage === 'yellowReveal' && <ColorReveal color="yellow" title="Жёлтый" text="Цвет окон, мела и того вечера, когда тебя позвали домой." nextChapter="Открыть красный класс" onContinue={() => setStage('red')} />}
       {stage === 'red' && <RedClassScene scenes={redClassScenes} sceneIndex={storyIndex} onNext={() => advanceStory(redClassScenes.length, 'redReveal')} />}
       {stage === 'redReveal' && <ColorReveal color="red" title="Красный" text="Не цвет стыда и исправлений. Цвет смелости оставить важное видимым." nextChapter="Войти в синюю комнату" onContinue={() => setStage('blue')} />}
-      {stage === 'blue' && <BlueRoomScene scenes={blueRoomScenes} sceneIndex={storyIndex} onNext={() => advanceStory(blueRoomScenes.length, 'finale')} />}
+      {stage === 'blue' && <BlueRoomScene scenes={blueRoomScenes} sceneIndex={storyIndex} onNext={() => advanceStory(blueRoomScenes.length, 'return')} />}
+      {stage === 'return' && <ReturnToRoomScene onContinue={() => setStage('finale')} />}
       {stage === 'finale' && <FinaleScene onRestart={restart} />}
       {activeTask && <TaskCard task={activeTask} onComplete={finishTask} />}
       {activeMemory && <RoomMemory item={activeMemory} onClose={() => setActiveMemory(null)} />}

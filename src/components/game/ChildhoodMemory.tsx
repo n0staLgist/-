@@ -8,9 +8,13 @@ type ChildhoodMemoryProps = {
 };
 
 const promiseLines: DialogueLine[] = [
-  { speaker: 'Ты, в детстве', text: 'Сегодня уже поздно. Но завтра я обязательно дорисую тебя.' },
-  { speaker: 'Ты, в детстве', text: 'И сделаю тебе целый мир.' },
+  { speaker: 'Штрих', text: 'А руку?' },
+  { speaker: 'Ты, в детстве', text: 'Не успел. Завтра дорисую.' },
+  { speaker: 'Штрих', text: 'А мир?' },
+  { speaker: 'Ты, в детстве', text: 'И мир тоже. Огромный.' },
   { speaker: 'Мама, из кухни', text: 'Ужинать!' },
+  { speaker: 'Ты, в детстве', text: 'До завтра, Штрих.' },
+  { speaker: 'Штрих', text: 'Я буду здесь.' },
 ];
 
 export function ChildhoodMemory({ onFinish }: ChildhoodMemoryProps) {

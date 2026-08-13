@@ -34,7 +34,7 @@ export function BlueRoomScene({ scenes, sceneIndex, onNext }: BlueRoomSceneProps
         <span className="room-streak__arm room-streak__arm--right" />
         <span className="room-streak__leg room-streak__leg--left" />
         <span className="room-streak__leg room-streak__leg--right" />
-        {sceneIndex >= 2 && <span className="blue-tears">••</span>}
+        {sceneIndex >= 2 && <span className="paper-tears"><i /><i /></span>}
       </div>
 
       <article className="blue-room__copy">

@@ -25,9 +25,12 @@ export const introLines: DialogueLine[] = [
 
 export const notebookLines: DialogueLine[] = [
   { speaker: 'Ты', text: 'Штрих… что с тобой?' },
+  { speaker: 'Штрих', text: 'Ты вернулся.' },
+  { speaker: 'Ты', text: 'У тебя под глазами…' },
   { speaker: 'Штрих', text: 'Сегодня уже завтра?' },
-  { speaker: 'Ты', text: 'У тебя… слёзы.' },
-  { speaker: 'Штрих', text: 'Потом. Сначала пойдём во двор. Там пропал первый цвет.' },
+  { text: 'Несколько секунд слышно только шорох страницы.' },
+  { speaker: 'Ты', text: 'Я не знаю.' },
+  { speaker: 'Штрих', text: 'Тогда давай пока порисуем. Во дворе пропал первый цвет.' },
 ];
 
 export const taskCopy: Record<YardTask, { title: string; hint: string; memory: DialogueLine[] }> = {
@@ -52,14 +55,16 @@ export const taskCopy: Record<YardTask, { title: string; hint: string; memory: D
     hint: 'Найди тёмное окно и верни ему тепло.',
     memory: [
       { speaker: 'Ты', text: 'На кухне горел свет. Мама готовила ужин, а по радио играла тихая песня.' },
-      { speaker: 'Штрих', text: 'Вот почему жёлтый — первый цвет. Это цвет дома.' },
+      { speaker: 'Штрих', text: 'Я помню этот свет. Ты всегда возвращался, когда он загорался.' },
     ],
   },
 };
 
 export const endingLines: DialogueLine[] = [
-  { speaker: 'Штрих', text: 'Двор снова тёплый. Но здесь есть то, что ты не дорисовал.' },
-  { speaker: 'Ты', text: 'Что именно?' },
-  { speaker: 'Штрих', text: 'Нас — завтра.' },
+  { speaker: 'Штрих', text: 'Двор снова тёплый.' },
+  { speaker: 'Ты', text: 'Здесь были другие рисунки.' },
+  { speaker: 'Штрих', text: 'Они просто ушли.' },
+  { speaker: 'Ты', text: 'А эти зачёркнуты.' },
+  { speaker: 'Штрих', text: 'Красный цвет на следующей странице. Пойдём.' },
   { text: 'Первый цвет вернулся. Где-то дальше шелестит следующая страница.' },
 ];
