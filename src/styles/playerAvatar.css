@@ -1,6 +1,14 @@
 .player-avatar { --facing: 1; position: absolute; z-index: 5; width: clamp(82px, 8.8vw, 132px); aspect-ratio: 2 / 3; pointer-events: none; transform: translate(-50%, -91%) scaleX(var(--facing)) scale(var(--player-scale)); transform-origin: 50% 100%; filter: drop-shadow(5px 7px 4px #0008); will-change: left, top, transform; }
 .player-avatar[data-facing='left'] { --facing: -1; }
-.player-avatar img { width: 100%; height: 100%; display: block; object-fit: contain; user-select: none; }
-.player-avatar.is-walking { animation: avatar-bob .36s ease-in-out infinite; }
-@keyframes avatar-bob { 50% { translate: 0 -4px; } }
+.player-avatar__idle, .player-avatar__walk { width: 100%; height: 100%; display: block; }
+.player-avatar__idle { object-fit: contain; user-select: none; }
+.player-avatar__walk { display: none; background: var(--walk-sprite) 0 100% / 400% 100% no-repeat; }
+.player-avatar.is-walking .player-avatar__idle { display: none; }
+.player-avatar.is-walking .player-avatar__walk { display: block; animation: avatar-walk .48s linear infinite; }
+@keyframes avatar-walk {
+  0%, 24.99% { background-position: 0 100%; }
+  25%, 49.99% { background-position: 33.333% 100%; }
+  50%, 74.99% { background-position: 66.667% 100%; }
+  75%, 100% { background-position: 100% 100%; }
+}
 @media (max-width: 700px) { .player-avatar { width: clamp(58px, 11vw, 76px); } }
