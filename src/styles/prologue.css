@@ -1,31 +1,46 @@
 .opening-screen { min-height: 100svh; display: grid; place-items: center; color: #d9d0bd; background: #12110e; }
 .opening-screen::before { content: ''; position: absolute; inset: 0; opacity: .14; background: radial-gradient(circle at 50% 45%, #a8854e, transparent 36%); animation: opening-breathe 4s ease-in-out infinite; }
 .opening-screen__copy { z-index: 1; display: grid; justify-items: center; gap: 20px; padding: 30px; text-align: center; }
-.opening-screen__copy p { margin: 0; font: 500 18px/1.4 Caveat, cursive; letter-spacing: .02em; }
+.opening-screen__copy p { margin: 0; font: 500 18px/1.4 Caveat, cursive; }
 .opening-screen__copy button { padding: 10px 28px; border: 1px solid #cfbea080; color: #eee4d0; background: transparent; cursor: pointer; transition: .25s; }
 .opening-screen__copy button:hover { color: #211d17; background: #e1d2b7; }
 .opening-screen__copy small { color: #8e8576; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
 .opening-screen__line { width: 1px; height: 48px; background: linear-gradient(transparent, #d6c4a3, transparent); }
 .prologue-scene { position: absolute; inset: 0; min-height: 100svh; overflow: hidden; background: #17130e; }
-.prologue-scene__room { position: absolute; inset: -2%; background: url('../assets/game/moving-room.png') center/cover; animation: prologue-room 8s ease-out both; }
-.prologue-scene__evening { position: absolute; inset: 0; background: linear-gradient(90deg, #24354b33, transparent 38%), linear-gradient(transparent 45%, #120d08a8); }
-.prologue-scene__hero { position: absolute; z-index: 3; right: 22%; bottom: 14%; width: 24px; height: 52px; filter: drop-shadow(0 5px 4px #0009); animation: hero-arrives 1.4s .4s both; }
-.prologue-scene__hero::before, .prologue-scene__aya::before { content: ''; position: absolute; top: 0; left: 5px; width: 14px; height: 15px; border: 2px solid #d9c9a7; border-radius: 50%; background: #3e382e; }
-.prologue-scene__hero i, .prologue-scene__aya i { position: absolute; top: 16px; left: 10px; width: 4px; height: 26px; background: #d9c9a7; }
-.prologue-scene__hero b, .prologue-scene__hero b::after, .prologue-scene__aya b, .prologue-scene__aya b::after { content: ''; position: absolute; top: 40px; left: 10px; width: 3px; height: 12px; background: #d9c9a7; transform: rotate(13deg); transform-origin: top; }
-.prologue-scene__hero b::after, .prologue-scene__aya b::after { top: 0; left: 2px; transform: rotate(-26deg); }
-.prologue-scene__aya { position: absolute; z-index: 3; right: 8%; bottom: 15%; width: 22px; height: 45px; opacity: 0; transform: translateX(40px); transition: opacity .7s, transform .7s; }
-.prologue-scene__aya::before { width: 12px; height: 13px; }
-.prologue-scene__aya i { top: 14px; height: 23px; }
-.prologue-scene__aya b, .prologue-scene__aya b::after { top: 35px; height: 10px; }
-.prologue-scene__aya span { position: absolute; top: 20px; left: -8px; width: 18px; height: 14px; border: 1px solid #cdbd9c; background: #eee1c5; transform: rotate(-8deg); }
-.prologue-scene__aya.is-present { opacity: 1; transform: translateX(0); }
-.prologue-scene__aya.is-leaving { opacity: 0; transform: translateX(42px); }
-.prologue-scene__time { position: absolute; z-index: 4; top: 15%; left: 50%; margin: 0; color: #f2e7d2; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; transform: translateX(-50%); animation: time-fades 3.5s both; }
+.prologue-camera { position: absolute; inset: -8%; background: url('../assets/game/moving-room.png') center/cover; transition: 1.1s ease; }
+.is-first-person .prologue-camera { animation: first-person-look 8s ease-in-out both; }
+.is-over-shoulder .prologue-camera { inset: -4%; background-position: 64% 56%; transform: scale(1.06); animation: shoulder-camera 1.2s ease-out both; }
+.prologue-evening { position: absolute; inset: 0; background: linear-gradient(90deg, #24354b44, transparent 40%), linear-gradient(transparent 42%, #120d08a6); }
+.first-person-hand { position: absolute; z-index: 3; bottom: -12%; width: 17%; min-width: 115px; height: 42%; border-radius: 52% 52% 18% 18%; background: linear-gradient(90deg, #765139, #b88761 48%, #7b543b); filter: drop-shadow(7px 8px 8px #0008); opacity: .82; }
+.first-person-hand::after { content: ''; position: absolute; top: -18%; left: 27%; width: 47%; height: 34%; border-radius: 48% 48% 40% 40%; background: #ae7b58; }
+.first-person-hand--left { left: 8%; transform: rotate(17deg); animation: hand-breathe 3.4s ease-in-out infinite; }
+.first-person-hand--right { right: 8%; transform: rotate(-17deg) scaleX(-1); animation: hand-breathe 3.4s .4s ease-in-out infinite; }
+.prologue-time { position: absolute; z-index: 4; top: 15%; left: 50%; margin: 0; color: #f2e7d2; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; transform: translateX(-50%); animation: time-fades 4s both; }
+.seated-hero { position: absolute; z-index: 3; right: 31%; bottom: 12%; width: 92px; height: 138px; filter: drop-shadow(7px 8px 5px #0008); animation: seated-arrives 1s .15s both; }
+.seated-hero i, .aya-back i { position: absolute; display: block; }
+.seated-hero__head { top: 2px; left: 31px; width: 43px; height: 48px; border-radius: 48% 44% 50% 45%; background: #302a24; transform: rotate(18deg); }
+.seated-hero__head::after { content: ''; position: absolute; right: -7px; bottom: 3px; width: 14px; height: 22px; border-radius: 45%; background: #876047; }
+.seated-hero__body { top: 43px; left: 22px; width: 58px; height: 69px; border-radius: 24px 18px 9px 9px; background: #5c554b; transform: rotate(7deg); }
+.seated-hero__arm { top: 65px; left: 4px; width: 65px; height: 20px; border-radius: 14px; background: #645b50; transform: rotate(19deg); }
+.seated-hero__legs { top: 98px; left: 29px; width: 65px; height: 27px; border-radius: 8px 14px 14px 8px; background: #3f4647; transform: rotate(14deg); box-shadow: 25px 20px 0 -3px #353b3d; }
+.aya-back { position: absolute; z-index: 5; left: 8%; bottom: -3%; width: 210px; height: 390px; filter: drop-shadow(12px 12px 12px #0009); animation: aya-walks-in 1.7s ease-out both; transform-origin: bottom; }
+.aya-back__head { top: 4px; left: 55px; width: 100px; height: 108px; border-radius: 47% 47% 42% 42%; background: #76543e; }
+.aya-back__hair { top: -7px; left: 43px; width: 126px; height: 148px; border-radius: 48% 50% 37% 42%; background: #2c251f; clip-path: polygon(5% 0, 95% 0, 90% 88%, 72% 72%, 58% 100%, 42% 73%, 20% 93%, 8% 65%); }
+.aya-back__body { top: 105px; left: 38px; width: 138px; height: 205px; border-radius: 52px 52px 15px 15px; background: #8c6656; }
+.aya-back__arm { top: 145px; left: 20px; width: 45px; height: 155px; border-radius: 23px; background: #815c4d; transform: rotate(-8deg); box-shadow: 126px 6px 0 #815c4d; }
+.aya-back__drawing { z-index: 2; top: 180px; left: 56px; width: 100px; height: 78px; border: 2px solid #9d8b6e; background: #ebdfc4; transform: rotate(-3deg); }
+.aya-back__legs { top: 295px; left: 58px; width: 42px; height: 105px; border-radius: 10px; background: #4f4a48; box-shadow: 55px 0 0 #4f4a48; }
+.is-leaving .aya-back { animation: aya-leaves 1.8s ease-in both; }
+.is-leaving .seated-hero { animation: hero-remains 1.8s both; }
 .cinema-bar { position: absolute; z-index: 10; left: 0; right: 0; height: 5.5vh; background: #0e0d0b; }
 .cinema-bar--top { top: 0; }.cinema-bar--bottom { bottom: 0; }
 @keyframes opening-breathe { 50% { opacity: .24; } }
-@keyframes prologue-room { from { opacity: 0; transform: scale(1.05); } to { opacity: 1; transform: scale(1); } }
-@keyframes hero-arrives { from { opacity: 0; transform: translateX(35px); } }
-@keyframes time-fades { 0%, 65% { opacity: 0; } 75% { opacity: 1; } 100% { opacity: 0; } }
-@media (max-width: 700px) { .prologue-scene__room { background-position: 50% center; }.prologue-scene__hero { right: 25%; }.prologue-scene__aya { right: 7%; } }
+@keyframes first-person-look { 0% { opacity: 0; transform: scale(1.12) translateX(4%); } 30% { opacity: 1; } 55% { transform: scale(1.08) translateX(-4%); } 100% { transform: scale(1.04) translateX(1%); } }
+@keyframes shoulder-camera { from { opacity: 0; transform: scale(1.13) translateX(3%); } }
+@keyframes hand-breathe { 50% { translate: 0 8px; } }
+@keyframes time-fades { 0%, 18% { opacity: 0; } 28%, 65% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes seated-arrives { from { opacity: 0; transform: translateY(15px); } }
+@keyframes aya-walks-in { from { opacity: 0; transform: translate(-42%, 14%) scale(1.12); } to { opacity: 1; transform: translate(0) scale(1); } }
+@keyframes aya-leaves { 0% { transform: translate(0); } 24% { transform: translateY(5%) rotate(1deg); } 100% { opacity: 0; transform: translate(-52%, 15%) scale(1.06); } }
+@keyframes hero-remains { 55%, 100% { filter: brightness(.7) drop-shadow(7px 8px 5px #0008); } }
+@media (max-width: 700px) { .is-over-shoulder .prologue-camera { background-position: 57% center; }.aya-back { left: -7%; transform: scale(.75); }.seated-hero { right: 19%; bottom: 15%; transform: scale(.78); }.first-person-hand { min-width: 90px; } }

@@ -3,6 +3,7 @@ import { roomItems } from '../../game/story';
 import type { RoomItem } from '../../game/types';
 import { useRoomMovement, type RoomPosition } from '../../game/useRoomMovement';
 import { MovementControls } from './MovementControls';
+import { PlayerAvatar } from './PlayerAvatar';
 
 type RoomSceneProps = {
   packed: RoomItem[];
@@ -12,9 +13,9 @@ type RoomSceneProps = {
 };
 
 const itemPositions: Record<RoomItem, RoomPosition> = {
-  cassette: { x: 40, y: 84 }, photo: { x: 55, y: 62 }, diary: { x: 49, y: 88 },
+  cassette: { x: 40, y: 85 }, photo: { x: 55, y: 62 }, diary: { x: 48, y: 89 },
 };
-const notebookPosition: RoomPosition = { x: 55, y: 77 };
+const notebookPosition: RoomPosition = { x: 56, y: 88 };
 const distance = (first: RoomPosition, second: RoomPosition) => Math.hypot(first.x - second.x, first.y - second.y);
 
 export function RoomScene({ packed, isInteractive = true, onPack, onNotebook }: RoomSceneProps) {
@@ -46,7 +47,7 @@ export function RoomScene({ packed, isInteractive = true, onPack, onNotebook }: 
       ))}
       <button className={`notebook-hotspot ${allPacked ? 'is-visible' : ''} ${nearNotebook ? 'is-near' : ''}`} onClick={onNotebook} disabled={!nearNotebook}>Открыть тетрадь</button>
       {isInteractive && <>
-        <div className={`player-mark ${isMoving ? 'is-walking' : ''}`} data-facing={facing} style={{ left: `${position.x}%`, top: `${position.y}%` }}><i /><b /></div>
+        <PlayerAvatar position={position} facing={facing} isMoving={isMoving} />
         <p className={`interaction-hint ${(nearbyItem || nearNotebook) ? 'is-ready' : ''}`}>{nearbyItem ? `E · Взять: ${roomItems[nearbyItem].label}` : nearNotebook ? 'E · Открыть тетрадь' : 'WASD / стрелки · идти'}</p>
         <MovementControls onMoveStart={startMoving} onMoveEnd={stopMoving} onInteract={() => interact(position)} />
       </>}

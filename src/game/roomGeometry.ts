@@ -7,15 +7,15 @@ type CollisionZone = {
   bottom: number;
 };
 
-const FLOOR_BOUNDS: CollisionZone = { left: 7, right: 93, top: 58, bottom: 91 };
-const PLAYER_PADDING = { x: 1.4, y: 1.8 };
+const FLOOR_BOUNDS: CollisionZone = { left: 5, right: 95, top: 54, bottom: 94 };
+const PLAYER_PADDING = { x: 1.2, y: 1.4 };
 
 // Координаты совпадают с мебелью на moving-room.png.
 const FURNITURE: CollisionZone[] = [
-  { left: 19, right: 29, top: 58, bottom: 70 }, // свёрнутый ковёр
-  { left: 26, right: 50, top: 58, bottom: 69 }, // письменный стол
-  { left: 62, right: 84, top: 58, bottom: 73 }, // коробки у стены
-  { left: 45, right: 70, top: 69, bottom: 87 }, // открытая коробка
+  { left: 20, right: 27, top: 56, bottom: 69 }, // свёрнутый ковёр
+  { left: 27, right: 49, top: 56, bottom: 67 }, // письменный стол
+  { left: 64, right: 82, top: 56, bottom: 70 }, // коробки у стены
+  { left: 48, right: 67, top: 70, bottom: 84 }, // открытая коробка
 ];
 
 const isInside = (position: RoomPosition, zone: CollisionZone) => (

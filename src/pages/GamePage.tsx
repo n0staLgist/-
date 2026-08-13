@@ -20,7 +20,7 @@ import type { DialogueLine, RoomItem, YardTask } from '../game/types';
 import '../styles/prologue.css';
 import '../styles/roomMemory.css';
 
-type Stage = 'start' | 'prologue' | 'room' | 'notebook' | 'childhood' | 'meeting' | 'yard' |
+type Stage = 'start' | 'prologue' | 'prologueExit' | 'room' | 'notebook' | 'childhood' | 'meeting' | 'yard' |
   'yellowReveal' | 'red' | 'redReveal' | 'blue' | 'finale';
 
 export function GamePage() {
@@ -35,6 +35,11 @@ export function GamePage() {
   const [soundOn, setSoundOn] = useState(true);
 
   useEffect(() => () => stopAmbience(), []);
+  useEffect(() => {
+    if (stage !== 'prologueExit') return;
+    const handoff = window.setTimeout(() => setStage('room'), 1900);
+    return () => window.clearTimeout(handoff);
+  }, [stage]);
 
   const showDialogue = (lines: DialogueLine[], nextStage: Stage) => {
     setDialogue([...lines, { speaker: '__next__', text: nextStage }]);
@@ -52,7 +57,7 @@ export function GamePage() {
   const start = () => {
     if (soundOn) startAmbience();
     setStage('prologue');
-    showDialogue(introLines, 'room');
+    showDialogue(introLines, 'prologueExit');
   };
 
   const packItem = (item: RoomItem) => {
@@ -83,7 +88,9 @@ export function GamePage() {
     setPacked([]);
     setCompleted([]);
     setActiveTask(null);
+    setActiveMemory(null);
     setDialogue([]);
+    setLineIndex(0);
     setStoryIndex(0);
   };
 
@@ -105,9 +112,10 @@ export function GamePage() {
 
   return (
     <main className="game-shell">
-      {stage !== 'start' && stage !== 'prologue' && stage !== 'childhood' && <GameHeader chapter={chapter} soundOn={soundOn} onSoundToggle={toggleSound} onRestart={restart} />}
+      {stage !== 'start' && stage !== 'prologue' && stage !== 'prologueExit' && stage !== 'childhood' && <GameHeader chapter={chapter} soundOn={soundOn} onSoundToggle={toggleSound} onRestart={restart} />}
       {stage === 'start' && <StartScreen onStart={start} />}
       {stage === 'prologue' && <PrologueScene lineIndex={lineIndex} />}
+      {stage === 'prologueExit' && <PrologueScene lineIndex={5} />}
       {stage === 'room' && <RoomScene packed={packed} isInteractive={!activeMemory} onPack={packItem} onNotebook={() => setStage('notebook')} />}
       {stage === 'notebook' && <NotebookScene revealTitle onEnter={() => setStage('childhood')} />}
       {stage === 'childhood' && <ChildhoodMemory onFinish={() => { setStage('meeting'); showDialogue(notebookLines, 'yard'); }} />}
