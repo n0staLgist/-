@@ -1,21 +1,14 @@
 import type { RoomPosition } from './useRoomMovement';
 
-type CollisionZone = {
-  left: number;
-  right: number;
-  top: number;
-  bottom: number;
-};
+type CollisionZone = { left: number; right: number; top: number; bottom: number };
 
-const FLOOR_BOUNDS: CollisionZone = { left: 5, right: 95, top: 54, bottom: 94 };
-const PLAYER_PADDING = { x: 1.2, y: 1.4 };
-
-// Координаты совпадают с мебелью на moving-room.png.
+const PLAYER_PADDING = { x: 1.5, y: 1.7 };
 const FURNITURE: CollisionZone[] = [
-  { left: 20, right: 27, top: 56, bottom: 69 }, // свёрнутый ковёр
-  { left: 27, right: 49, top: 56, bottom: 67 }, // письменный стол
-  { left: 64, right: 82, top: 56, bottom: 70 }, // коробки у стены
-  { left: 48, right: 67, top: 70, bottom: 84 }, // открытая коробка
+  { left: 11, right: 20, top: 27, bottom: 45 }, // свёрнутый ковёр
+  { left: 19, right: 34, top: 26, bottom: 36 }, // батарея
+  { left: 39, right: 55, top: 25, bottom: 35 }, // стол и стул
+  { left: 58, right: 81, top: 25, bottom: 34 }, // коробки у стены
+  { left: 41, right: 57, top: 52, bottom: 74 }, // открытая коробка
 ];
 
 const isInside = (position: RoomPosition, zone: CollisionZone) => (
@@ -25,11 +18,14 @@ const isInside = (position: RoomPosition, zone: CollisionZone) => (
   && position.y < zone.bottom + PLAYER_PADDING.y
 );
 
-export function isRoomPositionWalkable(position: RoomPosition) {
-  const insideFloor = position.x >= FLOOR_BOUNDS.left
-    && position.x <= FLOOR_BOUNDS.right
-    && position.y >= FLOOR_BOUNDS.top
-    && position.y <= FLOOR_BOUNDS.bottom;
+const isInsideFloor = ({ x, y }: RoomPosition) => {
+  if (y < 28 || y > 93) return false;
+  const progress = (y - 28) / 65;
+  const leftEdge = 13 - progress * 7;
+  const rightEdge = 87 + progress * 7;
+  return x >= leftEdge && x <= rightEdge;
+};
 
-  return insideFloor && !FURNITURE.some((zone) => isInside(position, zone));
+export function isRoomPositionWalkable(position: RoomPosition) {
+  return isInsideFloor(position) && !FURNITURE.some((zone) => isInside(position, zone));
 }
