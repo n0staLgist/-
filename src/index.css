@@ -18,7 +18,7 @@ button:focus-visible { outline: 3px solid #f4bd3b; outline-offset: 3px; }
 .pencil-button, .finish-button { border: 0; padding: 13px 24px; color: #fff8e8; background: #a64a34; border-radius: 2px 8px 3px 7px; box-shadow: 3px 4px 0 #633024; font-weight: 700; cursor: pointer; transform: rotate(-.5deg); }
 .scene { position: absolute; inset: 0; min-height: 100svh; background-position: center; background-size: cover; animation: fade-in 1s ease both; }
 .room-scene { display: grid; place-items: center; background: #17130e; }
-.room-map { position: relative; width: min(100vw, calc(100svh * 16 / 9)); aspect-ratio: 16 / 9; overflow: hidden; background: url('./assets/game/moving-room-simple-v2.jpg') center/100% 100% no-repeat; box-shadow: 0 0 80px #000b; }
+.room-map { position: relative; width: min(100vw, calc(100svh * 16 / 9)); aspect-ratio: 16 / 9; overflow: hidden; background: url('./assets/game/moving-room-topdown.png') center/100% 100% no-repeat; box-shadow: 0 0 80px #000b; }
 .yard-scene { background-image: url('./assets/game/yellow-yard-simple-v2.jpg'); filter: saturate(.38); transition: filter 1.3s ease; }
 .yard-scene.progress-1 { filter: saturate(.7); }.yard-scene.progress-2 { filter: saturate(.86); }.yard-scene.progress-3 { filter: saturate(1.05); }
 .scene__shade { position: absolute; inset: 0; background: linear-gradient(#1410084d, transparent 35%, #16100652); pointer-events: none; }
