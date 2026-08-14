@@ -24,6 +24,7 @@
 .opening-setup legend { margin-bottom: 7px; font-size: 15px; }
 .opening-setup fieldset button { min-width: 92px; padding: 7px 14px; border: 1px solid #39352f77; }
 .opening-setup fieldset button.is-selected { color: #f5ead2; background: #39352f; }
+.opening-setup fieldset button.is-unavailable { color: #766e61; opacity: .55; text-decoration: line-through 2px; cursor: not-allowed; }.mobile-unavailable { align-self: center; color: #806b58 !important; font: 600 14px Caveat, cursive !important; text-transform: none !important; }
 .opening-setup .chapter-select { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: min(560px, 100%); }.opening-setup .chapter-select button { min-width: 0; padding: 7px 8px; font-size: 16px; }.opening-setup .chapter-select button:disabled { color: #70695d; background: transparent; opacity: .55; cursor: not-allowed; }
 .opening-screen__pencil-mark { position: absolute; width: 120px; height: 28px; border-top: 2px solid #625d5466; transform: rotate(-8deg); }
 .opening-screen__pencil-mark--top { top: 15%; right: 12%; }.opening-screen__pencil-mark--bottom { bottom: 16%; left: 18%; transform: rotate(7deg); }
