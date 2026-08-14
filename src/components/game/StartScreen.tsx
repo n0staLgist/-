@@ -11,7 +11,7 @@ export function StartScreen({ onStart }: StartScreenProps) {
   const [showControls, setShowControls] = useState(false);
   const [playerName, setPlayerName] = useState(save.playerName);
   const [controlsMode, setControlsMode] = useState<ControlsMode>(save.controlsMode);
-  const [chapter, setChapter] = useState<ChapterNumber>(save.unlockedChapter);
+  const [chapter, setChapter] = useState<ChapterNumber>(1);
   const start = (selectedChapter = chapter) => onStart({
     controlsMode,
     playerName: playerName.trim().slice(0, 18) || 'Ты',
@@ -42,7 +42,7 @@ export function StartScreen({ onStart }: StartScreenProps) {
         </div>
         <div className="opening-screen__actions">
           {save.unlockedChapter > 1 && <button className="opening-screen__start" onClick={() => start(save.unlockedChapter)}>Продолжить: глава {save.unlockedChapter} <span aria-hidden="true">→</span></button>}
-          <button className={save.unlockedChapter === 1 ? 'opening-screen__start' : ''} onClick={() => start()}>{save.unlockedChapter === 1 ? 'Открыть тетрадь' : 'Начать выбранную'} <span aria-hidden="true">→</span></button>
+          <button className={save.unlockedChapter === 1 ? 'opening-screen__start' : ''} onClick={() => start()}>{chapter === 1 ? 'Начать новую игру' : 'Начать выбранную главу'} <span aria-hidden="true">→</span></button>
           <button onClick={() => setShowControls(true)}>Управление</button>
         </div>
       </div>
