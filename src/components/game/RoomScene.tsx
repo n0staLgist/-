@@ -29,8 +29,9 @@ const roomDetails = [
   { position: { x: 93, y: 57 }, text: 'Дверь в коридор. Ая ушла, не хлопнув ею.' },
 ];
 const distance = (first: RoomPosition, second: RoomPosition) => Math.hypot(first.x - second.x, first.y - second.y);
-const ITEM_REACH = 8;
-const NOTEBOOK_REACH = 14;
+const ITEM_REACH = 5;
+const NOTEBOOK_REACH = 7;
+const DETAIL_REACH = 5.5;
 
 export function RoomScene({ packed, isInteractive = true, onPack, onNotebook }: RoomSceneProps) {
   const [examination, setExamination] = useState<string | null>(null);
@@ -46,7 +47,7 @@ export function RoomScene({ packed, isInteractive = true, onPack, onNotebook }: 
     }
     const detail = [...roomDetails]
       .sort((first, second) => distance(position, first.position) - distance(position, second.position))
-      .find((entry) => distance(position, entry.position) < 9);
+      .find((entry) => distance(position, entry.position) < DETAIL_REACH);
     if (detail) setExamination(detail.text);
   }, [allPacked, onNotebook, onPack, packed]);
   const canMove = isInteractive && !examination;
@@ -57,7 +58,7 @@ export function RoomScene({ packed, isInteractive = true, onPack, onNotebook }: 
   const nearbyItem = (Object.keys(itemPositions) as RoomItem[])
     .find((item) => !packed.includes(item) && distance(position, itemPositions[item]) < ITEM_REACH);
   const nearNotebook = distance(position, notebookPosition) < NOTEBOOK_REACH;
-  const nearDetail = roomDetails.some((entry) => distance(position, entry.position) < 9);
+  const nearDetail = roomDetails.some((entry) => distance(position, entry.position) < DETAIL_REACH);
 
   return (
     <section className="scene room-scene" aria-label="Комната перед переездом">

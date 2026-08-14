@@ -21,16 +21,19 @@ const details = [
   { position: { x: 40, y: 48 }, text: 'Мел почти стёрся. Осталась линия, которую никто не закончил.' },
 ];
 const distance = (a: RoomPosition, b: RoomPosition) => Math.hypot(a.x - b.x, a.y - b.y);
+const TASK_REACH = 6.5;
+const DETAIL_REACH = 5.5;
+const ENDING_REACH = 7;
 
 export function YardScene({ completed, isInteractive, onTask, onFinish }: YardSceneProps) {
   const [examination, setExamination] = useState<string | null>(null);
   const allDone = completed.length === 3;
   const interact = useCallback((position: RoomPosition) => {
-    if (allDone && distance(position, { x: 69, y: 34 }) < 10) return onFinish();
+    if (allDone && distance(position, { x: 69, y: 34 }) < ENDING_REACH) return onFinish();
     const task = (Object.keys(taskPositions) as YardTask[])
-      .find((item) => !completed.includes(item) && distance(position, taskPositions[item]) < 10);
+      .find((item) => !completed.includes(item) && distance(position, taskPositions[item]) < TASK_REACH);
     if (task) return onTask(task);
-    const detail = details.find((entry) => distance(position, entry.position) < 9);
+    const detail = details.find((entry) => distance(position, entry.position) < DETAIL_REACH);
     if (detail) setExamination(detail.text);
   }, [allDone, completed, onFinish, onTask]);
   const canMove = isInteractive && !examination;
@@ -38,9 +41,9 @@ export function YardScene({ completed, isInteractive, onTask, onFinish }: YardSc
     start: { x: 65, y: 82 }, speed: 15, isWalkable: isYardPositionWalkable,
   });
   const nearbyTask = (Object.keys(taskPositions) as YardTask[])
-    .find((task) => !completed.includes(task) && distance(movement.position, taskPositions[task]) < 10);
-  const nearEnding = allDone && distance(movement.position, { x: 69, y: 34 }) < 10;
-  const nearDetail = details.some((entry) => distance(movement.position, entry.position) < 9);
+    .find((task) => !completed.includes(task) && distance(movement.position, taskPositions[task]) < TASK_REACH);
+  const nearEnding = allDone && distance(movement.position, { x: 69, y: 34 }) < ENDING_REACH;
+  const nearDetail = details.some((entry) => distance(movement.position, entry.position) < DETAIL_REACH);
 
   return (
     <section className={`scene yard-scene progress-${completed.length}`} aria-label="Жёлтый двор">
