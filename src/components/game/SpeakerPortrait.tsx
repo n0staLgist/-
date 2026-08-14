@@ -1,5 +1,5 @@
-import ayaPortrait from '../../assets/game/portrait-aya-v1.png';
-import heroPortrait from '../../assets/game/portrait-hero-v2.png';
+import ayaPortrait from '../../assets/game/portrait-aya-v2.png';
+import heroPortrait from '../../assets/game/portrait-hero-v3.png';
 import shtrikhChildPortrait from '../../assets/game/portrait-shtrikh-child-v1.png';
 import shtrikhPortrait from '../../assets/game/portrait-shtrikh-present-v1.png';
 

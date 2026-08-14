@@ -13,7 +13,7 @@ type DialogueBoxProps = {
 };
 
 export function DialogueBox({ line, current, total, playerName, onNext }: DialogueBoxProps) {
-  const { visibleText, isComplete, complete } = useTypewriter(line.text);
+  const { visibleText, isComplete, complete } = useTypewriter(line.text, line.speaker);
   const advance = () => isComplete ? onNext() : complete();
   useAdvanceKeys(advance);
 

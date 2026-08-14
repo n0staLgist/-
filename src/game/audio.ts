@@ -44,19 +44,34 @@ export function stopAmbience() {
   master = null;
 }
 
-export function playWritingTick() {
+const voiceFrequency = (speaker?: string) => {
+  if (!speaker) return 245;
+  if (speaker.includes('Ая')) return 515;
+  if (speaker.includes('Штрих')) return 285;
+  if (speaker.includes('Мама') || speaker.includes('Голос')) return 330;
+  if (speaker.includes('Ты')) return 405;
+  return 360;
+};
+
+export function playWritingTick(speaker?: string) {
   if (!effectsEnabled) return;
   const audioContext = context ?? new AudioContext();
   if (!context) context = audioContext;
   const oscillator = audioContext.createOscillator();
   const gain = audioContext.createGain();
-  oscillator.type = 'square';
-  oscillator.frequency.setValueAtTime(360 + Math.random() * 70, audioContext.currentTime);
-  gain.gain.setValueAtTime(0.026, audioContext.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.035);
-  oscillator.connect(gain).connect(audioContext.destination);
+  const filter = audioContext.createBiquadFilter();
+  const now = audioContext.currentTime;
+  oscillator.type = speaker?.includes('Штрих') ? 'triangle' : 'sine';
+  oscillator.frequency.setValueAtTime(voiceFrequency(speaker) + Math.random() * 18, now);
+  oscillator.frequency.exponentialRampToValueAtTime(voiceFrequency(speaker) * .92, now + .055);
+  filter.type = 'lowpass';
+  filter.frequency.value = 1150;
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.012, now + .008);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + .065);
+  oscillator.connect(filter).connect(gain).connect(audioContext.destination);
   oscillator.start();
-  oscillator.stop(audioContext.currentTime + 0.04);
+  oscillator.stop(now + .07);
 }
 
 export function playPageTurn() {

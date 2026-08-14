@@ -1,43 +1,50 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 
 type SwingTaskProps = { onReady: () => void };
+type SwingStyle = CSSProperties & { '--swing-position': number };
 
 export function SwingTask({ onReady }: SwingTaskProps) {
-  const [ropes, setRopes] = useState([0, 0]);
-  const activeRope = useRef<number | null>(null);
+  const [position, setPosition] = useState(-100);
+  const [pushes, setPushes] = useState(0);
+  const [feedback, setFeedback] = useState('Дождись жёлтой отметки и толкни.');
+  const direction = useRef(1);
+  const positionRef = useRef(-100);
 
-  const start = (event: React.PointerEvent<HTMLButtonElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width;
-    const rope = ropes[0] < 100 && x < .5 ? 0 : ropes[1] < 100 && x >= .5 ? 1 : null;
-    if (rope === null) return;
-    activeRope.current = rope;
-    event.currentTarget.setPointerCapture(event.pointerId);
-  };
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      let next = positionRef.current + direction.current * 4;
+      if (next >= 100 || next <= -100) {
+        direction.current *= -1;
+        next = Math.max(-100, Math.min(100, next));
+      }
+      positionRef.current = next;
+      setPosition(next);
+    }, 32);
+    return () => window.clearInterval(timer);
+  }, []);
 
-  const draw = (event: React.PointerEvent<HTMLButtonElement>) => {
-    if (activeRope.current === null) return;
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width;
-    const y = (event.clientY - rect.top) / rect.height;
-    const targetX = activeRope.current === 0 ? .4 : .6;
-    if (Math.abs(x - targetX) > .13 || y < .18) return;
-    const progress = Math.min(100, Math.max(0, (y - .18) * 145));
-    setRopes((current) => {
-      const next = [...current];
-      next[activeRope.current ?? 0] = Math.max(next[activeRope.current ?? 0], progress);
-      if (next[0] >= 98 && next[1] >= 98) onReady();
-      return next;
-    });
+  const push = () => {
+    const target = pushes % 2 === 0 ? 62 : -62;
+    if (Math.abs(positionRef.current - target) > 24) {
+      setFeedback('Не в ритм. Смотри, куда качеля возвращается.');
+      return;
+    }
+    const next = pushes + 1;
+    setPushes(next);
+    setFeedback(next >= 4 ? 'Ритм вернулся.' : 'Точно. Теперь с другой стороны.');
+    if (next >= 4) onReady();
   };
 
   return (
     <>
-      <p className="task-guidance">Проведи обе верёвки сверху вниз, не выходя за пунктир.</p>
-      <button className="drawing-action" onPointerDown={start} onPointerMove={draw} onPointerUp={() => { activeRope.current = null; }} onPointerCancel={() => { activeRope.current = null; }}>
-        <span className="draw-swing" style={{ '--rope-left': ropes[0] / 100, '--rope-right': ropes[1] / 100 } as React.CSSProperties} />
-      </button>
-      <div className="task-progress"><i style={{ width: `${(ropes[0] + ropes[1]) / 2}%` }} /></div>
+      <p className="task-guidance">{feedback}</p>
+      <div className="swing-timing" style={{ '--swing-position': position } as SwingStyle}>
+        <span className="swing-timing__target swing-timing__target--left" />
+        <span className="swing-timing__target swing-timing__target--right" />
+        <span className="swing-timing__seat" />
+      </div>
+      <button className="timing-button" onClick={push} disabled={pushes >= 4}>Толкнуть качелю</button>
+      <div className="task-dots">{[0, 1, 2, 3].map((step) => <i className={step < pushes ? 'filled' : ''} key={step} />)}</div>
     </>
   );
 }

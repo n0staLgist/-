@@ -13,7 +13,7 @@ type BlueRoomSceneProps = {
 
 export function BlueRoomScene({ scenes, sceneIndex, playerName, onNext }: BlueRoomSceneProps) {
   const scene = scenes[sceneIndex];
-  const { visibleText, isComplete, complete } = useTypewriter(scene.dialogue);
+  const { visibleText, isComplete, complete } = useTypewriter(scene.dialogue, scene.speaker);
   const advance = isComplete ? onNext : complete;
   useAdvanceKeys(advance);
   const trapped = sceneIndex === 4 || sceneIndex === 5;

@@ -7,10 +7,10 @@
 .player-avatar:not(.is-walking) .player-avatar__sprite { animation: avatar-idle 5.8s ease-in-out infinite; }
 .player-avatar.is-walking[data-facing='up'] .player-avatar__sprite, .player-avatar.is-walking[data-facing='left'] .player-avatar__sprite, .player-avatar.is-walking[data-facing='right'] .player-avatar__sprite { clip-path: inset(7% 0 0); }
 @keyframes avatar-walk {
-  0%, 24.99% { background-position: 0 var(--facing-row); transform: translate(-1%, 0) rotate(-.7deg); }
-  25%, 49.99% { background-position: 33.333% var(--facing-row); transform: translate(0, -3%) rotate(0); }
-  50%, 74.99% { background-position: 66.667% var(--facing-row); transform: translate(1%, 0) rotate(.7deg); }
-  75%, 100% { background-position: 100% var(--facing-row); transform: translate(0, -3%) rotate(0); }
+  0%, 24.99% { background-position: 0 var(--facing-row); transform: translateY(0); }
+  25%, 49.99% { background-position: 33.333% var(--facing-row); transform: translateY(-1.5%); }
+  50%, 74.99% { background-position: 66.667% var(--facing-row); transform: translateY(0); }
+  75%, 100% { background-position: 100% var(--facing-row); transform: translateY(-1.5%); }
 }
 @keyframes avatar-idle { 45%, 55% { transform: scale(1.006); } }
 @media (max-width: 700px) { .player-avatar { width: clamp(140px, 32vw, 170px); } }

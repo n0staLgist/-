@@ -3,15 +3,17 @@ import { useEffect, useRef, useState } from 'react';
 type WindowTaskProps = { onReady: () => void };
 
 export function WindowTask({ onReady }: WindowTaskProps) {
-  const [light, setLight] = useState(0);
+  const [light, setLight] = useState(25);
   const [warmth, setWarmth] = useState(0);
+  const holding = useRef(false);
   const completed = useRef(false);
-  const isBalanced = light >= 54 && light <= 72;
+  const isBalanced = light >= 46 && light <= 68;
 
   useEffect(() => {
     const timer = window.setInterval(() => {
+      setLight((current) => Math.max(0, Math.min(100, current + (holding.current ? 3.2 : -1.5))));
       setWarmth((current) => {
-        const next = Math.max(0, Math.min(100, current + (isBalanced ? 5 : -4)));
+        const next = Math.max(0, Math.min(100, current + (isBalanced ? 3.5 : -4)));
         if (next === 100 && !completed.current) {
           completed.current = true;
           onReady();
@@ -22,14 +24,17 @@ export function WindowTask({ onReady }: WindowTaskProps) {
     return () => window.clearInterval(timer);
   }, [isBalanced, onReady]);
 
+  const start = () => { holding.current = true; };
+  const stop = () => { holding.current = false; };
+
   return (
     <>
-      <p className="task-guidance">{warmth >= 100 ? 'Свет удержался.' : isBalanced ? 'Не двигай. Дай комнате согреться.' : 'Найди тёплую середину и удержи её.'}</p>
-      <label className="window-slider">
-        <span className={`draw-window ${warmth >= 66 ? 'light-3' : warmth >= 33 ? 'light-2' : 'light-1'}`} />
-        <input aria-label="Удержать тёплый свет" type="range" min="0" max="100" value={light} onChange={(event) => setLight(Number(event.target.value))} />
-        <small>слишком тускло <i /> слишком ярко</small>
-      </label>
+      <p className="task-guidance">{completed.current ? 'Окно запомнило тепло.' : isBalanced ? 'Удерживай свет в жёлтой середине.' : light < 46 ? 'Слишком темно — удерживай кнопку.' : 'Слишком ярко — отпусти кнопку.'}</p>
+      <div className="window-balance">
+        <span className="draw-window" style={{ opacity: .35 + warmth / 155 }} />
+        <div className="light-meter"><i /><b style={{ left: `${light}%` }} /></div>
+        <button onPointerDown={start} onPointerUp={stop} onPointerLeave={stop} onPointerCancel={stop} onKeyDown={(event) => { if (event.code === 'Space' || event.code === 'Enter') start(); }} onKeyUp={stop}>Удерживать свет</button>
+      </div>
       <div className="task-progress"><i style={{ width: `${warmth}%` }} /></div>
     </>
   );

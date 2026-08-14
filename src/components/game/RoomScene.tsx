@@ -1,4 +1,4 @@
-import { useCallback, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useState, type CSSProperties } from 'react';
 import { roomItems } from '../../game/story';
 import type { RoomItem } from '../../game/types';
 import { useRoomMovement, type RoomPosition } from '../../game/useRoomMovement';
@@ -41,12 +41,25 @@ const roomDetails = [
 ];
 const distance = (first: RoomPosition, second: RoomPosition) => Math.hypot(first.x - second.x, first.y - second.y);
 const ITEM_REACH = 5;
-const NOTEBOOK_REACH = 7;
+const NOTEBOOK_REACH = 10;
 const DETAIL_REACH = 5.5;
 
 export function RoomScene({ packed, isInteractive = true, showTouchControls, onInspectItem, onNotebook }: RoomSceneProps) {
   const [examination, setExamination] = useState<string | null>(null);
+  const [showRouteHint, setShowRouteHint] = useState(false);
+  const [showCompletion, setShowCompletion] = useState(false);
   const allPacked = packed.length === 3;
+  useEffect(() => {
+    if (packed.length > 0) return setShowRouteHint(false);
+    const timer = window.setTimeout(() => setShowRouteHint(true), 11000);
+    return () => window.clearTimeout(timer);
+  }, [packed.length]);
+  useEffect(() => {
+    if (!allPacked) return;
+    setShowCompletion(true);
+    const timer = window.setTimeout(() => setShowCompletion(false), 2800);
+    return () => window.clearTimeout(timer);
+  }, [allPacked]);
   const interact = useCallback((position: RoomPosition) => {
     if (allPacked && distance(position, notebookPosition) < NOTEBOOK_REACH) return onNotebook();
     const nearest = (Object.keys(itemPositions) as RoomItem[])
@@ -82,6 +95,9 @@ export function RoomScene({ packed, isInteractive = true, showTouchControls, onI
             <span>{roomItems[item].label}</span>
           </button>
         ))}
+        <div className="packed-box-items" aria-label={`В коробке предметов: ${packed.length}`}>
+          {packed.map((item, index) => <i className={`packed-box-item packed-box-item--${index}`} key={item} style={{ '--item-sprite': `url(${roomItemsSprite})`, '--item-sprite-position': itemSpritePositions[item] } as ItemStyle} />)}
+        </div>
         <button className={`notebook-hotspot ${nearNotebook ? 'is-near' : ''}`} onClick={onNotebook} disabled={!allPacked || !nearNotebook}>Открыть тетрадь</button>
         {isInteractive && <>
           <PlayerAvatar position={position} facing={facing} isMoving={isMoving} />
@@ -90,6 +106,8 @@ export function RoomScene({ packed, isInteractive = true, showTouchControls, onI
         {examination && <ExamineText text={examination} onClose={() => setExamination(null)} />}
       </div>
       {isInteractive && <p className={`interaction-hint ${(nearbyItem || nearNotebook || nearDetail) ? 'is-ready' : ''}`}>{nearbyItem ? `Взять: ${roomItems[nearbyItem].label} · E / Enter` : nearNotebook ? (allPacked ? 'Взять тетрадь · E / Enter' : 'Осмотреть тетрадь · E / Enter') : nearDetail ? 'Осмотреть · E / Enter' : ''}</p>}
+      {showRouteHint && !nearbyItem && <p className="room-guidance">Кажется, фотография осталась возле батареи…</p>}
+      {showCompletion && <div className="quest-complete"><small>Задание выполнено</small><strong>Последняя коробка собрана</strong><span>Теперь можно открыть тетрадь на столе.</span></div>}
     </section>
   );
 }

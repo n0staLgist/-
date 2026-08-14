@@ -3,7 +3,7 @@ import { playWritingTick } from './audio';
 
 const LETTER_DELAY = 30;
 
-export function useTypewriter(text: string) {
+export function useTypewriter(text: string, speaker?: string) {
   const [visibleLength, setVisibleLength] = useState(0);
   const isComplete = visibleLength >= text.length;
 
@@ -14,12 +14,12 @@ export function useTypewriter(text: string) {
       setVisibleLength((length) => {
         const nextLength = Math.min(length + 1, text.length);
         const character = text[nextLength - 1];
-        if (nextLength % 2 === 0 && character?.trim()) playWritingTick();
+        if (nextLength % 3 === 0 && character?.trim()) playWritingTick(speaker);
         return nextLength;
       });
     }, LETTER_DELAY);
     return () => window.clearTimeout(timer);
-  }, [isComplete, text, visibleLength]);
+  }, [isComplete, speaker, text, visibleLength]);
 
   const complete = useCallback(() => setVisibleLength(text.length), [text]);
   return { visibleText: text.slice(0, visibleLength), isComplete, complete };

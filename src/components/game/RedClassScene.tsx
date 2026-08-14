@@ -13,7 +13,7 @@ type RedClassSceneProps = {
 
 export function RedClassScene({ scenes, sceneIndex, playerName, onNext }: RedClassSceneProps) {
   const scene = scenes[sceneIndex];
-  const { visibleText, isComplete, complete } = useTypewriter(scene.dialogue);
+  const { visibleText, isComplete, complete } = useTypewriter(scene.dialogue, scene.speaker);
   const advance = isComplete ? onNext : complete;
   useAdvanceKeys(advance);
   const erased = sceneIndex >= 4;

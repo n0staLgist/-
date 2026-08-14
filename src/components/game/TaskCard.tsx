@@ -18,7 +18,7 @@ export function TaskCard({ task, onComplete }: TaskCardProps) {
         {task === 'swing' && <SwingTask onReady={() => setReady(true)} />}
         {task === 'hopscotch' && <HopscotchTask onReady={() => setReady(true)} />}
         {task === 'window' && <WindowTask onReady={() => setReady(true)} />}
-        {ready && <button className="pencil-button" onClick={onComplete}>Остаться в воспоминании</button>}
+        {ready && <div className="task-success"><small>Задание выполнено</small><button className="pencil-button" onClick={onComplete}>Вспомнить, что здесь было</button></div>}
       </div>
     </section>
   );

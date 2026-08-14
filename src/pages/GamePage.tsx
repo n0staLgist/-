@@ -6,6 +6,7 @@ import { DialogueBox } from '../components/game/DialogueBox';
 import { FinaleScene } from '../components/game/FinaleScene';
 import { GameHeader } from '../components/game/GameHeader';
 import { NotebookScene } from '../components/game/NotebookScene';
+import { NotebookPortalTransition } from '../components/game/NotebookPortalTransition';
 import { PrologueScene } from '../components/game/PrologueScene';
 import { RedClassScene } from '../components/game/RedClassScene';
 import { ReturnToRoomScene } from '../components/game/ReturnToRoomScene';
@@ -17,17 +18,15 @@ import { YardScene } from '../components/game/YardScene';
 import { blueRoomScenes, redClassScenes } from '../game/chapters';
 import { setAmbienceEnabled, startAmbience, stopAmbience } from '../game/audio';
 import { endingLines, introLines, notebookLines, taskCopy, yardArrivalLines } from '../game/story';
+import { getChapterTitle, shouldShowGameHeader, type GameStage } from '../game/stage';
 import type { ControlsMode, DialogueLine, GameSetup, RoomItem, YardTask } from '../game/types';
 import '../styles/prologue.css';
 import '../styles/roomMemory.css';
 
-type Stage = 'start' | 'prologue' | 'prologueExit' | 'room' | 'notebook' | 'childhood' | 'meeting' | 'yardIntro' | 'yard' |
-  'yellowReveal' | 'red' | 'redReveal' | 'blue' | 'return' | 'finale';
-
 const PROLOGUE_EXIT_DURATION_MS = 5200;
 
 export function GamePage() {
-  const [stage, setStage] = useState<Stage>('start');
+  const [stage, setStage] = useState<GameStage>('start');
   const [dialogue, setDialogue] = useState<DialogueLine[]>([]);
   const [lineIndex, setLineIndex] = useState(0);
   const [packed, setPacked] = useState<RoomItem[]>([]);
@@ -45,8 +44,17 @@ export function GamePage() {
     const handoff = window.setTimeout(() => setStage('room'), PROLOGUE_EXIT_DURATION_MS);
     return () => window.clearTimeout(handoff);
   }, [stage]);
+  useEffect(() => {
+    if (stage !== 'yardTransition') return;
+    const handoff = window.setTimeout(() => {
+      setStage('yardIntro');
+      setDialogue([...yardArrivalLines, { speaker: '__next__', text: 'yard' }]);
+      setLineIndex(0);
+    }, 4000);
+    return () => window.clearTimeout(handoff);
+  }, [stage]);
 
-  const showDialogue = (lines: DialogueLine[], nextStage: Stage) => {
+  const showDialogue = (lines: DialogueLine[], nextStage: GameStage) => {
     setDialogue([...lines, { speaker: '__next__', text: nextStage }]);
     setLineIndex(0);
   };
@@ -54,7 +62,7 @@ export function GamePage() {
   const nextLine = () => {
     const marker = dialogue[dialogue.length - 1];
     if (lineIndex >= dialogue.length - 2 && marker) {
-      const nextStage = marker.text as Stage;
+      const nextStage = marker.text as GameStage;
       setStage(nextStage);
       if (nextStage === 'yardIntro') showDialogue(yardArrivalLines, 'yard');
       else setDialogue([]);
@@ -87,7 +95,7 @@ export function GamePage() {
     showDialogue(taskCopy[task].memory, 'yard');
   };
 
-  const advanceStory = (scenesLength: number, nextStage: Stage) => {
+  const advanceStory = (scenesLength: number, nextStage: GameStage) => {
     if (storyIndex < scenesLength - 1) setStoryIndex((value) => value + 1);
     else {
       setStoryIndex(0);
@@ -113,31 +121,20 @@ export function GamePage() {
     setAmbienceEnabled(nextValue);
   };
 
-  const chapter = stage === 'red' || stage === 'redReveal'
-    ? 'Глава II · Красный класс'
-    : stage === 'blue'
-      ? 'Глава III · Синяя комната'
-      : stage === 'return' || stage === 'finale'
-        ? 'Возвращение · сегодняшний вечер'
-      : stage === 'yardIntro' || stage === 'yard' || stage === 'yellowReveal'
-        ? 'Глава I · Жёлтый двор'
-        : stage === 'notebook' || stage === 'meeting'
-          ? 'Найденная тетрадь'
-          : 'Комната · сегодняшний вечер';
-
   return (
     <main className="game-shell">
-      {stage !== 'start' && stage !== 'prologue' && stage !== 'prologueExit' && stage !== 'childhood' && <GameHeader chapter={chapter} soundOn={soundOn} onSoundToggle={toggleSound} onRestart={restart} />}
+      {shouldShowGameHeader(stage) && <GameHeader chapter={getChapterTitle(stage)} soundOn={soundOn} onSoundToggle={toggleSound} onRestart={restart} />}
       {stage === 'start' && <StartScreen onStart={start} />}
       {stage === 'prologue' && <PrologueScene lineIndex={lineIndex} />}
       {stage === 'prologueExit' && <PrologueScene lineIndex={introLines.length} leaving />}
       {stage === 'room' && <RoomScene packed={packed} isInteractive={!activeMemory} showTouchControls={controlsMode === 'touch'} onInspectItem={inspectItem} onNotebook={() => setStage('notebook')} />}
       {stage === 'notebook' && <NotebookScene revealTitle onEnter={() => setStage('childhood')} />}
-      {stage === 'childhood' && <ChildhoodMemory playerName={playerName} onFinish={() => { setStage('meeting'); showDialogue(notebookLines, 'yardIntro'); }} />}
+      {stage === 'childhood' && <ChildhoodMemory playerName={playerName} onFinish={() => { setStage('meeting'); showDialogue(notebookLines, 'yardTransition'); }} />}
       {stage === 'meeting' && <NotebookScene onEnter={() => undefined} />}
+      {stage === 'yardTransition' && <NotebookPortalTransition />}
       {stage === 'yardIntro' && <YardScene completed={completed} isInteractive={false} showTouchControls={false} onTask={setActiveTask} onFinish={() => undefined} />}
       {stage === 'yard' && <YardScene completed={completed} isInteractive={!activeTask && dialogue.length === 0} showTouchControls={controlsMode === 'touch'} onTask={setActiveTask} onFinish={() => showDialogue(endingLines, 'yellowReveal')} />}
-      {stage === 'yellowReveal' && <ColorReveal color="yellow" title="Жёлтый" text="Цвет окон, мела и того вечера, когда тебя позвали домой." nextChapter="Открыть красный класс" onContinue={() => setStage('red')} />}
+      {stage === 'yellowReveal' && <ColorReveal color="yellow" title="Жёлтый" text="Цвет окон, мела и того вечера, когда тебя позвали домой." nextChapter="Следующая страница — красная" autoAdvanceMs={4300} onContinue={() => setStage('red')} />}
       {stage === 'red' && <RedClassScene scenes={redClassScenes} sceneIndex={storyIndex} playerName={playerName} onNext={() => advanceStory(redClassScenes.length, 'redReveal')} />}
       {stage === 'redReveal' && <ColorReveal color="red" title="Красный" text="Не цвет стыда и исправлений. Цвет смелости оставить важное видимым." nextChapter="Войти в синюю комнату" onContinue={() => setStage('blue')} />}
       {stage === 'blue' && <BlueRoomScene scenes={blueRoomScenes} sceneIndex={storyIndex} playerName={playerName} onNext={() => advanceStory(blueRoomScenes.length, 'return')} />}

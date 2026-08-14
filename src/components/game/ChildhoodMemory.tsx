@@ -26,7 +26,7 @@ export function ChildhoodMemory({ onFinish, playerName }: ChildhoodMemoryProps) 
   const [lineIndex, setLineIndex] = useState(0);
   const isClosing = lineIndex === promiseLines.length - 1;
   const line = promiseLines[lineIndex];
-  const { visibleText, isComplete, complete } = useTypewriter(line.text);
+  const { visibleText, isComplete, complete } = useTypewriter(line.text, line.speaker);
   const advance = () => {
     if (!isComplete) return complete();
     if (isClosing) onFinish();

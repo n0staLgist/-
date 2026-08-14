@@ -17,9 +17,11 @@ export function StartScreen({ onStart }: StartScreenProps) {
       <span className="opening-screen__margin" aria-hidden="true" />
       <span className="opening-screen__pencil-mark opening-screen__pencil-mark--top" aria-hidden="true" />
       <span className="opening-screen__pencil-mark opening-screen__pencil-mark--bottom" aria-hidden="true" />
+      <div className="opening-screen__sketch" aria-hidden="true"><i /><i /><i /></div>
       <div className="opening-screen__copy">
-        <small>интерактивная история</small><h1>До завтра</h1><p>Одна старая тетрадь. Одно обещание.</p>
-        <div className="opening-meta"><span>15–25 минут</span><span>Сюжетная 2D-игра</span><span>Лучше пройти за один вечер</span></div>
+        <small>одна старая тетрадь · одно обещание</small><h1>До завтра</h1>
+        <p>Некоторые обещания помнят дольше, чем люди.</p>
+        <blockquote>«Сегодня уже завтра?»</blockquote>
         <div className="opening-setup">
           <label>Как тебя называть?<input value={playerName} onChange={(event) => setPlayerName(event.target.value)} maxLength={18} placeholder="Ты" /></label>
           <fieldset><legend>На чём играешь?</legend>
@@ -27,7 +29,7 @@ export function StartScreen({ onStart }: StartScreenProps) {
             <button className={controlsMode === 'touch' ? 'is-selected' : ''} onClick={() => setControlsMode('touch')} type="button">Телефон</button>
           </fieldset>
         </div>
-        <div className="opening-screen__actions"><button onClick={start}>Начать <span aria-hidden="true">→</span></button><button onClick={() => setShowControls(true)}>Управление</button></div>
+        <div className="opening-screen__actions"><button className="opening-screen__start" onClick={start}>Открыть тетрадь <span aria-hidden="true">→</span></button><button onClick={() => setShowControls(true)}>Управление</button></div>
       </div>
       <small className="opening-screen__credit">by nOstaLgist aka ErKeK aka FeArtNeasLy</small>
       {showControls && <div className="controls-modal" role="dialog" aria-modal="true" aria-label="Полное управление">

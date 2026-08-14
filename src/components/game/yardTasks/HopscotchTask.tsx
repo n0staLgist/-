@@ -1,22 +1,32 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type HopscotchTaskProps = { onReady: () => void };
-
 const path = [1, 3, 2, 4, 6, 5];
 
 export function HopscotchTask({ onReady }: HopscotchTaskProps) {
+  const [previewStep, setPreviewStep] = useState(0);
   const [isPreview, setIsPreview] = useState(true);
   const [step, setStep] = useState(0);
-  const [mistake, setMistake] = useState(false);
+  const [mistake, setMistake] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!isPreview) return;
+    if (previewStep >= path.length) {
+      const hide = window.setTimeout(() => setIsPreview(false), 450);
+      return () => window.clearTimeout(hide);
+    }
+    const timer = window.setTimeout(() => setPreviewStep((current) => current + 1), 430);
+    return () => window.clearTimeout(timer);
+  }, [isPreview, previewStep]);
 
   const choose = (cell: number) => {
     if (isPreview) return;
     if (cell !== path[step]) {
+      setMistake(cell);
       setStep(0);
-      setMistake(true);
+      window.setTimeout(() => setMistake(null), 500);
       return;
     }
-    setMistake(false);
     const next = step + 1;
     setStep(next);
     if (next === path.length) onReady();
@@ -24,15 +34,14 @@ export function HopscotchTask({ onReady }: HopscotchTaskProps) {
 
   return (
     <>
-      <p className="task-guidance">{isPreview ? 'Запомни порядок клеток.' : mistake ? 'Не тот шаг. Начни путь заново.' : 'Повтори путь по памяти.'}</p>
-      <div className={`hopscotch-board ${isPreview ? 'is-preview' : ''}`}>
-        {[1, 2, 3, 4, 5, 6].map((cell) => (
-          <button key={cell} className={step > path.indexOf(cell) ? 'is-filled' : ''} onClick={() => choose(cell)}>
-            {isPreview ? path.indexOf(cell) + 1 : cell}
-          </button>
-        ))}
+      <p className="task-guidance">{isPreview ? 'Следи за прыжками. Подсказка исчезнет сама.' : mistake ? 'Не та клетка. Начни дорожку сначала.' : 'Теперь повтори путь.'}</p>
+      <div className="hopscotch-board">
+        {[1, 2, 3, 4, 5, 6].map((cell) => {
+          const pathIndex = path.indexOf(cell);
+          const isLit = isPreview ? pathIndex === previewStep - 1 : pathIndex < step;
+          return <button key={cell} className={`${isLit ? 'is-filled' : ''} ${mistake === cell ? 'is-mistake' : ''}`} onClick={() => choose(cell)} disabled={isPreview}>{cell}</button>;
+        })}
       </div>
-      {isPreview && <button className="ghost-paper" onClick={() => setIsPreview(false)}>Запомнил. Убрать подсказку</button>}
       <div className="task-progress"><i style={{ width: `${step / path.length * 100}%` }} /></div>
     </>
   );
