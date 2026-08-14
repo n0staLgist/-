@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import shtrikhYard from '../../assets/game/shtrikh-yard-present-v1.png';
 import { taskCopy } from '../../game/story';
 import type { YardTask } from '../../game/types';
 import { isYardPositionWalkable } from '../../game/yardGeometry';
@@ -24,12 +25,21 @@ const distance = (a: RoomPosition, b: RoomPosition) => Math.hypot(a.x - b.x, a.y
 const TASK_REACH = 6.5;
 const DETAIL_REACH = 5.5;
 const ENDING_REACH = 7;
+const SHTRIKH_POSITION = { x: 69, y: 34 };
+const shtrikhObservations = [
+  'Штрих смотрит на пустой двор так, будто ждёт, что ты узнаешь его первым.',
+  '— Помнишь? — спрашивает Штрих быстрее, чем ты успеваешь ответить.',
+  'Штрих поправляет шарф целой рукой. Недорисованная остаётся неподвижной.',
+];
 
 export function YardScene({ completed, isInteractive, showTouchControls, onTask, onFinish }: YardSceneProps) {
   const [examination, setExamination] = useState<string | null>(null);
   const allDone = completed.length === 3;
   const interact = useCallback((position: RoomPosition) => {
-    if (allDone && distance(position, { x: 69, y: 34 }) < ENDING_REACH) return onFinish();
+    if (distance(position, SHTRIKH_POSITION) < ENDING_REACH) {
+      if (allDone) return onFinish();
+      return setExamination(shtrikhObservations[completed.length]);
+    }
     const task = (Object.keys(taskPositions) as YardTask[])
       .find((item) => !completed.includes(item) && distance(position, taskPositions[item]) < TASK_REACH);
     if (task) return onTask(task);
@@ -42,17 +52,17 @@ export function YardScene({ completed, isInteractive, showTouchControls, onTask,
   });
   const nearbyTask = (Object.keys(taskPositions) as YardTask[])
     .find((task) => !completed.includes(task) && distance(movement.position, taskPositions[task]) < TASK_REACH);
-  const nearEnding = allDone && distance(movement.position, { x: 69, y: 34 }) < ENDING_REACH;
+  const nearShtrikh = distance(movement.position, SHTRIKH_POSITION) < ENDING_REACH;
   const nearDetail = details.some((entry) => distance(movement.position, entry.position) < DETAIL_REACH);
 
   return (
     <section className={`scene yard-scene progress-${completed.length}`} aria-label="Жёлтый двор">
       <div className="scene__shade" />
       <div className="scene-instruction"><strong>{allDone ? 'Вернись к Штриху у подъезда' : 'Найди три потерянные детали'}</strong></div>
-      {allDone && <div className="yard-streak" aria-label="Штрих ждёт у подъезда"><i /><b /><span /></div>}
+      <img className="yard-shtrikh" src={shtrikhYard} alt="Штрих ждёт у подъезда: две слезы, длинный шарф и недорисованная рука" />
       <PlayerAvatar position={movement.position} facing={movement.facing} isMoving={movement.isMoving} />
-      <p className={`interaction-hint ${(nearbyTask || nearEnding || nearDetail) ? 'is-ready' : ''}`}>
-        {nearbyTask ? `E · ${taskCopy[nearbyTask].title}` : nearEnding ? 'E · Подойти к Штриху' : nearDetail ? 'E · Осмотреть' : ''}
+      <p className={`interaction-hint ${(nearbyTask || nearShtrikh || nearDetail) ? 'is-ready' : ''}`}>
+        {nearbyTask ? `E · ${taskCopy[nearbyTask].title}` : nearShtrikh ? (allDone ? 'E · Подойти к Штриху' : 'E · Поговорить со Штрихом') : nearDetail ? 'E · Осмотреть' : ''}
       </p>
       {showTouchControls && <MovementControls onMoveStart={movement.startMoving} onMoveEnd={movement.stopMoving} onInteract={() => interact(movement.position)} />}
       <div className="color-progress" aria-label={`Возвращено цветов: ${completed.length} из 3`}>

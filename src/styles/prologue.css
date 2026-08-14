@@ -36,8 +36,8 @@
 .prologue-evening { position: absolute; inset: 0; background: linear-gradient(100deg, #29466726, transparent 42%), linear-gradient(transparent 45%, #170e0875); pointer-events: none; }
 .aya-side { --aya-direction: 1; position: absolute; z-index: 5; left: 45%; top: 36%; width: 15%; aspect-ratio: 1 / 1.6; overflow: hidden; transform: scaleX(var(--aya-direction)); transform-origin: center bottom; filter: saturate(.78) contrast(.94) sepia(.1) drop-shadow(4px 6px 3px #39291f66); }
 .aya-side span { display: block; width: 100%; height: 100%; background: var(--aya-walk-sprite) 33.333% center / 400% 100% no-repeat; }
-.is-side-entering .aya-side { animation: aya-side-arrives 3s cubic-bezier(.35, .05, .2, 1) both; }
-.is-side-entering .aya-side span { animation: aya-side-steps .6s steps(1) 5; }
+.is-side-entering .aya-side { animation: aya-side-arrives 3.2s linear both; }
+.is-side-entering .aya-side span { animation: aya-side-steps .64s steps(1) 5; }
 .is-leaving .aya-side { --aya-direction: -1; animation: aya-side-leaves 2.1s 1.15s ease-in both; }
 .is-leaving .aya-side span { animation: aya-side-steps .55s 1.15s steps(1) 4; }
 .cinema-bar { position: absolute; z-index: 55; left: 0; right: 0; height: 5.5vh; background: #0e0d0b; pointer-events: none; }
@@ -45,7 +45,7 @@
 @keyframes side-camera-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes side-camera-out { 0%, 62% { opacity: 1; } 100% { opacity: 0; } }
 @keyframes top-camera-in { 0%, 65% { opacity: 0; transform: scale(1.08); } 100% { opacity: 1; transform: scale(1); } }
-@keyframes aya-side-arrives { 0% { opacity: 0; left: 78%; clip-path: inset(0 0 0 62%); transform: scaleX(1); } 10% { opacity: 1; } 24% { clip-path: inset(0); } 100% { opacity: 1; left: 45%; clip-path: inset(0); transform: scaleX(1); } }
+@keyframes aya-side-arrives { 0% { opacity: 0; left: 78%; clip-path: inset(0 0 0 62%); transform: scaleX(1); } 5% { opacity: 1; } 18% { clip-path: inset(0); } 100% { opacity: 1; left: 45%; clip-path: inset(0); transform: scaleX(1); } }
 @keyframes aya-side-leaves { 0% { left: 45%; opacity: 1; clip-path: inset(0); transform: scaleX(-1); } 78% { left: 75%; opacity: 1; clip-path: inset(0); transform: scaleX(-1) scale(.9); } 92% { left: 78%; opacity: 1; clip-path: inset(0 42% 0 0); transform: scaleX(-1) scale(.86); } 100% { left: 78%; opacity: 0; clip-path: inset(0 70% 0 0); transform: scaleX(-1) scale(.84); } }
 @keyframes aya-side-steps { 0%, 24.99% { background-position: 0 center; } 25%, 49.99% { background-position: 33.333% center; } 50%, 74.99% { background-position: 66.667% center; } 75%, 100% { background-position: 100% center; } }
 @media (max-width: 700px) { .opening-screen::before { background-position: 120% 94%; background-size: 82vw; }.opening-screen__copy { align-self: start; width: 88vw; padding: 8vh 18px 90px; }.opening-screen__copy h1 { margin-bottom: 12px; font-size: 68px; }.opening-screen__copy p { max-width: 250px; margin-bottom: 18px; }.opening-setup { margin-bottom: 16px; }.opening-screen__actions { gap: 18px; }.aya-side { width: 24%; } }
