@@ -24,6 +24,8 @@ import '../styles/roomMemory.css';
 type Stage = 'start' | 'prologue' | 'prologueExit' | 'room' | 'notebook' | 'childhood' | 'meeting' | 'yard' |
   'yellowReveal' | 'red' | 'redReveal' | 'blue' | 'return' | 'finale';
 
+const PROLOGUE_EXIT_DURATION_MS = 5200;
+
 export function GamePage() {
   const [stage, setStage] = useState<Stage>('start');
   const [dialogue, setDialogue] = useState<DialogueLine[]>([]);
@@ -38,7 +40,7 @@ export function GamePage() {
   useEffect(() => () => stopAmbience(), []);
   useEffect(() => {
     if (stage !== 'prologueExit') return;
-    const handoff = window.setTimeout(() => setStage('room'), 3200);
+    const handoff = window.setTimeout(() => setStage('room'), PROLOGUE_EXIT_DURATION_MS);
     return () => window.clearTimeout(handoff);
   }, [stage]);
 

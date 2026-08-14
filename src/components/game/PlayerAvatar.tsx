@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import heroIdleSprite from '../../assets/game/hero-idle-four-direction-v1.png';
 import heroWalkSprite from '../../assets/game/hero-four-direction-v4.png';
 import type { FacingDirection, RoomPosition } from '../../game/useRoomMovement';
 import '../../styles/playerAvatar.css';
@@ -10,6 +11,7 @@ type PlayerAvatarProps = {
 };
 
 type PlayerStyle = CSSProperties & {
+  '--idle-sprite': string;
   '--player-scale': number;
   '--walk-sprite': string;
 };
@@ -19,6 +21,7 @@ export function PlayerAvatar({ position, facing, isMoving }: PlayerAvatarProps) 
   const style: PlayerStyle = {
     left: `${position.x}%`,
     top: `${position.y}%`,
+    '--idle-sprite': `url(${heroIdleSprite})`,
     '--player-scale': depthScale,
     '--walk-sprite': `url(${heroWalkSprite})`,
   };

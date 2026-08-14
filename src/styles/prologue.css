@@ -21,15 +21,15 @@
 .prologue-camera--seated { background-image: url('../assets/game/moving-room-side-seated-v4.png'); }
 .prologue-camera--top { background-image: url('../assets/game/moving-room-topdown-simple-v6.png'); }
 .is-side-view .prologue-camera--seated { opacity: 1; animation: side-camera-in .75s ease-out both; }
-.is-leaving .prologue-camera--seated { animation: side-camera-out 3.2s ease-in both; }
-.is-leaving .prologue-camera--top { animation: top-camera-in 3.2s ease-in both; }
+.is-leaving .prologue-camera--seated { animation: side-camera-out 4.4s ease-in both; }
+.is-leaving .prologue-camera--top { animation: top-camera-in 4.4s ease-in both; }
 .prologue-evening { position: absolute; inset: 0; background: linear-gradient(100deg, #29466726, transparent 42%), linear-gradient(transparent 45%, #170e0875); pointer-events: none; }
 .aya-side { --aya-direction: 1; position: absolute; z-index: 5; left: 45%; top: 36%; width: 15%; aspect-ratio: 1 / 1.6; overflow: hidden; transform: scaleX(var(--aya-direction)); transform-origin: center bottom; filter: saturate(.78) contrast(.94) sepia(.1) drop-shadow(4px 6px 3px #39291f66); }
 .aya-side span { display: block; width: 100%; height: 100%; background: var(--aya-walk-sprite) 33.333% center / 400% 100% no-repeat; }
 .is-side-entering .aya-side { animation: aya-side-arrives 2.2s ease-out both; }
 .is-side-entering .aya-side span { animation: aya-side-steps .55s steps(1) 4; }
-.is-leaving .aya-side { --aya-direction: -1; animation: aya-side-leaves 2.1s ease-in both; }
-.is-leaving .aya-side span { animation: aya-side-steps .55s steps(1) 4; }
+.is-leaving .aya-side { --aya-direction: -1; animation: aya-side-leaves 2.1s 1.15s ease-in both; }
+.is-leaving .aya-side span { animation: aya-side-steps .55s 1.15s steps(1) 4; }
 .cinema-bar { position: absolute; z-index: 55; left: 0; right: 0; height: 5.5vh; background: #0e0d0b; pointer-events: none; }
 .cinema-bar--top { top: 0; }.cinema-bar--bottom { bottom: 0; }
 @keyframes side-camera-in { from { opacity: 0; } to { opacity: 1; } }

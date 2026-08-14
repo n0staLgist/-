@@ -1,10 +1,10 @@
-.player-avatar { --facing-row: 0%; position: absolute; z-index: 5; width: clamp(225px, 20vw, 290px); aspect-ratio: 1; pointer-events: none; transform: translate(-50%, -84%) scale(var(--player-scale)); transform-origin: 50% 100%; filter: saturate(.72) sepia(.12) contrast(.92) brightness(.88) drop-shadow(3px 5px 2px #39291f55); will-change: left, top, transform; }
-.player-avatar[data-facing='up'] { --facing-row: 33.333%; }
-.player-avatar[data-facing='left'] { --facing-row: 66.667%; }
-.player-avatar[data-facing='right'] { --facing-row: 100%; }
-.player-avatar__sprite { width: 100%; height: 100%; display: block; background: var(--walk-sprite) 0 var(--facing-row) / 400% 400% no-repeat; transform-origin: 50% 84%; will-change: background-position, transform; }
-.player-avatar[data-facing='left'] .player-avatar__sprite, .player-avatar[data-facing='right'] .player-avatar__sprite { clip-path: inset(7% 0 0); }
-.player-avatar.is-walking .player-avatar__sprite { animation: avatar-walk .5s steps(1) infinite; }
+.player-avatar { --facing-row: 0%; --idle-column: 0%; position: absolute; z-index: 5; width: clamp(225px, 20vw, 290px); aspect-ratio: 1; pointer-events: none; transform: translate(-50%, -84%) scale(var(--player-scale)); transform-origin: 50% 100%; filter: saturate(.72) sepia(.12) contrast(.92) brightness(.88) drop-shadow(3px 5px 2px #39291f55); will-change: left, top, transform; }
+.player-avatar[data-facing='up'] { --facing-row: 33.333%; --idle-column: 33.333%; }
+.player-avatar[data-facing='left'] { --facing-row: 66.667%; --idle-column: 66.667%; }
+.player-avatar[data-facing='right'] { --facing-row: 100%; --idle-column: 100%; }
+.player-avatar__sprite { width: 100%; height: 100%; display: block; background: var(--idle-sprite) var(--idle-column) center / 400% 100% no-repeat; transform-origin: 50% 84%; will-change: background-position, transform; }
+.player-avatar.is-walking .player-avatar__sprite { background-image: var(--walk-sprite); background-size: 400% 400%; background-position: 0 var(--facing-row); animation: avatar-walk .5s steps(1) infinite; }
+.player-avatar.is-walking[data-facing='up'] .player-avatar__sprite, .player-avatar.is-walking[data-facing='left'] .player-avatar__sprite, .player-avatar.is-walking[data-facing='right'] .player-avatar__sprite { clip-path: inset(7% 0 0); }
 @keyframes avatar-walk {
   0%, 24.99% { background-position: 0 var(--facing-row); transform: translate(-1%, 0) rotate(-.7deg); }
   25%, 49.99% { background-position: 33.333% var(--facing-row); transform: translate(0, -3%) rotate(0); }
