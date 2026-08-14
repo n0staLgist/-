@@ -62,11 +62,11 @@ export function RoomScene({ packed, isInteractive = true, onPack, onNotebook }: 
 
   return (
     <section className="scene room-scene" aria-label="Комната перед переездом">
+      <div className="scene-instruction">
+        <strong>{allPacked ? 'Закончи с коробкой и осмотри стол' : 'Собери три вещи в коробку'}</strong>
+      </div>
       <div className="room-map">
         <div className="scene__shade" />
-        <div className="scene-instruction">
-          <strong>{allPacked ? 'Закончи с коробкой и осмотри стол' : 'Собери три вещи в коробку'}</strong>
-        </div>
         {(Object.keys(roomItems) as RoomItem[]).map((item) => (
           <button className={`hotspot hotspot--${item} ${packed.includes(item) ? 'is-done' : ''} ${nearbyItem === item ? 'is-near' : ''}`} key={item} style={{ left: `${itemPositions[item].x}%`, top: `${itemPositions[item].y}%` }} onClick={() => onPack(item)} disabled={packed.includes(item) || !isInteractive || nearbyItem !== item}>
             <span>{roomItems[item].label}</span>

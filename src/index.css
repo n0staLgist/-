@@ -17,12 +17,12 @@ button:focus-visible { outline: 3px solid #f4bd3b; outline-offset: 3px; }
 .chapter-end h1 { margin: 6px 0 10px; font: 700 clamp(72px, 11vw, 138px)/.85 Caveat, cursive; color: #343028; }
 .pencil-button, .finish-button { border: 0; padding: 13px 24px; color: #fff8e8; background: #a64a34; border-radius: 2px 8px 3px 7px; box-shadow: 3px 4px 0 #633024; font-weight: 700; cursor: pointer; transform: rotate(-.5deg); }
 .scene { position: absolute; inset: 0; min-height: 100svh; background-position: center; background-size: cover; animation: fade-in 1s ease both; }
-.room-scene { display: grid; place-items: center; background: #17130e; }
-.room-map { position: relative; width: 100vw; min-height: 100svh; overflow: hidden; background: url('./assets/game/moving-room-topdown-simple-v6.png') center/100% 100% no-repeat; }
+.room-scene { display: grid; place-items: center; overflow: hidden; background: #17130e; }
+.room-map { position: absolute; top: 0; left: 50%; width: max(100vw, 177.778svh); min-height: 100svh; overflow: hidden; background: url('./assets/game/moving-room-topdown-simple-v6.png') center/100% 100% no-repeat; transform: translateX(-50%) translateX(-4svh); }
 .yard-scene { width: 100vw; min-height: 100svh; background-image: url('./assets/game/yellow-yard-topdown-v3.png'); background-size: 100% 100%; filter: saturate(.36); transition: filter 1.3s ease; }
 .yard-scene.progress-1 { filter: saturate(.7); }.yard-scene.progress-2 { filter: saturate(.86); }.yard-scene.progress-3 { filter: saturate(1.05); }
 .scene__shade { position: absolute; inset: 0; background: linear-gradient(#1410084d, transparent 35%, #16100652); pointer-events: none; }
-.scene-instruction { position: absolute; z-index: 2; top: 62px; left: 24px; max-width: 260px; padding: 10px 14px; color: #fff9e8; text-align: left; text-shadow: 0 2px 8px #000; background: #17130e9e; border-left: 2px solid #f2e5c8; }
+.scene-instruction { position: fixed; z-index: 7; top: 62px; left: 24px; max-width: 260px; padding: 10px 14px; color: #fff9e8; text-align: left; text-shadow: 0 2px 8px #000; background: #17130e9e; border-left: 2px solid #f2e5c8; }
 .scene-instruction span { display: block; margin-bottom: 4px; font-size: 14px; text-transform: uppercase; }
 .scene-instruction strong { font: 600 21px Caveat, cursive; }
 .hotspot, .yard-task { position: absolute; z-index: 3; border: 1px solid #fff9d3aa; color: #fff; background: #2f291dbd; border-radius: 50%; cursor: pointer; animation: soft-pulse 2s infinite; }
@@ -138,7 +138,7 @@ button:focus-visible { outline: 3px solid #f4bd3b; outline-offset: 3px; }
   .game-header { padding: 12px; }.scene-instruction { top: 8%; width: 90%; }.hotspot { width: 54px; height: 54px; }.yard-task { min-width: 48px; padding: 7px; }.yard-task > span:last-child { display: none; }.yard-task--swing { left: 8%; }.yard-task--hopscotch { left: 49%; bottom: 23%; }.yard-task--window { right: 6%; }.dialogue { bottom: 10px; min-height: 160px; padding: 22px 20px 58px; }.dialogue__key-hint { display: none; }.notebook-page { height: 64vh; }.task-card { padding: 26px 18px; }.story-card { min-height: 0; padding: 44px 25px 28px 40px; }.story-card::before { left: 25px; }.story-card__scene { min-height: 0; }.story-card blockquote { margin: 20px 0; font-size: 21px; }.finale-paper { padding: 40px 24px; }.classroom-board { width: 84vw; }.faceless-students { top: 25%; }.classroom-desks { top: 36%; }.desk-notebook { top: 39%; left: 9%; transform: scale(.75) rotate(8deg); }.classroom-copy { left: 4%; right: 4%; bottom: 3%; width: auto; padding: 22px; }.classroom-copy > p { font-size: 14px; }.classroom-copy blockquote { margin: 12px 0; }.empty-window { top: 8%; left: 5%; width: 44vw; height: 23%; }.scribbled-door { top: 8%; right: 4%; width: 115px; height: 230px; }.tally-wall { display: none; }.room-streak { top: 39%; left: 27%; transform: translate(-50%, -50%) scale(.65); }.blue-room__copy { left: 4%; right: 4%; bottom: 3%; width: auto; padding: 22px; }.blue-room__copy > p { font-size: 14px; }.blue-room__copy blockquote { margin: 12px 0; }.moving-boxes i:last-child { display: none; }.movement-controls { display: grid; }.interaction-hint { bottom: 8px; }
 }
 @media (max-width: 700px) {
-  .room-map, .yard-scene { width: 100vw; min-height: 100svh; aspect-ratio: auto; background-size: 100% 100%; }
+  .room-map, .yard-scene { left: 0; width: 100vw; min-height: 100svh; aspect-ratio: auto; background-size: 100% 100%; transform: none; }
   .speaker-portrait { display: none; }
   .dialogue:has(.speaker-portrait) { padding-left: 20px; }
   .examine-text { bottom: 76px; grid-template-columns: 18px 1fr; }.examine-text button { grid-column: 2; justify-self: end; }
