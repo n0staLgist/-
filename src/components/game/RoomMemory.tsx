@@ -4,7 +4,7 @@ import { useAdvanceKeys } from '../../game/useAdvanceKeys';
 
 type RoomMemoryProps = {
   item: RoomItem;
-  onClose: () => void;
+  onCollect: () => void;
 };
 
 const memoryDetails: Record<RoomItem, string> = {
@@ -13,8 +13,8 @@ const memoryDetails: Record<RoomItem, string> = {
   diary: 'На последней странице — несколько начатых карандашных фигур. Ни одна не закончена.',
 };
 
-export function RoomMemory({ item, onClose }: RoomMemoryProps) {
-  useAdvanceKeys(onClose);
+export function RoomMemory({ item, onCollect }: RoomMemoryProps) {
+  useAdvanceKeys(onCollect);
 
   return (
     <section className={`room-memory room-memory--${item}`} aria-label={`Воспоминание: ${roomItems[item].label}`}>
@@ -27,7 +27,7 @@ export function RoomMemory({ item, onClose }: RoomMemoryProps) {
         <h2>{roomItems[item].label}</h2>
         <blockquote>{roomItems[item].memory}</blockquote>
         <p>{memoryDetails[item]}</p>
-        <button onClick={onClose}>Положить в коробку <span>→</span></button>
+        <button onClick={onCollect}>Положить в коробку <span>→</span></button>
         <small>Enter / Пробел</small>
       </article>
     </section>

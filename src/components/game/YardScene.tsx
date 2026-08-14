@@ -7,7 +7,7 @@ import { ExamineText } from './ExamineText';
 import { MovementControls } from './MovementControls';
 import { PlayerAvatar } from './PlayerAvatar';
 
-type YardSceneProps = { completed: YardTask[]; isInteractive: boolean; onTask: (task: YardTask) => void; onFinish: () => void };
+type YardSceneProps = { completed: YardTask[]; isInteractive: boolean; showTouchControls: boolean; onTask: (task: YardTask) => void; onFinish: () => void };
 
 const taskPositions: Record<YardTask, RoomPosition> = {
   swing: { x: 30, y: 62 }, hopscotch: { x: 59, y: 66 }, window: { x: 50, y: 28 },
@@ -25,7 +25,7 @@ const TASK_REACH = 6.5;
 const DETAIL_REACH = 5.5;
 const ENDING_REACH = 7;
 
-export function YardScene({ completed, isInteractive, onTask, onFinish }: YardSceneProps) {
+export function YardScene({ completed, isInteractive, showTouchControls, onTask, onFinish }: YardSceneProps) {
   const [examination, setExamination] = useState<string | null>(null);
   const allDone = completed.length === 3;
   const interact = useCallback((position: RoomPosition) => {
@@ -54,7 +54,7 @@ export function YardScene({ completed, isInteractive, onTask, onFinish }: YardSc
       <p className={`interaction-hint ${(nearbyTask || nearEnding || nearDetail) ? 'is-ready' : ''}`}>
         {nearbyTask ? `E · ${taskCopy[nearbyTask].title}` : nearEnding ? 'E · Подойти к Штриху' : nearDetail ? 'E · Осмотреть' : ''}
       </p>
-      <MovementControls onMoveStart={movement.startMoving} onMoveEnd={movement.stopMoving} onInteract={() => interact(movement.position)} />
+      {showTouchControls && <MovementControls onMoveStart={movement.startMoving} onMoveEnd={movement.stopMoving} onInteract={() => interact(movement.position)} />}
       <div className="color-progress" aria-label={`Возвращено цветов: ${completed.length} из 3`}>
         {[0, 1, 2].map((part) => <i className={part < completed.length ? 'filled' : ''} key={part} />)}
       </div>

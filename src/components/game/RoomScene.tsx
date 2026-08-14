@@ -5,11 +5,14 @@ import { useRoomMovement, type RoomPosition } from '../../game/useRoomMovement';
 import { MovementControls } from './MovementControls';
 import { PlayerAvatar } from './PlayerAvatar';
 import { ExamineText } from './ExamineText';
+import { RoomChecklist } from './RoomChecklist';
+import '../../styles/roomHud.css';
 
 type RoomSceneProps = {
   packed: RoomItem[];
   isInteractive?: boolean;
-  onPack: (item: RoomItem) => void;
+  showTouchControls: boolean;
+  onInspectItem: (item: RoomItem) => void;
   onNotebook: () => void;
 };
 
@@ -33,7 +36,7 @@ const ITEM_REACH = 5;
 const NOTEBOOK_REACH = 7;
 const DETAIL_REACH = 5.5;
 
-export function RoomScene({ packed, isInteractive = true, onPack, onNotebook }: RoomSceneProps) {
+export function RoomScene({ packed, isInteractive = true, showTouchControls, onInspectItem, onNotebook }: RoomSceneProps) {
   const [examination, setExamination] = useState<string | null>(null);
   const allPacked = packed.length === 3;
   const interact = useCallback((position: RoomPosition) => {
@@ -41,7 +44,7 @@ export function RoomScene({ packed, isInteractive = true, onPack, onNotebook }: 
     const nearest = (Object.keys(itemPositions) as RoomItem[])
       .filter((item) => !packed.includes(item))
       .sort((a, b) => distance(position, itemPositions[a]) - distance(position, itemPositions[b]))[0];
-    if (nearest && distance(position, itemPositions[nearest]) < ITEM_REACH) return onPack(nearest);
+    if (nearest && distance(position, itemPositions[nearest]) < ITEM_REACH) return onInspectItem(nearest);
     if (!allPacked && distance(position, notebookPosition) < NOTEBOOK_REACH) {
       return setExamination('Старая тетрадь лежит на столе. Сначала стоит закончить с коробкой.');
     }
@@ -49,7 +52,7 @@ export function RoomScene({ packed, isInteractive = true, onPack, onNotebook }: 
       .sort((first, second) => distance(position, first.position) - distance(position, second.position))
       .find((entry) => distance(position, entry.position) < DETAIL_REACH);
     if (detail) setExamination(detail.text);
-  }, [allPacked, onNotebook, onPack, packed]);
+  }, [allPacked, onInspectItem, onNotebook, packed]);
   const canMove = isInteractive && !examination;
   const { position, isMoving, facing, startMoving, stopMoving } = useRoomMovement(canMove, interact, {
     start: { x: 88, y: 58 },
@@ -62,13 +65,11 @@ export function RoomScene({ packed, isInteractive = true, onPack, onNotebook }: 
 
   return (
     <section className="scene room-scene" aria-label="Комната перед переездом">
-      <div className="scene-instruction">
-        <strong>{allPacked ? 'Закончи с коробкой и осмотри стол' : 'Собери три вещи в коробку'}</strong>
-      </div>
+      <RoomChecklist packed={packed} />
       <div className="room-map">
         <div className="scene__shade" />
         {(Object.keys(roomItems) as RoomItem[]).map((item) => (
-          <button className={`hotspot hotspot--${item} ${packed.includes(item) ? 'is-done' : ''} ${nearbyItem === item ? 'is-near' : ''}`} key={item} style={{ left: `${itemPositions[item].x}%`, top: `${itemPositions[item].y}%` }} onClick={() => onPack(item)} disabled={packed.includes(item) || !isInteractive || nearbyItem !== item}>
+          <button className={`hotspot hotspot--${item} ${packed.includes(item) ? 'is-done' : ''} ${nearbyItem === item ? 'is-near' : ''}`} key={item} style={{ left: `${itemPositions[item].x}%`, top: `${itemPositions[item].y}%` }} onClick={() => onInspectItem(item)} disabled={packed.includes(item) || !isInteractive || nearbyItem !== item}>
             <span>{roomItems[item].label}</span>
           </button>
         ))}
@@ -76,7 +77,7 @@ export function RoomScene({ packed, isInteractive = true, onPack, onNotebook }: 
         {isInteractive && <>
           <PlayerAvatar position={position} facing={facing} isMoving={isMoving} />
           <p className={`interaction-hint ${(nearbyItem || nearNotebook || nearDetail) ? 'is-ready' : ''}`}>{nearbyItem ? `E · Взять: ${roomItems[nearbyItem].label}` : nearNotebook ? (allPacked ? 'E · Взять тетрадь' : 'E · Осмотреть тетрадь') : nearDetail ? 'E · Осмотреть' : ''}</p>
-          <MovementControls onMoveStart={startMoving} onMoveEnd={stopMoving} onInteract={() => interact(position)} />
+          {showTouchControls && <MovementControls onMoveStart={startMoving} onMoveEnd={stopMoving} onInteract={() => interact(position)} />}
         </>}
         {examination && <ExamineText text={examination} onClose={() => setExamination(null)} />}
       </div>

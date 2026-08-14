@@ -1,13 +1,13 @@
-type FinaleSceneProps = { onRestart: () => void };
+type FinaleSceneProps = { playerName: string; onRestart: () => void };
 
-export function FinaleScene({ onRestart }: FinaleSceneProps) {
+export function FinaleScene({ playerName, onRestart }: FinaleSceneProps) {
   return (
     <section className="finale-scene">
       <article className="finale-paper">
         <span className="eyebrow">эпилог · сегодня</span>
         <h1>Не завтра</h1>
         <p>Ты открываешь дверь. Ая всё ещё сидит в коридоре, прижимая рисунок к коленям.</p>
-        <div className="finale-dialogue"><b>Ты</b> Ая? Уже не занят. Показывай сейчас.</div>
+        <div className="finale-dialogue"><b>{playerName}</b> Ая? Уже не занят. Показывай сейчас.</div>
         <div className="finale-dialogue"><b>Ая</b> Правда?</div>
         <p>На её листе — одинокий маленький персонаж. Вы вместе дорисовываете ему друга и вкладываете рисунок в старую тетрадь.</p>
         <div className="finale-dialogue"><b>Штрих</b> Добро пожаловать.</div>

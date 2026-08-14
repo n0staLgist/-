@@ -17,7 +17,7 @@ import { YardScene } from '../components/game/YardScene';
 import { blueRoomScenes, redClassScenes } from '../game/chapters';
 import { setAmbienceEnabled, startAmbience, stopAmbience } from '../game/audio';
 import { endingLines, introLines, notebookLines, taskCopy } from '../game/story';
-import type { DialogueLine, RoomItem, YardTask } from '../game/types';
+import type { ControlsMode, DialogueLine, GameSetup, RoomItem, YardTask } from '../game/types';
 import '../styles/prologue.css';
 import '../styles/roomMemory.css';
 
@@ -36,6 +36,8 @@ export function GamePage() {
   const [storyIndex, setStoryIndex] = useState(0);
   const [activeMemory, setActiveMemory] = useState<RoomItem | null>(null);
   const [soundOn, setSoundOn] = useState(true);
+  const [playerName, setPlayerName] = useState('Ты');
+  const [controlsMode, setControlsMode] = useState<ControlsMode>('desktop');
 
   useEffect(() => () => stopAmbience(), []);
   useEffect(() => {
@@ -57,15 +59,21 @@ export function GamePage() {
     } else setLineIndex((value) => value + 1);
   };
 
-  const start = () => {
+  const start = (setup: GameSetup) => {
     if (soundOn) startAmbience();
+    setPlayerName(setup.playerName);
+    setControlsMode(setup.controlsMode);
     setStage('prologue');
     showDialogue(introLines, 'prologueExit');
   };
 
-  const packItem = (item: RoomItem) => {
+  const inspectItem = (item: RoomItem) => setActiveMemory(item);
+
+  const collectItem = () => {
+    if (!activeMemory) return;
+    const item = activeMemory;
     setPacked((items) => items.includes(item) ? items : [...items, item]);
-    setActiveMemory(item);
+    setActiveMemory(null);
   };
 
   const finishTask = () => {
@@ -120,21 +128,21 @@ export function GamePage() {
       {stage !== 'start' && stage !== 'prologue' && stage !== 'prologueExit' && stage !== 'childhood' && <GameHeader chapter={chapter} soundOn={soundOn} onSoundToggle={toggleSound} onRestart={restart} />}
       {stage === 'start' && <StartScreen onStart={start} />}
       {stage === 'prologue' && <PrologueScene lineIndex={lineIndex} />}
-      {stage === 'prologueExit' && <PrologueScene lineIndex={5} />}
-      {stage === 'room' && <RoomScene packed={packed} isInteractive={!activeMemory} onPack={packItem} onNotebook={() => setStage('notebook')} />}
+      {stage === 'prologueExit' && <PrologueScene lineIndex={introLines.length} leaving />}
+      {stage === 'room' && <RoomScene packed={packed} isInteractive={!activeMemory} showTouchControls={controlsMode === 'touch'} onInspectItem={inspectItem} onNotebook={() => setStage('notebook')} />}
       {stage === 'notebook' && <NotebookScene revealTitle onEnter={() => setStage('childhood')} />}
-      {stage === 'childhood' && <ChildhoodMemory onFinish={() => { setStage('meeting'); showDialogue(notebookLines, 'yard'); }} />}
+      {stage === 'childhood' && <ChildhoodMemory playerName={playerName} onFinish={() => { setStage('meeting'); showDialogue(notebookLines, 'yard'); }} />}
       {stage === 'meeting' && <NotebookScene onEnter={() => undefined} />}
-      {stage === 'yard' && <YardScene completed={completed} isInteractive={!activeTask && dialogue.length === 0} onTask={setActiveTask} onFinish={() => showDialogue(endingLines, 'yellowReveal')} />}
+      {stage === 'yard' && <YardScene completed={completed} isInteractive={!activeTask && dialogue.length === 0} showTouchControls={controlsMode === 'touch'} onTask={setActiveTask} onFinish={() => showDialogue(endingLines, 'yellowReveal')} />}
       {stage === 'yellowReveal' && <ColorReveal color="yellow" title="Жёлтый" text="Цвет окон, мела и того вечера, когда тебя позвали домой." nextChapter="Открыть красный класс" onContinue={() => setStage('red')} />}
-      {stage === 'red' && <RedClassScene scenes={redClassScenes} sceneIndex={storyIndex} onNext={() => advanceStory(redClassScenes.length, 'redReveal')} />}
+      {stage === 'red' && <RedClassScene scenes={redClassScenes} sceneIndex={storyIndex} playerName={playerName} onNext={() => advanceStory(redClassScenes.length, 'redReveal')} />}
       {stage === 'redReveal' && <ColorReveal color="red" title="Красный" text="Не цвет стыда и исправлений. Цвет смелости оставить важное видимым." nextChapter="Войти в синюю комнату" onContinue={() => setStage('blue')} />}
-      {stage === 'blue' && <BlueRoomScene scenes={blueRoomScenes} sceneIndex={storyIndex} onNext={() => advanceStory(blueRoomScenes.length, 'return')} />}
+      {stage === 'blue' && <BlueRoomScene scenes={blueRoomScenes} sceneIndex={storyIndex} playerName={playerName} onNext={() => advanceStory(blueRoomScenes.length, 'return')} />}
       {stage === 'return' && <ReturnToRoomScene onContinue={() => setStage('finale')} />}
-      {stage === 'finale' && <FinaleScene onRestart={restart} />}
+      {stage === 'finale' && <FinaleScene playerName={playerName} onRestart={restart} />}
       {activeTask && <TaskCard task={activeTask} onComplete={finishTask} />}
-      {activeMemory && <RoomMemory item={activeMemory} onClose={() => setActiveMemory(null)} />}
-      {dialogue.length > 0 && lineIndex < dialogue.length - 1 && <DialogueBox line={dialogue[lineIndex]} current={lineIndex} total={dialogue.length - 1} onNext={nextLine} />}
+      {activeMemory && <RoomMemory item={activeMemory} onCollect={collectItem} />}
+      {dialogue.length > 0 && lineIndex < dialogue.length - 1 && <DialogueBox line={dialogue[lineIndex]} current={lineIndex} total={dialogue.length - 1} playerName={playerName} onNext={nextLine} />}
     </main>
   );
 }

@@ -4,6 +4,5 @@
 .game-title-reveal h1 { margin: 5px 0 0; font: 700 clamp(80px, 15vw, 150px)/.8 Caveat, cursive; }
 .notebook-art { width: 100%; height: 100%; object-fit: cover; }
 .notebook-page.is-present { overflow: visible; background: transparent; }
-.notebook-page.is-present .notebook-art { animation: shtrikh-drift 2.2s steps(2) infinite; }
+.notebook-page.is-present .notebook-art { transform: none; }
 @keyframes title-reveal { 0% { opacity: 0; } 16%, 70% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }
-@keyframes shtrikh-drift { 50% { transform: translate(-50%, -50%) rotate(.35deg); } }
