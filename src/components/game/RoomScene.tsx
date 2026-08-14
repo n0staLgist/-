@@ -18,7 +18,7 @@ const itemPositions: Record<RoomItem, RoomPosition> = {
 };
 const notebookPosition: RoomPosition = { x: 47, y: 42 };
 const roomDetails = [
-  { position: { x: 13, y: 78 }, text: 'Одна раскрытая коробка. Пока почти пустая.' },
+  { position: { x: 13, y: 52 }, text: 'Одна раскрытая коробка. Пока почти пустая.' },
   { position: { x: 75, y: 40 }, text: 'Три коробки с вещами. Будто половина комнаты уже уехала без тебя.' },
   { position: { x: 14, y: 40 }, text: 'Батарея ещё тёплая. В новой квартире такой не будет.' },
   { position: { x: 35, y: 51 }, text: 'Старый стол. Следы карандаша не отмылись даже перед переездом.' },
@@ -52,7 +52,7 @@ export function RoomScene({ packed, isInteractive = true, onPack, onNotebook }: 
   }, [allPacked, onNotebook, onPack, packed]);
   const canMove = isInteractive && !examination;
   const { position, isMoving, facing, startMoving, stopMoving } = useRoomMovement(canMove, interact, {
-    start: { x: 91, y: 58 },
+    start: { x: 88, y: 58 },
   });
 
   const nearbyItem = (Object.keys(itemPositions) as RoomItem[])

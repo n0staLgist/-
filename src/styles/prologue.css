@@ -20,9 +20,7 @@
 .prologue-camera--side { background-image: url('../assets/game/moving-room-side-simple-v4.png'); }
 .prologue-camera--seated { background-image: url('../assets/game/moving-room-side-seated-v4.png'); }
 .prologue-camera--top { background-image: url('../assets/game/moving-room-topdown-simple-v6.png'); }
-.is-side-view .prologue-camera--side { opacity: 1; animation: side-camera-in .75s ease-out both; }
-.is-side-view:not(.is-empty-room) .prologue-camera--side { opacity: 0; }
-.is-side-view:not(.is-empty-room) .prologue-camera--seated { opacity: 1; }
+.is-side-view .prologue-camera--seated { opacity: 1; animation: side-camera-in .75s ease-out both; }
 .is-leaving .prologue-camera--seated { animation: side-camera-out 3.2s ease-in both; }
 .is-leaving .prologue-camera--top { animation: top-camera-in 3.2s ease-in both; }
 .prologue-evening { position: absolute; inset: 0; background: linear-gradient(100deg, #29466726, transparent 42%), linear-gradient(transparent 45%, #170e0875); pointer-events: none; }
