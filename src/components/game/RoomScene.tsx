@@ -1,7 +1,8 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, type CSSProperties } from 'react';
 import { roomItems } from '../../game/story';
 import type { RoomItem } from '../../game/types';
 import { useRoomMovement, type RoomPosition } from '../../game/useRoomMovement';
+import roomItemsSprite from '../../assets/game/room-items-v1.png';
 import { MovementControls } from './MovementControls';
 import { PlayerAvatar } from './PlayerAvatar';
 import { ExamineText } from './ExamineText';
@@ -17,7 +18,14 @@ type RoomSceneProps = {
 };
 
 const itemPositions: Record<RoomItem, RoomPosition> = {
-  cassette: { x: 12, y: 86 }, photo: { x: 20, y: 85 }, diary: { x: 29, y: 84 },
+  cassette: { x: 26, y: 80 }, photo: { x: 14, y: 40 }, diary: { x: 72, y: 53 },
+};
+const itemSpritePositions: Record<RoomItem, string> = {
+  cassette: '0%', photo: '50%', diary: '100%',
+};
+type ItemStyle = CSSProperties & {
+  '--item-sprite': string;
+  '--item-sprite-position': string;
 };
 const notebookPosition: RoomPosition = { x: 47, y: 42 };
 const roomDetails = [
@@ -69,18 +77,19 @@ export function RoomScene({ packed, isInteractive = true, showTouchControls, onI
       <div className="room-map">
         <div className="scene__shade" />
         {(Object.keys(roomItems) as RoomItem[]).map((item) => (
-          <button className={`hotspot hotspot--${item} ${packed.includes(item) ? 'is-done' : ''} ${nearbyItem === item ? 'is-near' : ''}`} key={item} style={{ left: `${itemPositions[item].x}%`, top: `${itemPositions[item].y}%` }} onClick={() => onInspectItem(item)} disabled={packed.includes(item) || !isInteractive || nearbyItem !== item}>
+          <button className={`hotspot hotspot--${item} ${packed.includes(item) ? 'is-done' : ''} ${nearbyItem === item ? 'is-near' : ''}`} key={item} style={{ left: `${itemPositions[item].x}%`, top: `${itemPositions[item].y}%`, '--item-sprite': `url(${roomItemsSprite})`, '--item-sprite-position': itemSpritePositions[item] } as ItemStyle} onClick={() => onInspectItem(item)} disabled={packed.includes(item) || !isInteractive || nearbyItem !== item}>
+            <i aria-hidden="true" />
             <span>{roomItems[item].label}</span>
           </button>
         ))}
         <button className={`notebook-hotspot ${nearNotebook ? 'is-near' : ''}`} onClick={onNotebook} disabled={!allPacked || !nearNotebook}>Открыть тетрадь</button>
         {isInteractive && <>
           <PlayerAvatar position={position} facing={facing} isMoving={isMoving} />
-          <p className={`interaction-hint ${(nearbyItem || nearNotebook || nearDetail) ? 'is-ready' : ''}`}>{nearbyItem ? `E · Взять: ${roomItems[nearbyItem].label}` : nearNotebook ? (allPacked ? 'E · Взять тетрадь' : 'E · Осмотреть тетрадь') : nearDetail ? 'E · Осмотреть' : ''}</p>
           {showTouchControls && <MovementControls onMoveStart={startMoving} onMoveEnd={stopMoving} onInteract={() => interact(position)} />}
         </>}
         {examination && <ExamineText text={examination} onClose={() => setExamination(null)} />}
       </div>
+      {isInteractive && <p className={`interaction-hint ${(nearbyItem || nearNotebook || nearDetail) ? 'is-ready' : ''}`}>{nearbyItem ? `Взять: ${roomItems[nearbyItem].label} · E / Enter` : nearNotebook ? (allPacked ? 'Взять тетрадь · E / Enter' : 'Осмотреть тетрадь · E / Enter') : nearDetail ? 'Осмотреть · E / Enter' : ''}</p>}
     </section>
   );
 }

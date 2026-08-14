@@ -60,6 +60,9 @@ export function YardScene({ completed, isInteractive, showTouchControls, onTask,
       <div className="scene__shade" />
       <div className="scene-instruction"><strong>{allDone ? 'Вернись к Штриху у подъезда' : 'Найди три потерянные детали'}</strong></div>
       <img className="yard-shtrikh" src={shtrikhYard} alt="Штрих ждёт у подъезда: две слезы, длинный шарф и недорисованная рука" />
+      {completed.includes('swing') && <div className="yard-restored-swing" aria-label="Вторая качеля восстановлена"><i /><b /></div>}
+      {completed.includes('hopscotch') && <div className="yard-restored-hopscotch" aria-label="Классики снова видны">{[0, 1, 2, 3, 4, 5].map((cell) => <i key={cell} />)}</div>}
+      {completed.includes('window') && <div className="yard-restored-window" aria-label="В окне горит тёплый свет" />}
       <PlayerAvatar position={movement.position} facing={movement.facing} isMoving={movement.isMoving} />
       <p className={`interaction-hint ${(nearbyTask || nearShtrikh || nearDetail) ? 'is-ready' : ''}`}>
         {nearbyTask ? `E · ${taskCopy[nearbyTask].title}` : nearShtrikh ? (allDone ? 'E · Подойти к Штриху' : 'E · Поговорить со Штрихом') : nearDetail ? 'E · Осмотреть' : ''}

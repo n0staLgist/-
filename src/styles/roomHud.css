@@ -1,6 +1,7 @@
-.room-checklist { position: fixed; z-index: 7; top: 68px; left: 22px; display: grid; gap: 4px; width: 210px; padding: 12px 15px; color: #fff9e8; background: #17130ebd; border-left: 2px solid #f2e5c8; text-shadow: 0 2px 8px #000; }
+.room-checklist { position: fixed; z-index: 7; top: 68px; left: 22px; display: grid; gap: 5px; width: 255px; padding: 12px 15px; color: #fff9e8; background: #17130ebd; border-left: 2px solid #f2e5c8; text-shadow: 0 2px 8px #000; }
 .room-checklist strong { margin-bottom: 3px; font-size: 19px; }
-.room-checklist span { display: grid; grid-template-columns: 20px 1fr; align-items: center; font-size: 15px; transition: opacity .3s; }
+.room-checklist > small { margin: -2px 0 4px; color: #ddd1b9; font-size: 12px; }
+.room-checklist span { display: grid; grid-template-columns: 20px auto 1fr; align-items: baseline; gap: 4px; font-size: 15px; transition: opacity .3s; }
 .room-checklist span.is-done { opacity: .55; text-decoration: line-through; }
-.room-checklist i { font-style: normal; }
+.room-checklist i, .room-checklist em { font-style: normal; }.room-checklist em { color: #d2c4aa; font-size: 12px; }
 @media (max-width: 700px) { .room-checklist { top: 52px; left: 12px; width: 170px; padding: 9px 11px; }.room-checklist strong { font-size: 16px; }.room-checklist span { font-size: 13px; } }

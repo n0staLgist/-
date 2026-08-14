@@ -1,4 +1,4 @@
-import ayaSideWalkSprite from '../../assets/game/aya-side-walk-v1.png';
+import ayaSideWalkSprite from '../../assets/game/aya-side-walk-v2.png';
 
 type PrologueSceneProps = { lineIndex: number; leaving?: boolean };
 
