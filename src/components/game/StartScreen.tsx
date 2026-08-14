@@ -12,10 +12,10 @@ export function StartScreen({ onStart }: StartScreenProps) {
   const [playerName, setPlayerName] = useState(save.playerName);
   const [controlsMode, setControlsMode] = useState<ControlsMode>(save.controlsMode);
   const [chapter, setChapter] = useState<ChapterNumber>(save.unlockedChapter);
-  const start = () => onStart({
+  const start = (selectedChapter = chapter) => onStart({
     controlsMode,
     playerName: playerName.trim().slice(0, 18) || 'Ты',
-  }, chapter);
+  }, selectedChapter);
 
   return (
     <section className="opening-screen">
@@ -40,7 +40,11 @@ export function StartScreen({ onStart }: StartScreenProps) {
             {([1, 2, 3] as ChapterNumber[]).map((number) => <button className={chapter === number ? 'is-selected' : ''} disabled={number > save.unlockedChapter} key={number} onClick={() => setChapter(number)} type="button">{chapterLabels[number]}{number > save.unlockedChapter ? ' · закрыто' : ''}</button>)}
           </fieldset>
         </div>
-        <div className="opening-screen__actions"><button className="opening-screen__start" onClick={start}>Открыть тетрадь <span aria-hidden="true">→</span></button><button onClick={() => setShowControls(true)}>Управление</button></div>
+        <div className="opening-screen__actions">
+          {save.unlockedChapter > 1 && <button className="opening-screen__start" onClick={() => start(save.unlockedChapter)}>Продолжить: глава {save.unlockedChapter} <span aria-hidden="true">→</span></button>}
+          <button className={save.unlockedChapter === 1 ? 'opening-screen__start' : ''} onClick={() => start()}>{save.unlockedChapter === 1 ? 'Открыть тетрадь' : 'Начать выбранную'} <span aria-hidden="true">→</span></button>
+          <button onClick={() => setShowControls(true)}>Управление</button>
+        </div>
       </div>
       <small className="opening-screen__credit">by nOstaLgist aka ErKeK aka FeArtNeasLy</small>
       {showControls && <div className="controls-modal" role="dialog" aria-modal="true" aria-label="Полное управление">

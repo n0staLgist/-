@@ -3,17 +3,23 @@ let ambience: OscillatorNode[] = [];
 let master: GainNode | null = null;
 let effectsEnabled = true;
 
-export function startAmbience() {
-  if (ambience.length > 0) return;
-  context = new AudioContext();
-  master = context.createGain();
-  master.gain.setValueAtTime(0.0001, context.currentTime);
-  master.gain.exponentialRampToValueAtTime(0.035, context.currentTime + 2);
-  master.connect(context.destination);
+const getAudioContext = () => {
+  if (!context || context.state === 'closed') context = new AudioContext();
+  if (context.state === 'suspended') void context.resume();
+  return context;
+};
 
-  [110, 164.81, 220].forEach((frequency, index) => {
-    const tone = context!.createOscillator();
-    const volume = context!.createGain();
+export function startAmbience() {
+  const audioContext = getAudioContext();
+  if (ambience.length > 0) return;
+  master = audioContext.createGain();
+  master.gain.setValueAtTime(0.0001, audioContext.currentTime);
+  master.gain.exponentialRampToValueAtTime(0.065, audioContext.currentTime + 1.2);
+  master.connect(audioContext.destination);
+
+  [146.83, 220, 293.66].forEach((frequency, index) => {
+    const tone = audioContext.createOscillator();
+    const volume = audioContext.createGain();
     tone.type = index === 0 ? 'sine' : 'triangle';
     tone.frequency.value = frequency;
     tone.detune.value = index * -4;
@@ -30,10 +36,11 @@ export function setAmbienceEnabled(enabled: boolean) {
     if (enabled) startAmbience();
     return;
   }
+  if (enabled && context.state === 'suspended') void context.resume();
   const now = context.currentTime;
   master.gain.cancelScheduledValues(now);
   master.gain.setValueAtTime(Math.max(master.gain.value, 0.0001), now);
-  master.gain.exponentialRampToValueAtTime(enabled ? 0.035 : 0.0001, now + 0.5);
+  master.gain.exponentialRampToValueAtTime(enabled ? 0.065 : 0.0001, now + 0.5);
 }
 
 export function stopAmbience() {
@@ -55,8 +62,7 @@ const voiceFrequency = (speaker?: string) => {
 
 export function playWritingTick(speaker?: string) {
   if (!effectsEnabled) return;
-  const audioContext = context ?? new AudioContext();
-  if (!context) context = audioContext;
+  const audioContext = getAudioContext();
   const oscillator = audioContext.createOscillator();
   const gain = audioContext.createGain();
   const filter = audioContext.createBiquadFilter();
@@ -67,7 +73,7 @@ export function playWritingTick(speaker?: string) {
   filter.type = 'lowpass';
   filter.frequency.value = 1150;
   gain.gain.setValueAtTime(0.0001, now);
-  gain.gain.exponentialRampToValueAtTime(0.012, now + .008);
+  gain.gain.exponentialRampToValueAtTime(0.026, now + .008);
   gain.gain.exponentialRampToValueAtTime(0.0001, now + .065);
   oscillator.connect(filter).connect(gain).connect(audioContext.destination);
   oscillator.start();
@@ -76,8 +82,7 @@ export function playWritingTick(speaker?: string) {
 
 export function playPageTurn() {
   if (!effectsEnabled) return;
-  const audioContext = context ?? new AudioContext();
-  if (!context) context = audioContext;
+  const audioContext = getAudioContext();
   const buffer = audioContext.createBuffer(1, audioContext.sampleRate * 0.18, audioContext.sampleRate);
   const samples = buffer.getChannelData(0);
   for (let index = 0; index < samples.length; index += 1) {
@@ -85,7 +90,7 @@ export function playPageTurn() {
   }
   const source = audioContext.createBufferSource();
   const gain = audioContext.createGain();
-  gain.gain.value = 0.045;
+  gain.gain.value = 0.075;
   source.buffer = buffer;
   source.connect(gain).connect(audioContext.destination);
   source.start();

@@ -52,14 +52,8 @@ const roomHints: Record<RoomItem, string> = {
 
 export function RoomScene({ packed, isInteractive = true, showTouchControls, onInspectItem, onNotebook }: RoomSceneProps) {
   const [examination, setExamination] = useState<string | null>(null);
-  const [showRouteHint, setShowRouteHint] = useState(false);
   const [showCompletion, setShowCompletion] = useState(false);
   const allPacked = packed.length === 3;
-  useEffect(() => {
-    if (packed.length > 0) return setShowRouteHint(false);
-    const timer = window.setTimeout(() => setShowRouteHint(true), 11000);
-    return () => window.clearTimeout(timer);
-  }, [packed.length]);
   useEffect(() => {
     if (!allPacked) return;
     setShowCompletion(true);
@@ -114,7 +108,6 @@ export function RoomScene({ packed, isInteractive = true, showTouchControls, onI
         {examination && <ExamineText text={examination} onClose={() => setExamination(null)} />}
       </div>
       {isInteractive && <p className={`interaction-hint ${(nearbyItem || nearNotebook || nearDetail) ? 'is-ready' : ''}`}>{nearbyItem ? `Взять: ${roomItems[nearbyItem].label} · E / Enter` : nearNotebook ? (allPacked ? 'Взять тетрадь · E / Enter' : 'Осмотреть тетрадь · E / Enter') : nearDetail ? 'Осмотреть · E / Enter' : ''}</p>}
-      {showRouteHint && !nearbyItem && <p className="room-guidance">Кажется, фотография осталась возле батареи…</p>}
       {showCompletion && <div className="quest-complete"><small>Задание выполнено</small><strong>Последняя коробка собрана</strong><span>Теперь можно открыть тетрадь на столе.</span></div>}
     </section>
   );
