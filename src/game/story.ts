@@ -38,9 +38,8 @@ export const notebookLines: DialogueLine[] = [
   { speaker: 'Ты', text: 'Здесь всё осталось как раньше.' },
   { speaker: 'Штрих', text: 'Не всё. Посмотри.' },
   { speaker: 'Штрих', text: 'Во дворе пропал первый цвет.' },
-  { speaker: 'Ты', text: 'Во дворе? Но мы внутри тетради.' },
-  { speaker: 'Штрих', text: 'Здесь страницы не заканчиваются у края. Дай руку.' },
-  { speaker: 'Штрих', text: 'И не отпускай, пока она переворачивается.' },
+  { speaker: 'Ты', text: 'Как туда попасть?' },
+  { speaker: 'Штрих', text: 'Дай руку. Я покажу.' },
 ];
 
 export const yardArrivalLines: DialogueLine[] = [

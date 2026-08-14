@@ -5,6 +5,7 @@ import type { YardTask } from '../../game/types';
 import { isYardPositionWalkable } from '../../game/yardGeometry';
 import { useRoomMovement, type RoomPosition } from '../../game/useRoomMovement';
 import { ExamineText } from './ExamineText';
+import { HintButton } from './HintButton';
 import { MovementControls } from './MovementControls';
 import { PlayerAvatar } from './PlayerAvatar';
 
@@ -31,6 +32,11 @@ const shtrikhObservations = [
   '— Помнишь? — спрашивает Штрих быстрее, чем ты успеваешь ответить.',
   'Штрих поправляет шарф целой рукой. Недорисованная остаётся неподвижной.',
 ];
+const yardHints: Record<YardTask, string> = {
+  swing: 'Слева осталась недорисованная качеля. Поймай жёлтую отметку в крайних точках.',
+  hopscotch: 'Классики находятся в центре. Сначала смотри, потом повтори порядок клеток.',
+  window: 'Тёмное окно наверху. Удерживай свет внутри жёлтой области шкалы.',
+};
 
 export function YardScene({ completed, isInteractive, showTouchControls, onTask, onFinish }: YardSceneProps) {
   const [examination, setExamination] = useState<string | null>(null);
@@ -54,13 +60,15 @@ export function YardScene({ completed, isInteractive, showTouchControls, onTask,
     .find((task) => !completed.includes(task) && distance(movement.position, taskPositions[task]) < TASK_REACH);
   const nearShtrikh = distance(movement.position, SHTRIKH_POSITION) < ENDING_REACH;
   const nearDetail = details.some((entry) => distance(movement.position, entry.position) < DETAIL_REACH);
+  const nextTask = (Object.keys(taskPositions) as YardTask[]).find((task) => !completed.includes(task));
 
   return (
     <section className={`scene yard-scene progress-${completed.length}`} aria-label="Жёлтый двор">
       <div className="scene__shade" />
+      <HintButton hint={nextTask ? yardHints[nextTask] : 'Все детали возвращены. Штрих ждёт у подъезда.'} />
       <div className="scene-instruction"><strong>{allDone ? 'Вернись к Штриху у подъезда' : 'Найди три потерянные детали'}</strong></div>
       <img className="yard-shtrikh" src={shtrikhYard} alt="Штрих ждёт у подъезда: две слезы, длинный шарф и недорисованная рука" />
-      {completed.includes('swing') && <div className="yard-restored-swing" aria-label="Вторая качеля восстановлена"><i /><b /></div>}
+      {completed.includes('swing') && <div className="yard-restored-swing" aria-label="Качеля восстановлена"><i /><b /></div>}
       {completed.includes('hopscotch') && <div className="yard-restored-hopscotch" aria-label="Классики снова видны">{[0, 1, 2, 3, 4, 5].map((cell) => <i key={cell} />)}</div>}
       {completed.includes('window') && <div className="yard-restored-window" aria-label="В окне горит тёплый свет" />}
       <PlayerAvatar position={movement.position} facing={movement.facing} isMoving={movement.isMoving} />

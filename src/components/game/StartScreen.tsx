@@ -1,32 +1,43 @@
 import { useState } from 'react';
+import { loadGameSave, type ChapterNumber } from '../../game/gameSave';
 import type { ControlsMode, GameSetup } from '../../game/types';
 
-type StartScreenProps = { onStart: (setup: GameSetup) => void };
+type StartScreenProps = { onStart: (setup: GameSetup, chapter: ChapterNumber) => void };
+
+const chapterLabels: Record<ChapterNumber, string> = { 1: 'I · Жёлтый двор', 2: 'II · Красный класс', 3: 'III · Синяя комната' };
 
 export function StartScreen({ onStart }: StartScreenProps) {
+  const [save] = useState(loadGameSave);
   const [showControls, setShowControls] = useState(false);
-  const [playerName, setPlayerName] = useState('');
-  const [controlsMode, setControlsMode] = useState<ControlsMode>('desktop');
+  const [playerName, setPlayerName] = useState(save.playerName);
+  const [controlsMode, setControlsMode] = useState<ControlsMode>(save.controlsMode);
+  const [chapter, setChapter] = useState<ChapterNumber>(save.unlockedChapter);
   const start = () => onStart({
     controlsMode,
     playerName: playerName.trim().slice(0, 18) || 'Ты',
-  });
+  }, chapter);
 
   return (
     <section className="opening-screen">
       <span className="opening-screen__margin" aria-hidden="true" />
+      <div className="opening-screen__notes" aria-hidden="true">
+        <span>одна старая тетрадь · одно обещание</span>
+        <span>«Сегодня уже завтра?»</span>
+        <span>Некоторые обещания помнят дольше, чем люди.</span>
+      </div>
       <span className="opening-screen__pencil-mark opening-screen__pencil-mark--top" aria-hidden="true" />
       <span className="opening-screen__pencil-mark opening-screen__pencil-mark--bottom" aria-hidden="true" />
       <div className="opening-screen__sketch" aria-hidden="true"><i /><i /><i /></div>
       <div className="opening-screen__copy">
-        <small>одна старая тетрадь · одно обещание</small><h1>До завтра</h1>
-        <p>Некоторые обещания помнят дольше, чем люди.</p>
-        <blockquote>«Сегодня уже завтра?»</blockquote>
+        <h1>До завтра</h1>
         <div className="opening-setup">
           <label>Как тебя называть?<input value={playerName} onChange={(event) => setPlayerName(event.target.value)} maxLength={18} placeholder="Ты" /></label>
           <fieldset><legend>На чём играешь?</legend>
             <button className={controlsMode === 'desktop' ? 'is-selected' : ''} onClick={() => setControlsMode('desktop')} type="button">ПК</button>
             <button className={controlsMode === 'touch' ? 'is-selected' : ''} onClick={() => setControlsMode('touch')} type="button">Телефон</button>
+          </fieldset>
+          <fieldset className="chapter-select"><legend>Выбрать главу</legend>
+            {([1, 2, 3] as ChapterNumber[]).map((number) => <button className={chapter === number ? 'is-selected' : ''} disabled={number > save.unlockedChapter} key={number} onClick={() => setChapter(number)} type="button">{chapterLabels[number]}{number > save.unlockedChapter ? ' · закрыто' : ''}</button>)}
           </fieldset>
         </div>
         <div className="opening-screen__actions"><button className="opening-screen__start" onClick={start}>Открыть тетрадь <span aria-hidden="true">→</span></button><button onClick={() => setShowControls(true)}>Управление</button></div>

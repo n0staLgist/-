@@ -6,6 +6,7 @@ import roomItemsSprite from '../../assets/game/room-items-v1.png';
 import { MovementControls } from './MovementControls';
 import { PlayerAvatar } from './PlayerAvatar';
 import { ExamineText } from './ExamineText';
+import { HintButton } from './HintButton';
 import { RoomChecklist } from './RoomChecklist';
 import '../../styles/roomHud.css';
 
@@ -43,6 +44,11 @@ const distance = (first: RoomPosition, second: RoomPosition) => Math.hypot(first
 const ITEM_REACH = 5;
 const NOTEBOOK_REACH = 10;
 const DETAIL_REACH = 5.5;
+const roomHints: Record<RoomItem, string> = {
+  photo: 'Фотография лежит у батареи, в левой части комнаты.',
+  cassette: 'Кассета осталась на полу возле раскрытой коробки.',
+  diary: 'Дневник лежит справа, рядом со сложенными коробками.',
+};
 
 export function RoomScene({ packed, isInteractive = true, showTouchControls, onInspectItem, onNotebook }: RoomSceneProps) {
   const [examination, setExamination] = useState<string | null>(null);
@@ -83,10 +89,12 @@ export function RoomScene({ packed, isInteractive = true, showTouchControls, onI
     .find((item) => !packed.includes(item) && distance(position, itemPositions[item]) < ITEM_REACH);
   const nearNotebook = distance(position, notebookPosition) < NOTEBOOK_REACH;
   const nearDetail = roomDetails.some((entry) => distance(position, entry.position) < DETAIL_REACH);
+  const nextItem = (Object.keys(roomItems) as RoomItem[]).find((item) => !packed.includes(item));
 
   return (
     <section className="scene room-scene" aria-label="Комната перед переездом">
       <RoomChecklist packed={packed} />
+      <HintButton hint={nextItem ? roomHints[nextItem] : 'Все вещи собраны. Теперь подойди к тетради на столе.'} />
       <div className="room-map">
         <div className="scene__shade" />
         {(Object.keys(roomItems) as RoomItem[]).map((item) => (

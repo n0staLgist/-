@@ -26,7 +26,6 @@ export function DialogueBox({ line, current, total, playerName, onNext }: Dialog
         {current === total - 1 ? 'Продолжить' : 'Дальше'}
         <span aria-hidden="true">→</span>
       </button>}
-      <small className="dialogue__key-hint">Enter / Пробел</small>
     </section>
   );
 }

@@ -21,8 +21,6 @@ export function PrologueScene({ lineIndex, leaving = false }: PrologueSceneProps
           </>
         )}
       </div>
-      <div className="cinema-bar cinema-bar--top" />
-      <div className="cinema-bar cinema-bar--bottom" />
     </section>
   );
 }

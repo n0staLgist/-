@@ -1,0 +1,6 @@
+.hint-button { position: fixed; z-index: 18; top: 70px; right: 22px; display: flex; flex-direction: row-reverse; gap: 10px; align-items: flex-start; }
+.hint-button button { width: 44px; height: 44px; flex: 0 0 auto; padding: 0; border: 1px solid #544a3b; border-radius: 50%; color: #332d24; background: #f1dfad; box-shadow: 3px 4px 0 #231d1766; font-size: 21px; cursor: pointer; transition: transform .2s, background .2s; }
+.hint-button button:hover, .hint-button.is-open button { background: #f4c950; transform: rotate(-6deg); }
+.hint-button p { width: min(270px, calc(100vw - 90px)); margin: 0; padding: 10px 13px; color: #302a22; background: #f3e7cef2; border: 1px solid #5c5142; box-shadow: 4px 5px 0 #211b154f; font: 600 18px/1.2 Caveat, cursive; animation: hint-arrives .2s both; }
+@keyframes hint-arrives { from { opacity: 0; transform: translateX(8px); } }
+@media (max-width: 700px) { .hint-button { top: 58px; right: 10px; }.hint-button button { width: 40px; height: 40px; }.hint-button p { font-size: 16px; } }

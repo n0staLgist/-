@@ -28,7 +28,6 @@ export function RoomMemory({ item, onCollect }: RoomMemoryProps) {
         <blockquote>{roomItems[item].memory}</blockquote>
         <p>{memoryDetails[item]}</p>
         <button onClick={onCollect}>Положить в коробку <span>→</span></button>
-        <small>Enter / Пробел</small>
       </article>
     </section>
   );

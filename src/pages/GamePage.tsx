@@ -19,11 +19,13 @@ import { blueRoomScenes, redClassScenes } from '../game/chapters';
 import { setAmbienceEnabled, startAmbience, stopAmbience } from '../game/audio';
 import { endingLines, introLines, notebookLines, taskCopy, yardArrivalLines } from '../game/story';
 import { getChapterTitle, shouldShowGameHeader, type GameStage } from '../game/stage';
+import { saveGameSetup, unlockChapter, type ChapterNumber } from '../game/gameSave';
 import type { ControlsMode, DialogueLine, GameSetup, RoomItem, YardTask } from '../game/types';
 import '../styles/prologue.css';
 import '../styles/roomMemory.css';
 
 const PROLOGUE_EXIT_DURATION_MS = 5200;
+const YARD_TRANSITION_DURATION_MS = 8000;
 
 export function GamePage() {
   const [stage, setStage] = useState<GameStage>('start');
@@ -40,6 +42,10 @@ export function GamePage() {
 
   useEffect(() => () => stopAmbience(), []);
   useEffect(() => {
+    if (stage === 'yellowReveal' || stage === 'red') unlockChapter(2);
+    if (stage === 'redReveal' || stage === 'blue') unlockChapter(3);
+  }, [stage]);
+  useEffect(() => {
     if (stage !== 'prologueExit') return;
     const handoff = window.setTimeout(() => setStage('room'), PROLOGUE_EXIT_DURATION_MS);
     return () => window.clearTimeout(handoff);
@@ -50,7 +56,7 @@ export function GamePage() {
       setStage('yardIntro');
       setDialogue([...yardArrivalLines, { speaker: '__next__', text: 'yard' }]);
       setLineIndex(0);
-    }, 4000);
+    }, YARD_TRANSITION_DURATION_MS);
     return () => window.clearTimeout(handoff);
   }, [stage]);
 
@@ -69,12 +75,19 @@ export function GamePage() {
     } else setLineIndex((value) => value + 1);
   };
 
-  const start = (setup: GameSetup) => {
+  const start = (setup: GameSetup, chapter: ChapterNumber) => {
     if (soundOn) startAmbience();
+    saveGameSetup(setup);
     setPlayerName(setup.playerName);
     setControlsMode(setup.controlsMode);
-    setStage('prologue');
-    showDialogue(introLines, 'prologueExit');
+    setStoryIndex(0);
+    setDialogue([]);
+    if (chapter === 2) setStage('red');
+    else if (chapter === 3) setStage('blue');
+    else {
+      setStage('prologue');
+      showDialogue(introLines, 'prologueExit');
+    }
   };
 
   const inspectItem = (item: RoomItem) => setActiveMemory(item);
