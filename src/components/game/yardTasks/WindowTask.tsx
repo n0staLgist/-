@@ -1,41 +1,26 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 
 type WindowTaskProps = { onReady: () => void };
 
 export function WindowTask({ onReady }: WindowTaskProps) {
-  const [light, setLight] = useState(25);
-  const [warmth, setWarmth] = useState(0);
-  const holding = useRef(false);
-  const completed = useRef(false);
-  const isBalanced = light >= 46 && light <= 68;
+  const [litPanes, setLitPanes] = useState<number[]>([]);
 
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setLight((current) => Math.max(0, Math.min(100, current + (holding.current ? 3.2 : -1.5))));
-      setWarmth((current) => {
-        const next = Math.max(0, Math.min(100, current + (isBalanced ? 3.5 : -4)));
-        if (next === 100 && !completed.current) {
-          completed.current = true;
-          onReady();
-        }
-        return next;
-      });
-    }, 100);
-    return () => window.clearInterval(timer);
-  }, [isBalanced, onReady]);
-
-  const start = () => { holding.current = true; };
-  const stop = () => { holding.current = false; };
+  const lightPane = (pane: number) => {
+    if (litPanes.includes(pane)) return;
+    const next = [...litPanes, pane];
+    setLitPanes(next);
+    if (next.length === 4) onReady();
+  };
 
   return (
     <>
-      <p className="task-guidance">{completed.current ? 'Окно запомнило тепло.' : isBalanced ? 'Удерживай свет в жёлтой середине.' : light < 46 ? 'Слишком темно — удерживай кнопку.' : 'Слишком ярко — отпусти кнопку.'}</p>
-      <div className="window-balance">
-        <span className="draw-window" style={{ opacity: .35 + warmth / 155 }} />
-        <div className="light-meter"><i /><b style={{ left: `${light}%` }} /></div>
-        <button onPointerDown={start} onPointerUp={stop} onPointerLeave={stop} onPointerCancel={stop} onKeyDown={(event) => { if (event.code === 'Space' || event.code === 'Enter') start(); }} onKeyUp={stop}>Удерживать свет</button>
+      <p className="task-guidance">{litPanes.length === 4 ? 'За стеклом снова тепло.' : 'Нажми на тёмные стёкла и верни свет в окно.'}</p>
+      <div className="window-panes" aria-label={`Зажжено стёкол: ${litPanes.length} из 4`}>
+        {[0, 1, 2, 3].map((pane) => (
+          <button className={litPanes.includes(pane) ? 'is-lit' : ''} key={pane} onClick={() => lightPane(pane)} aria-label={`Зажечь стекло ${pane + 1}`} />
+        ))}
       </div>
-      <div className="task-progress"><i style={{ width: `${warmth}%` }} /></div>
+      <div className="task-progress"><i style={{ width: `${litPanes.length * 25}%` }} /></div>
     </>
   );
 }

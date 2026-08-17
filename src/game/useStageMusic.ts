@@ -13,6 +13,11 @@ const stageMoods: Partial<Record<GameStage, AmbienceMood>> = {
   yardIntro: 'yard',
   yard: 'yard',
   yellowReveal: 'yard',
+  red: 'red',
+  redReveal: 'red',
+  blue: 'blue',
+  return: 'room',
+  finale: 'finale',
 };
 
 export function useStageMusic(stage: GameStage) {

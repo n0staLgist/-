@@ -1,4 +1,4 @@
-export type AmbienceMood = 'room' | 'notebook' | 'yard' | 'memory';
+export type AmbienceMood = 'room' | 'notebook' | 'yard' | 'memory' | 'red' | 'blue' | 'finale';
 
 let context: AudioContext | null = null;
 let master: GainNode | null = null;
@@ -8,10 +8,13 @@ let currentMood: AmbienceMood = 'room';
 let noteIndex = 0;
 
 const themes: Record<AmbienceMood, { melody: number[]; interval: number }> = {
-  room: { melody: [164.81, 220, 0, 246.94, 220, 0, 196, 164.81, 0], interval: 1050 },
-  notebook: { melody: [146.83, 196, 0, 233.08, 0, 220, 196, 0, 0], interval: 1120 },
-  yard: { melody: [185, 246.94, 293.66, 0, 277.18, 246.94, 220, 0], interval: 860 },
-  memory: { melody: [130.81, 174.61, 0, 196, 174.61, 0, 146.83, 0, 0], interval: 1240 },
+  room: { melody: [164.81, 220, 246.94, 220, 0, 196, 164.81, 196], interval: 820 },
+  notebook: { melody: [146.83, 196, 233.08, 0, 220, 196, 174.61, 0], interval: 880 },
+  yard: { melody: [185, 246.94, 293.66, 277.18, 246.94, 220, 246.94, 0], interval: 720 },
+  memory: { melody: [130.81, 174.61, 196, 174.61, 0, 146.83, 164.81, 0], interval: 980 },
+  red: { melody: [146.83, 138.59, 164.81, 0, 146.83, 174.61, 138.59, 0], interval: 930 },
+  blue: { melody: [130.81, 0, 146.83, 130.81, 116.54, 0, 130.81, 0], interval: 1080 },
+  finale: { melody: [196, 246.94, 293.66, 246.94, 220, 293.66, 329.63, 0], interval: 760 },
 };
 
 const getAudioContext = () => {
@@ -36,11 +39,11 @@ const playMusicNote = () => {
   filter.type = 'lowpass';
   filter.frequency.value = 620;
   gain.gain.setValueAtTime(.0001, now);
-  gain.gain.exponentialRampToValueAtTime(.018, now + .025);
-  gain.gain.exponentialRampToValueAtTime(.0001, now + 1.3);
+  gain.gain.exponentialRampToValueAtTime(.042, now + .025);
+  gain.gain.exponentialRampToValueAtTime(.0001, now + 1.55);
   tone.connect(filter).connect(gain).connect(master);
   tone.start(now);
-  tone.stop(now + 1.35);
+  tone.stop(now + 1.6);
 };
 
 const rebuildMusic = () => {
@@ -48,7 +51,7 @@ const rebuildMusic = () => {
   if (melodyTimer !== null) window.clearInterval(melodyTimer);
   noteIndex = 0;
   melodyTimer = window.setInterval(playMusicNote, themes[currentMood].interval);
-  window.setTimeout(playMusicNote, 500);
+  window.setTimeout(playMusicNote, 180);
 };
 
 export function startAmbience(mood: AmbienceMood = currentMood) {
@@ -57,7 +60,7 @@ export function startAmbience(mood: AmbienceMood = currentMood) {
   if (master) return;
   master = audioContext.createGain();
   master.gain.setValueAtTime(.0001, audioContext.currentTime);
-  master.gain.exponentialRampToValueAtTime(.07, audioContext.currentTime + 1.4);
+  master.gain.exponentialRampToValueAtTime(.17, audioContext.currentTime + 1.2);
   master.connect(audioContext.destination);
   rebuildMusic();
 }
@@ -77,7 +80,7 @@ export function setAmbienceEnabled(enabled: boolean) {
   const now = context.currentTime;
   master.gain.cancelScheduledValues(now);
   master.gain.setValueAtTime(Math.max(master.gain.value, .0001), now);
-  master.gain.exponentialRampToValueAtTime(enabled ? .07 : .0001, now + .45);
+  master.gain.exponentialRampToValueAtTime(enabled ? .17 : .0001, now + .45);
 }
 
 export function stopAmbience() {

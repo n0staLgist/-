@@ -7,9 +7,9 @@ export function FinaleScene({ playerName, onRestart }: FinaleSceneProps) {
         <span className="eyebrow">эпилог · сегодня</span>
         <h1>Не завтра</h1>
         <p>Ты открываешь дверь. Ая всё ещё сидит в коридоре, прижимая рисунок к коленям.</p>
-        <div className="finale-dialogue"><b>{playerName}</b> Ая? Уже не занят. Показывай сейчас.</div>
+        <div className="finale-dialogue"><b>{playerName}</b> Ая? Я закончил. Можно посмотреть сейчас?</div>
         <div className="finale-dialogue"><b>Ая</b> Правда?</div>
-        <p>На её листе — одинокий маленький персонаж. Вы вместе дорисовываете ему друга и вкладываете рисунок в старую тетрадь.</p>
+        <p>Ая молча подвигается, освобождая рядом место. На её листе — одинокий маленький персонаж. Вы вместе дорисовываете ему друга и вкладываете рисунок в старую тетрадь.</p>
         <div className="finale-dialogue"><b>Штрих</b> Добро пожаловать.</div>
         <p className="finale-last">Гитара затихает. Впервые к ней присоединяется домбра.</p>
         <button className="pencil-button" onClick={onRestart}>Начать историю заново</button>
