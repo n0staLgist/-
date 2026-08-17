@@ -19,6 +19,7 @@ import { blueRoomScenes, redClassScenes } from '../game/chapters';
 import { setAmbienceEnabled, startAmbience, stopAmbience } from '../game/audio';
 import { endingLines, introLines, notebookLines, taskCopy, yardArrivalLines } from '../game/story';
 import { getChapterTitle, shouldShowGameHeader, type GameStage } from '../game/stage';
+import { useStageMusic } from '../game/useStageMusic';
 import { saveGameSetup, unlockChapter, type ChapterNumber } from '../game/gameSave';
 import type { ControlsMode, DialogueLine, GameSetup, RoomItem, YardTask } from '../game/types';
 import '../styles/prologue.css';
@@ -40,7 +41,7 @@ export function GamePage() {
   const [playerName, setPlayerName] = useState('Ты');
   const [controlsMode, setControlsMode] = useState<ControlsMode>('desktop');
 
-  useEffect(() => () => stopAmbience(), []);
+  useStageMusic(stage);
   useEffect(() => {
     if (stage === 'yellowReveal' || stage === 'red') unlockChapter(2);
     if (stage === 'redReveal' || stage === 'blue') unlockChapter(3);
@@ -76,7 +77,7 @@ export function GamePage() {
   };
 
   const start = (setup: GameSetup, chapter: ChapterNumber) => {
-    if (soundOn) startAmbience();
+    if (soundOn) startAmbience(chapter === 1 ? 'room' : 'memory');
     saveGameSetup(setup);
     setPlayerName(setup.playerName);
     setControlsMode(setup.controlsMode);

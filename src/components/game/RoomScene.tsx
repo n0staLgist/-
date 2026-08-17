@@ -53,6 +53,7 @@ const roomHints: Record<RoomItem, string> = {
 export function RoomScene({ packed, isInteractive = true, showTouchControls, onInspectItem, onNotebook }: RoomSceneProps) {
   const [examination, setExamination] = useState<string | null>(null);
   const [showCompletion, setShowCompletion] = useState(false);
+  const [showFirstStep, setShowFirstStep] = useState(true);
   const allPacked = packed.length === 3;
   useEffect(() => {
     if (!allPacked) return;
@@ -78,6 +79,9 @@ export function RoomScene({ packed, isInteractive = true, showTouchControls, onI
   const { position, isMoving, facing, startMoving, stopMoving } = useRoomMovement(canMove, interact, {
     start: { x: 88, y: 58 },
   });
+  useEffect(() => {
+    if (isMoving) setShowFirstStep(false);
+  }, [isMoving]);
 
   const nearbyItem = (Object.keys(itemPositions) as RoomItem[])
     .find((item) => !packed.includes(item) && distance(position, itemPositions[item]) < ITEM_REACH);
@@ -89,6 +93,7 @@ export function RoomScene({ packed, isInteractive = true, showTouchControls, onI
     <section className="scene room-scene" aria-label="Комната перед переездом">
       <RoomChecklist packed={packed} />
       <HintButton hint={nextItem ? roomHints[nextItem] : 'Все вещи собраны. Теперь подойди к тетради на столе.'} />
+      {showFirstStep && isInteractive && <div className="room-first-step"><strong>Осмотрись в комнате</strong><span>Иди на WASD или стрелках. Три нужные вещи слегка обведены карандашом.</span></div>}
       <div className="room-map">
         <div className="scene__shade" />
         {(Object.keys(roomItems) as RoomItem[]).map((item) => (

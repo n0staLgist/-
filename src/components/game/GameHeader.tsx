@@ -10,12 +10,11 @@ export function GameHeader({ chapter, soundOn, onSoundToggle, onRestart }: GameH
     <header className="game-header">
       <span>{chapter}</span>
       <div className="game-header__actions">
-        <button aria-label="Начать главу заново" onClick={onRestart}>↻</button>
+        <button className="game-header__text-button" aria-label="Вернуться в главное меню" onClick={onRestart}><span aria-hidden="true">←</span> Меню</button>
         <button aria-label={soundOn ? 'Выключить звук' : 'Включить звук'} onClick={onSoundToggle}>
-          {soundOn ? '♪' : '×'}
+          <span aria-hidden="true">{soundOn ? '♪' : '×'}</span><span className="sr-only">{soundOn ? 'Звук включён' : 'Звук выключен'}</span>
         </button>
       </div>
     </header>
   );
 }
-

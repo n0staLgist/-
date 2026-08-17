@@ -29,7 +29,11 @@ export function StartScreen({ onStart }: StartScreenProps) {
       <span className="opening-screen__pencil-mark opening-screen__pencil-mark--bottom" aria-hidden="true" />
       <div className="opening-screen__sketch" aria-hidden="true"><i /><i /><i /></div>
       <div className="opening-screen__copy">
+        <small className="opening-screen__eyebrow">сюжетная 2D-история</small>
         <h1>До завтра</h1>
+        <p className="opening-screen__lead">Перед переездом ты находишь тетрадь, в которой одно обещание всё ещё ждёт продолжения.</p>
+        <div className="opening-screen__meta" aria-label="Информация об игре"><span>15–25 минут</span><span>3 главы</span><span>лучше со звуком</span></div>
+        <div className="opening-screen__setup-card">
         <div className="opening-setup">
           <label>Как тебя называть?<input value={playerName} onChange={(event) => setPlayerName(event.target.value)} maxLength={18} placeholder="Ты" /></label>
           <fieldset><legend>На чём играешь?</legend>
@@ -45,6 +49,7 @@ export function StartScreen({ onStart }: StartScreenProps) {
           {save.unlockedChapter > 1 && <button className="opening-screen__start" onClick={() => start(save.unlockedChapter)}>Продолжить: глава {save.unlockedChapter} <span aria-hidden="true">→</span></button>}
           <button className={save.unlockedChapter === 1 ? 'opening-screen__start' : ''} onClick={() => start()}>{chapter === 1 ? 'Начать новую игру' : 'Начать выбранную главу'} <span aria-hidden="true">→</span></button>
           <button onClick={() => setShowControls(true)}>Управление</button>
+        </div>
         </div>
       </div>
       <small className="opening-screen__credit">by nOstaLgist aka ErKeK aka FeArtNeasLy</small>
