@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { StoryScene } from '../../game/types';
 import { displaySpeaker } from '../../game/playerName';
 import { useAdvanceKeys } from '../../game/useAdvanceKeys';
@@ -12,12 +13,21 @@ type RedClassSceneProps = {
 };
 
 export function RedClassScene({ scenes, sceneIndex, playerName, onNext }: RedClassSceneProps) {
+  const [exitRevealed, setExitRevealed] = useState(false);
   const scene = scenes[sceneIndex];
   const { visibleText, isComplete, complete } = useTypewriter(scene.dialogue, scene.speaker);
   const advance = isComplete ? onNext : complete;
   useAdvanceKeys(advance);
   const erased = sceneIndex >= 4;
-  const restored = sceneIndex >= 6;
+  const restored = sceneIndex >= scenes.length - 1;
+  const actionLabel = sceneIndex === 4 && exitRevealed ? 'Бросить его снова' : scene.action;
+  const handleAction = () => {
+    if (sceneIndex === 4 && !exitRevealed) {
+      setExitRevealed(true);
+      return;
+    }
+    onNext();
+  };
 
   return (
     <section className={`classroom-scene classroom-scene--${sceneIndex}`}>
@@ -41,7 +51,7 @@ export function RedClassScene({ scenes, sceneIndex, playerName, onNext }: RedCla
         <h1>{scene.title}</h1>
         <p>{scene.text}</p>
         <blockquote><SpeakerPortrait speaker={scene.speaker} /><b>{displaySpeaker(scene.speaker, playerName)}</b>{visibleText}<i className={isComplete ? '' : 'typewriter-caret'} aria-hidden="true" /></blockquote>
-        {isComplete && <button className="pencil-button" onClick={onNext}>{scene.action}</button>}
+        {isComplete && <button className="pencil-button" aria-live="polite" onClick={handleAction}>{actionLabel}</button>}
         <div className="story-card__progress">
           {scenes.map((item, index) => <i className={index <= sceneIndex ? 'is-filled' : ''} key={item.title} />)}
         </div>
