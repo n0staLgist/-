@@ -2,8 +2,11 @@ export type AmbienceMood = 'room' | 'notebook' | 'yard' | 'memory' | 'red' | 'bl
 
 let context: AudioContext | null = null;
 let master: GainNode | null = null;
+let effectsMaster: GainNode | null = null;
 let melodyTimer: number | null = null;
 let effectsEnabled = true;
+let musicVolume = .7;
+let effectsVolume = .7;
 let currentMood: AmbienceMood = 'room';
 let noteIndex = 0;
 
@@ -22,6 +25,26 @@ const getAudioContext = () => {
   if (context.state === 'suspended') void context.resume();
   return context;
 };
+
+const getEffectsOutput = () => {
+  const audioContext = getAudioContext();
+  if (!effectsMaster) {
+    effectsMaster = audioContext.createGain();
+    effectsMaster.gain.value = effectsVolume;
+    effectsMaster.connect(audioContext.destination);
+  }
+  return effectsMaster;
+};
+
+export function setMusicVolume(volume: number) {
+  musicVolume = Math.max(0, Math.min(1, volume));
+  if (context && master) master.gain.setTargetAtTime(effectsEnabled ? .24 * musicVolume : .0001, context.currentTime, .05);
+}
+
+export function setEffectsVolume(volume: number) {
+  effectsVolume = Math.max(0, Math.min(1, volume));
+  if (context && effectsMaster) effectsMaster.gain.setTargetAtTime(effectsEnabled ? effectsVolume : .0001, context.currentTime, .05);
+}
 
 const playMusicNote = () => {
   if (!effectsEnabled || !context || !master) return;
@@ -60,7 +83,7 @@ export function startAmbience(mood: AmbienceMood = currentMood) {
   if (master) return;
   master = audioContext.createGain();
   master.gain.setValueAtTime(.0001, audioContext.currentTime);
-  master.gain.exponentialRampToValueAtTime(.17, audioContext.currentTime + 1.2);
+  master.gain.exponentialRampToValueAtTime(.24 * musicVolume, audioContext.currentTime + 1.2);
   master.connect(audioContext.destination);
   rebuildMusic();
 }
@@ -80,7 +103,8 @@ export function setAmbienceEnabled(enabled: boolean) {
   const now = context.currentTime;
   master.gain.cancelScheduledValues(now);
   master.gain.setValueAtTime(Math.max(master.gain.value, .0001), now);
-  master.gain.exponentialRampToValueAtTime(enabled ? .17 : .0001, now + .45);
+  master.gain.exponentialRampToValueAtTime(enabled ? .24 * musicVolume : .0001, now + .45);
+  if (effectsMaster) effectsMaster.gain.setTargetAtTime(enabled ? effectsVolume : .0001, now, .05);
 }
 
 export function stopAmbience() {
@@ -89,6 +113,7 @@ export function stopAmbience() {
   void context?.close();
   context = null;
   master = null;
+  effectsMaster = null;
 }
 
 const voiceFrequency = (speaker?: string) => {
@@ -115,7 +140,7 @@ export function playWritingTick(speaker?: string) {
   gain.gain.setValueAtTime(.0001, now);
   gain.gain.exponentialRampToValueAtTime(.026, now + .008);
   gain.gain.exponentialRampToValueAtTime(.0001, now + .065);
-  oscillator.connect(filter).connect(gain).connect(audioContext.destination);
+  oscillator.connect(filter).connect(gain).connect(getEffectsOutput());
   oscillator.start();
   oscillator.stop(now + .07);
 }
@@ -130,6 +155,6 @@ export function playPageTurn() {
   const gain = audioContext.createGain();
   gain.gain.value = .075;
   source.buffer = buffer;
-  source.connect(gain).connect(audioContext.destination);
+  source.connect(gain).connect(getEffectsOutput());
   source.start();
 }

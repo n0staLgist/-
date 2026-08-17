@@ -1,6 +1,6 @@
 import '../../styles/notebookReveal.css';
-import notebookCover from '../../assets/game/notebook-cover-v1.png';
-import notebookPresent from '../../assets/game/notebook-present-v4.png';
+import notebookCover from '../../assets/game/notebook-cover-v1.webp';
+import notebookPresent from '../../assets/game/notebook-present-v4.webp';
 import { playPageTurn } from '../../game/audio';
 
 type NotebookSceneProps = {

@@ -1,13 +1,15 @@
 import { useCallback, useState } from 'react';
-import shtrikhYard from '../../assets/game/shtrikh-yard-present-v1.png';
+import shtrikhYard from '../../assets/game/shtrikh-yard-present-v1.webp';
 import { taskCopy } from '../../game/story';
 import type { YardTask } from '../../game/types';
 import { isYardPositionWalkable } from '../../game/yardGeometry';
 import { useRoomMovement, type RoomPosition } from '../../game/useRoomMovement';
 import { ExamineText } from './ExamineText';
 import { HintButton } from './HintButton';
+import { InteractionPrompt } from './InteractionPrompt';
 import { MovementControls } from './MovementControls';
 import { PlayerAvatar } from './PlayerAvatar';
+import { YardProgress } from './YardProgress';
 
 type YardSceneProps = { completed: YardTask[]; isInteractive: boolean; showTouchControls: boolean; onTask: (task: YardTask) => void; onFinish: () => void };
 
@@ -33,9 +35,9 @@ const shtrikhObservations = [
   'Штрих поправляет шарф целой рукой. Недорисованная остаётся неподвижной.',
 ];
 const yardHints: Record<YardTask, string> = {
-  swing: 'Слева осталась недорисованная качеля. Поймай жёлтую отметку в крайних точках.',
-  hopscotch: 'Классики находятся в центре. Сначала смотри, потом повтори порядок клеток.',
-  window: 'Тёмное окно наверху. Удерживай свет внутри жёлтой области шкалы.',
+  swing: 'Слева осталась недорисованная качеля. Толкни её три раза у жёлтой линии.',
+  hopscotch: 'Классики находятся в центре. Проведи по клеткам от первой до последней.',
+  window: 'Тёмное окно наверху. Зажги по очереди все четыре стекла.',
 };
 
 export function YardScene({ completed, isInteractive, showTouchControls, onTask, onFinish }: YardSceneProps) {
@@ -72,13 +74,9 @@ export function YardScene({ completed, isInteractive, showTouchControls, onTask,
       {completed.includes('hopscotch') && <div className="yard-restored-hopscotch" aria-label="Классики снова видны">{[0, 1, 2, 3, 4, 5].map((cell) => <i key={cell} />)}</div>}
       {completed.includes('window') && <div className="yard-restored-window" aria-label="В окне горит тёплый свет" />}
       <PlayerAvatar position={movement.position} facing={movement.facing} isMoving={movement.isMoving} />
-      <p className={`interaction-hint ${(nearbyTask || nearShtrikh || nearDetail) ? 'is-ready' : ''}`}>
-        {nearbyTask ? `E · ${taskCopy[nearbyTask].title}` : nearShtrikh ? (allDone ? 'E · Подойти к Штриху' : 'E · Поговорить со Штрихом') : nearDetail ? 'E · Осмотреть' : ''}
-      </p>
+      <InteractionPrompt position={movement.position} text={nearbyTask ? taskCopy[nearbyTask].title : nearShtrikh ? (allDone ? 'Подойти к Штриху' : 'Поговорить со Штрихом') : nearDetail ? 'Осмотреть' : ''} />
       {showTouchControls && <MovementControls onMoveStart={movement.startMoving} onMoveEnd={movement.stopMoving} onInteract={() => interact(movement.position)} />}
-      <div className="color-progress" aria-label={`Возвращено цветов: ${completed.length} из 3`}>
-        {[0, 1, 2].map((part) => <i className={part < completed.length ? 'filled' : ''} key={part} />)}
-      </div>
+      <YardProgress completed={completed} />
       {examination && <ExamineText text={examination} onClose={() => setExamination(null)} />}
     </section>
   );

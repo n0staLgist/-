@@ -4,21 +4,15 @@ import type { RoomItem } from '../../game/types';
 type RoomChecklistProps = { packed: RoomItem[] };
 
 const items = Object.keys(roomItems) as RoomItem[];
-const locations: Record<RoomItem, string> = {
-  cassette: 'у открытой коробки',
-  photo: 'возле батареи',
-  diary: 'у собранных коробок',
-};
-
 export function RoomChecklist({ packed }: RoomChecklistProps) {
   const isComplete = packed.length === items.length;
   return (
     <aside className="room-checklist" aria-label="Что положить в коробку">
       <strong>{isComplete ? 'Задание выполнено' : 'Сложи в открытую коробку'}</strong>
-      <small>{isComplete ? 'Тетрадь ждёт на столе' : 'Подойди к вещи и нажми E / Enter'}</small>
+      <small>{isComplete ? 'Тетрадь ждёт на столе' : `${packed.length} из ${items.length}`}</small>
       {items.map((item) => (
         <span className={packed.includes(item) ? 'is-done' : ''} key={item}>
-          <i aria-hidden="true">{packed.includes(item) ? '✓' : '○'}</i><b>{roomItems[item].label}</b><em>{locations[item]}</em>
+          <i aria-hidden="true">{packed.includes(item) ? '✓' : '○'}</i><b>{roomItems[item].label}</b>
         </span>
       ))}
     </aside>

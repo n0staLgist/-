@@ -1,7 +1,8 @@
-import ayaPortrait from '../../assets/game/portrait-aya-v2.png';
-import heroPortrait from '../../assets/game/portrait-hero-v3.png';
-import shtrikhChildPortrait from '../../assets/game/portrait-shtrikh-child-v1.png';
-import shtrikhPortrait from '../../assets/game/portrait-shtrikh-present-v1.png';
+import { useState } from 'react';
+import ayaPortrait from '../../assets/game/portrait-aya-v2.webp';
+import heroPortrait from '../../assets/game/portrait-hero-v3.webp';
+import shtrikhChildPortrait from '../../assets/game/portrait-shtrikh-child-v1.webp';
+import shtrikhPortrait from '../../assets/game/portrait-shtrikh-present-v1.webp';
 
 type SpeakerPortraitProps = { speaker?: string; childhood?: boolean };
 
@@ -13,5 +14,12 @@ export function SpeakerPortrait({ speaker, childhood = false }: SpeakerPortraitP
     : character === 'shtrikh'
       ? (childhood ? shtrikhChildPortrait : shtrikhPortrait)
       : heroPortrait;
-  return <span className={`speaker-portrait speaker-portrait--${character}`} aria-hidden="true"><img src={image} alt="" /></span>;
+  return <PortraitImage key={image} character={character} image={image} />;
+}
+
+function PortraitImage({ character, image }: { character: string; image: string }) {
+  const [loaded, setLoaded] = useState(false);
+  return <span className={`speaker-portrait speaker-portrait--${character} ${loaded ? 'is-loaded' : 'is-loading'}`} aria-hidden="true">
+    <img src={image} alt="" decoding="async" onLoad={() => setLoaded(true)} />
+  </span>;
 }

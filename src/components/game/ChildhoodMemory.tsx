@@ -3,7 +3,7 @@ import { useAdvanceKeys } from '../../game/useAdvanceKeys';
 import { useTypewriter } from '../../game/useTypewriter';
 import type { DialogueLine } from '../../game/types';
 import { displaySpeaker } from '../../game/playerName';
-import notebookChildhood from '../../assets/game/notebook-childhood-v4.png';
+import notebookChildhood from '../../assets/game/notebook-childhood-v4.webp';
 import { SpeakerPortrait } from './SpeakerPortrait';
 import '../../styles/childhoodMemory.css';
 

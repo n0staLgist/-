@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import prologueSeated from '../../assets/game/moving-room-side-seated-v4.png';
-import prologueSide from '../../assets/game/moving-room-side-simple-v4.png';
-import prologueTop from '../../assets/game/moving-room-topdown-simple-v7.png';
+import prologueSeated from '../../assets/game/moving-room-side-seated-v4.webp';
+import prologueSide from '../../assets/game/moving-room-side-simple-v4.webp';
+import prologueTop from '../../assets/game/moving-room-topdown-simple-v7.webp';
 import { loadGameSave, type ChapterNumber } from '../../game/gameSave';
 import type { ControlsMode, GameSetup } from '../../game/types';
 
@@ -20,10 +20,13 @@ export function StartScreen({ onStart }: StartScreenProps) {
     playerName: playerName.trim().slice(0, 18) || 'Ты',
   }, selectedChapter);
   useEffect(() => {
-    [prologueSide, prologueSeated, prologueTop].forEach((source) => {
+    const load = (source: string) => {
       const image = new Image();
       image.src = source;
-    });
+    };
+    load(prologueSeated);
+    const laterImages = window.setTimeout(() => [prologueSide, prologueTop].forEach(load), 1200);
+    return () => window.clearTimeout(laterImages);
   }, []);
 
   return (

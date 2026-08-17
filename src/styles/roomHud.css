@@ -1,7 +1,7 @@
 .room-checklist { position: fixed; z-index: 7; top: 68px; left: 22px; display: grid; gap: 5px; width: 255px; padding: 12px 15px; color: #fff9e8; background: #17130ebd; border-left: 2px solid #f2e5c8; text-shadow: 0 2px 8px #000; }
 .room-checklist strong { margin-bottom: 3px; font-size: 19px; }
 .room-checklist > small { margin: -2px 0 4px; color: #ddd1b9; font-size: 12px; }
-.room-checklist span { display: grid; grid-template-columns: 20px auto 1fr; align-items: baseline; gap: 4px; font-size: 15px; transition: opacity .3s; }
+.room-checklist span { display: grid; grid-template-columns: 20px auto; align-items: baseline; gap: 4px; font-size: 15px; transition: opacity .3s; }
 .room-checklist span.is-done { opacity: .55; text-decoration: line-through; }
 .room-checklist i, .room-checklist em { font-style: normal; }.room-checklist em { color: #d2c4aa; font-size: 12px; }
 .packed-box-items { position: absolute; z-index: 3; left: 5.8%; top: 67%; width: 11%; height: 12%; pointer-events: none; }.packed-box-item { position: absolute; width: 92px; height: 66px; background-image: var(--item-sprite); background-position: var(--item-sprite-position) center; background-size: 300% 100%; background-repeat: no-repeat; filter: saturate(.55) brightness(.72) drop-shadow(1px 2px 1px #22180e88); }.packed-box-item--0 { left: -4%; top: 25%; transform: rotate(-9deg); }.packed-box-item--1 { left: 22%; top: -2%; transform: rotate(7deg); }.packed-box-item--2 { left: 46%; top: 26%; transform: rotate(-2deg); }

@@ -2,11 +2,13 @@ import { useCallback, useEffect, useState, type CSSProperties } from 'react';
 import { roomItems } from '../../game/story';
 import type { RoomItem } from '../../game/types';
 import { useRoomMovement, type RoomPosition } from '../../game/useRoomMovement';
-import roomItemsSprite from '../../assets/game/room-items-v1.png';
+import { useIdleItemHint } from '../../game/useIdleItemHint';
+import roomItemsSprite from '../../assets/game/room-items-v1.webp';
 import { MovementControls } from './MovementControls';
 import { PlayerAvatar } from './PlayerAvatar';
 import { ExamineText } from './ExamineText';
 import { HintButton } from './HintButton';
+import { InteractionPrompt } from './InteractionPrompt';
 import { RoomChecklist } from './RoomChecklist';
 import '../../styles/roomHud.css';
 
@@ -85,6 +87,8 @@ export function RoomScene({ packed, isInteractive = true, showTouchControls, onI
 
   const nearbyItem = (Object.keys(itemPositions) as RoomItem[])
     .find((item) => !packed.includes(item) && distance(position, itemPositions[item]) < ITEM_REACH);
+  const remainingItems = (Object.keys(itemPositions) as RoomItem[]).filter((item) => !packed.includes(item));
+  const hintedItem = useIdleItemHint(remainingItems, isMoving);
   const nearNotebook = distance(position, notebookPosition) < NOTEBOOK_REACH;
   const nearDetail = roomDetails.some((entry) => distance(position, entry.position) < DETAIL_REACH);
   const nextItem = (Object.keys(roomItems) as RoomItem[]).find((item) => !packed.includes(item));
@@ -97,7 +101,7 @@ export function RoomScene({ packed, isInteractive = true, showTouchControls, onI
       <div className="room-map">
         <div className="scene__shade" />
         {(Object.keys(roomItems) as RoomItem[]).map((item) => (
-          <button className={`hotspot hotspot--${item} ${packed.includes(item) ? 'is-done' : ''} ${nearbyItem === item ? 'is-near' : ''}`} key={item} style={{ left: `${itemPositions[item].x}%`, top: `${itemPositions[item].y}%`, '--item-sprite': `url(${roomItemsSprite})`, '--item-sprite-position': itemSpritePositions[item] } as ItemStyle} onClick={() => onInspectItem(item)} disabled={packed.includes(item) || !isInteractive || nearbyItem !== item}>
+          <button className={`hotspot hotspot--${item} ${packed.includes(item) ? 'is-done' : ''} ${nearbyItem === item ? 'is-near' : ''} ${hintedItem === item ? 'is-hinted' : ''}`} key={item} style={{ left: `${itemPositions[item].x}%`, top: `${itemPositions[item].y}%`, '--item-sprite': `url(${roomItemsSprite})`, '--item-sprite-position': itemSpritePositions[item] } as ItemStyle} onClick={() => onInspectItem(item)} disabled={packed.includes(item) || !isInteractive || nearbyItem !== item}>
             <i aria-hidden="true" />
             <span>{roomItems[item].label}</span>
           </button>
@@ -108,11 +112,11 @@ export function RoomScene({ packed, isInteractive = true, showTouchControls, onI
         <button className={`notebook-hotspot ${nearNotebook ? 'is-near' : ''}`} onClick={onNotebook} disabled={!allPacked || !nearNotebook}>Открыть тетрадь</button>
         {isInteractive && <>
           <PlayerAvatar position={position} facing={facing} isMoving={isMoving} />
+          <InteractionPrompt position={position} text={nearbyItem ? `Взять: ${roomItems[nearbyItem].label}` : nearNotebook ? (allPacked ? 'Взять тетрадь' : 'Осмотреть тетрадь') : nearDetail ? 'Осмотреть' : ''} />
           {showTouchControls && <MovementControls onMoveStart={startMoving} onMoveEnd={stopMoving} onInteract={() => interact(position)} />}
         </>}
         {examination && <ExamineText text={examination} onClose={() => setExamination(null)} />}
       </div>
-      {isInteractive && <p className={`interaction-hint ${(nearbyItem || nearNotebook || nearDetail) ? 'is-ready' : ''}`}>{nearbyItem ? `Взять: ${roomItems[nearbyItem].label} · E / Enter` : nearNotebook ? (allPacked ? 'Взять тетрадь · E / Enter' : 'Осмотреть тетрадь · E / Enter') : nearDetail ? 'Осмотреть · E / Enter' : ''}</p>}
       {showCompletion && <div className="quest-complete"><small>Задание выполнено</small><strong>Последняя коробка собрана</strong><span>Теперь можно открыть тетрадь на столе.</span></div>}
     </section>
   );

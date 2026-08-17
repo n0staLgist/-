@@ -16,10 +16,11 @@ import { StartScreen } from '../components/game/StartScreen';
 import { TaskCard } from '../components/game/TaskCard';
 import { YardScene } from '../components/game/YardScene';
 import { blueRoomScenes, redClassScenes } from '../game/chapters';
-import { setAmbienceEnabled, startAmbience, stopAmbience } from '../game/audio';
+import { startAmbience, stopAmbience } from '../game/audio';
 import { endingLines, introLines, notebookLines, taskCopy, yardArrivalLines } from '../game/story';
 import { getChapterTitle, shouldShowGameHeader, type GameStage } from '../game/stage';
 import { useStageMusic } from '../game/useStageMusic';
+import { useAudioControls } from '../game/useAudioControls';
 import { saveGameSetup, unlockChapter, type ChapterNumber } from '../game/gameSave';
 import type { ControlsMode, DialogueLine, GameSetup, RoomItem, YardTask } from '../game/types';
 import '../styles/prologue.css';
@@ -37,7 +38,7 @@ export function GamePage() {
   const [activeTask, setActiveTask] = useState<YardTask | null>(null);
   const [storyIndex, setStoryIndex] = useState(0);
   const [activeMemory, setActiveMemory] = useState<RoomItem | null>(null);
-  const [soundOn, setSoundOn] = useState(true);
+  const { soundOn, musicLevel, effectsLevel, toggleSound, changeMusicLevel, changeEffectsLevel } = useAudioControls();
   const [playerName, setPlayerName] = useState('Ты');
   const [controlsMode, setControlsMode] = useState<ControlsMode>('desktop');
 
@@ -129,15 +130,9 @@ export function GamePage() {
     setStoryIndex(0);
   };
 
-  const toggleSound = () => {
-    const nextValue = !soundOn;
-    setSoundOn(nextValue);
-    setAmbienceEnabled(nextValue);
-  };
-
   return (
     <main className="game-shell">
-      {shouldShowGameHeader(stage) && <GameHeader chapter={getChapterTitle(stage)} soundOn={soundOn} onSoundToggle={toggleSound} onRestart={restart} />}
+      {shouldShowGameHeader(stage) && <GameHeader chapter={getChapterTitle(stage)} effectsVolume={effectsLevel} musicVolume={musicLevel} soundOn={soundOn} onEffectsVolumeChange={changeEffectsLevel} onMusicVolumeChange={changeMusicLevel} onSoundToggle={toggleSound} onRestart={restart} />}
       {stage === 'start' && <StartScreen onStart={start} />}
       {stage === 'prologue' && <PrologueScene lineIndex={lineIndex} />}
       {stage === 'prologueExit' && <PrologueScene lineIndex={introLines.length} leaving />}
@@ -154,7 +149,7 @@ export function GamePage() {
       {stage === 'blue' && <BlueRoomScene scenes={blueRoomScenes} sceneIndex={storyIndex} playerName={playerName} onNext={() => advanceStory(blueRoomScenes.length, 'return')} />}
       {stage === 'return' && <ReturnToRoomScene onContinue={() => setStage('finale')} />}
       {stage === 'finale' && <FinaleScene playerName={playerName} onRestart={restart} />}
-      {activeTask && <TaskCard task={activeTask} onComplete={finishTask} />}
+      {activeTask && <TaskCard task={activeTask} onCancel={() => setActiveTask(null)} onComplete={finishTask} />}
       {activeMemory && <RoomMemory item={activeMemory} onCollect={collectItem} />}
       {dialogue.length > 0 && lineIndex < dialogue.length - 1 && <DialogueBox line={dialogue[lineIndex]} current={lineIndex} total={dialogue.length - 1} playerName={playerName} onNext={nextLine} />}
     </main>

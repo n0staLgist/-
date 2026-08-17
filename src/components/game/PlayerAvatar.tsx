@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
-import heroIdleSprite from '../../assets/game/hero-idle-four-direction-v1.png';
-import heroWalkSprite from '../../assets/game/hero-four-direction-v4.png';
+import heroIdleSprite from '../../assets/game/hero-idle-four-direction-v1.webp';
+import heroWalkSprite from '../../assets/game/hero-four-direction-v4.webp';
 import type { FacingDirection, RoomPosition } from '../../game/useRoomMovement';
 import '../../styles/playerAvatar.css';
 
