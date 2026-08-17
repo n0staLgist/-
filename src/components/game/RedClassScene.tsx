@@ -16,8 +16,6 @@ export function RedClassScene({ scenes, sceneIndex, playerName, onNext }: RedCla
   const [exitRevealed, setExitRevealed] = useState(false);
   const scene = scenes[sceneIndex];
   const { visibleText, isComplete, complete } = useTypewriter(scene.dialogue, scene.speaker);
-  const advance = isComplete ? onNext : complete;
-  useAdvanceKeys(advance);
   const erased = sceneIndex >= 4;
   const restored = sceneIndex >= scenes.length - 1;
   const actionLabel = sceneIndex === 4 && exitRevealed ? 'Бросить его снова' : scene.action;
@@ -28,6 +26,7 @@ export function RedClassScene({ scenes, sceneIndex, playerName, onNext }: RedCla
     }
     onNext();
   };
+  useAdvanceKeys(isComplete ? handleAction : complete);
 
   return (
     <section className={`classroom-scene classroom-scene--${sceneIndex}`}>
