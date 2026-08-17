@@ -10,19 +10,20 @@ import { InteractionPrompt } from './InteractionPrompt';
 import { MovementControls } from './MovementControls';
 import { PlayerAvatar } from './PlayerAvatar';
 import { YardProgress } from './YardProgress';
+import { YardMemoryEchoes } from './YardMemoryEchoes';
 
 type YardSceneProps = { completed: YardTask[]; isInteractive: boolean; showTouchControls: boolean; onTask: (task: YardTask) => void; onFinish: () => void };
 
 const taskPositions: Record<YardTask, RoomPosition> = {
-  swing: { x: 30, y: 62 }, hopscotch: { x: 59, y: 66 }, window: { x: 50, y: 28 },
+  swing: { x: 42, y: 55 }, hopscotch: { x: 56, y: 68 }, window: { x: 50, y: 26 },
 };
 const details = [
-  { position: { x: 70, y: 30 }, text: 'Подъездная дверь. В детстве она казалась тяжелее.' },
-  { position: { x: 81, y: 50 }, text: 'Скамейка. Здесь взрослые звали детей домой по именам.' },
-  { position: { x: 49, y: 87 }, text: 'Низкий забор. Мяч всегда перелетал его с первого удара.' },
-  { position: { x: 13, y: 45 }, text: 'Тополь шуршит так же, как страница, которую не решаешься перевернуть.' },
-  { position: { x: 86, y: 63 }, text: 'Ворота без сетки. Гол засчитывался, только если никто не спорил.' },
-  { position: { x: 40, y: 48 }, text: 'Мел почти стёрся. Осталась линия, которую никто не закончил.' },
+  { position: { x: 67, y: 25 }, text: 'Подъездная дверь. В детстве она казалась тяжелее.' },
+  { position: { x: 60, y: 25 }, text: 'Велосипед прислонён к стене. Цепь всё ещё слетает на третьей передаче.' },
+  { position: { x: 71, y: 42 }, text: 'Мяч остался под лавкой. Будто хозяин отошёл всего на минуту.' },
+  { position: { x: 27, y: 70 }, text: 'В песочнице стоит один жестяной стаканчик. Остальные формочки кто-то унёс.' },
+  { position: { x: 40, y: 67 }, text: 'Меловой город расходится стрелками во все стороны. Ни одна не ведёт домой.' },
+  { position: { x: 85, y: 52 }, text: 'В луже отражается пустое окно. Ветер не может пошевелить отражение.' },
 ];
 const distance = (a: RoomPosition, b: RoomPosition) => Math.hypot(a.x - b.x, a.y - b.y);
 const TASK_REACH = 6.5;
@@ -73,6 +74,7 @@ export function YardScene({ completed, isInteractive, showTouchControls, onTask,
       {completed.includes('swing') && <div className="yard-restored-swing" aria-label="Качеля восстановлена"><i /><b /></div>}
       {completed.includes('hopscotch') && <div className="yard-restored-hopscotch" aria-label="Классики снова видны">{[0, 1, 2, 3, 4, 5].map((cell) => <i key={cell} />)}</div>}
       {completed.includes('window') && <div className="yard-restored-window" aria-label="В окне горит тёплый свет" />}
+      <YardMemoryEchoes completed={completed} />
       <PlayerAvatar position={movement.position} facing={movement.facing} isMoving={movement.isMoving} />
       <InteractionPrompt position={movement.position} text={nearbyTask ? taskCopy[nearbyTask].title : nearShtrikh ? (allDone ? 'Подойти к Штриху' : 'Поговорить со Штрихом') : nearDetail ? 'Осмотреть' : ''} />
       {showTouchControls && <MovementControls onMoveStart={movement.startMoving} onMoveEnd={movement.stopMoving} onInteract={() => interact(movement.position)} />}
