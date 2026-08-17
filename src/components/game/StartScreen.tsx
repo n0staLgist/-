@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import prologueSeated from '../../assets/game/moving-room-side-seated-v4.png';
+import prologueSide from '../../assets/game/moving-room-side-simple-v4.png';
+import prologueTop from '../../assets/game/moving-room-topdown-simple-v7.png';
 import { loadGameSave, type ChapterNumber } from '../../game/gameSave';
 import type { ControlsMode, GameSetup } from '../../game/types';
 
@@ -16,23 +19,22 @@ export function StartScreen({ onStart }: StartScreenProps) {
     controlsMode,
     playerName: playerName.trim().slice(0, 18) || 'Ты',
   }, selectedChapter);
+  useEffect(() => {
+    [prologueSide, prologueSeated, prologueTop].forEach((source) => {
+      const image = new Image();
+      image.src = source;
+    });
+  }, []);
 
   return (
     <section className="opening-screen">
       <span className="opening-screen__margin" aria-hidden="true" />
-      <div className="opening-screen__notes" aria-hidden="true">
-        <span>одна старая тетрадь · одно обещание</span>
-        <span>«Сегодня уже завтра?»</span>
-        <span>Некоторые обещания помнят дольше, чем люди.</span>
-      </div>
       <span className="opening-screen__pencil-mark opening-screen__pencil-mark--top" aria-hidden="true" />
       <span className="opening-screen__pencil-mark opening-screen__pencil-mark--bottom" aria-hidden="true" />
       <div className="opening-screen__sketch" aria-hidden="true"><i /><i /><i /></div>
+      <div className="opening-screen__doodles" aria-hidden="true"><i /><i /><i /><i /><i /></div>
       <div className="opening-screen__copy">
-        <small className="opening-screen__eyebrow">сюжетная 2D-история</small>
         <h1>До завтра</h1>
-        <p className="opening-screen__lead">Перед переездом ты находишь тетрадь, в которой одно обещание всё ещё ждёт продолжения.</p>
-        <div className="opening-screen__meta" aria-label="Информация об игре"><span>15–25 минут</span><span>3 главы</span><span>лучше со звуком</span></div>
         <div className="opening-screen__setup-card">
         <div className="opening-setup">
           <label>Как тебя называть?<input value={playerName} onChange={(event) => setPlayerName(event.target.value)} maxLength={18} placeholder="Ты" /></label>

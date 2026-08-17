@@ -27,28 +27,20 @@ const playMusicNote = () => {
   noteIndex += 1;
   if (!frequency) return;
   const now = context.currentTime;
-  const stringNoise = context.createBuffer(1, Math.round(context.sampleRate * .035), context.sampleRate);
-  const samples = stringNoise.getChannelData(0);
-  for (let index = 0; index < samples.length; index += 1) samples[index] = Math.random() * 2 - 1;
-  const pluck = context.createBufferSource();
-  const delay = context.createDelay();
-  const feedback = context.createGain();
+  const tone = context.createOscillator();
   const filter = context.createBiquadFilter();
   const gain = context.createGain();
-  pluck.buffer = stringNoise;
-  delay.delayTime.value = 1 / frequency;
-  feedback.gain.value = .86;
+  tone.type = 'triangle';
+  tone.frequency.setValueAtTime(frequency, now);
+  tone.frequency.exponentialRampToValueAtTime(frequency * .996, now + 1.3);
   filter.type = 'lowpass';
-  filter.frequency.value = currentMood === 'yard' ? 1750 : 1350;
-  gain.gain.setValueAtTime(.095, now);
-  gain.gain.exponentialRampToValueAtTime(.0001, now + 2.8);
-  pluck.connect(filter);
-  filter.connect(delay);
-  delay.connect(feedback).connect(filter);
-  delay.connect(gain).connect(master);
-  pluck.start(now);
-  pluck.stop(now + .04);
-  window.setTimeout(() => { delay.disconnect(); feedback.disconnect(); filter.disconnect(); gain.disconnect(); }, 3000);
+  filter.frequency.value = 620;
+  gain.gain.setValueAtTime(.0001, now);
+  gain.gain.exponentialRampToValueAtTime(.018, now + .025);
+  gain.gain.exponentialRampToValueAtTime(.0001, now + 1.3);
+  tone.connect(filter).connect(gain).connect(master);
+  tone.start(now);
+  tone.stop(now + 1.35);
 };
 
 const rebuildMusic = () => {
@@ -65,7 +57,7 @@ export function startAmbience(mood: AmbienceMood = currentMood) {
   if (master) return;
   master = audioContext.createGain();
   master.gain.setValueAtTime(.0001, audioContext.currentTime);
-  master.gain.exponentialRampToValueAtTime(.24, audioContext.currentTime + 1.4);
+  master.gain.exponentialRampToValueAtTime(.07, audioContext.currentTime + 1.4);
   master.connect(audioContext.destination);
   rebuildMusic();
 }
@@ -85,7 +77,7 @@ export function setAmbienceEnabled(enabled: boolean) {
   const now = context.currentTime;
   master.gain.cancelScheduledValues(now);
   master.gain.setValueAtTime(Math.max(master.gain.value, .0001), now);
-  master.gain.exponentialRampToValueAtTime(enabled ? .24 : .0001, now + .45);
+  master.gain.exponentialRampToValueAtTime(enabled ? .07 : .0001, now + .45);
 }
 
 export function stopAmbience() {
