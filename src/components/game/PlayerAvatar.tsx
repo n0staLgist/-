@@ -1,5 +1,7 @@
 import type { CSSProperties } from 'react';
 import heroIdleSprite from '../../assets/game/hero-idle-four-direction-v1.webp';
+import heroSideIdleSprite from '../../assets/game/hero-side-idle-v1.webp';
+import heroSideWalkSprite from '../../assets/game/hero-side-walk-v1.webp';
 import heroWalkSprite from '../../assets/game/hero-four-direction-v5.webp';
 import type { FacingDirection, RoomPosition } from '../../game/useRoomMovement';
 import '../../styles/playerAvatar.css';
@@ -13,6 +15,8 @@ type PlayerAvatarProps = {
 type PlayerStyle = CSSProperties & {
   '--idle-sprite': string;
   '--player-scale': number;
+  '--side-idle-sprite': string;
+  '--side-walk-sprite': string;
   '--walk-sprite': string;
 };
 
@@ -23,6 +27,8 @@ export function PlayerAvatar({ position, facing, isMoving }: PlayerAvatarProps) 
     top: `${position.y}%`,
     '--idle-sprite': `url(${heroIdleSprite})`,
     '--player-scale': depthScale,
+    '--side-idle-sprite': `url(${heroSideIdleSprite})`,
+    '--side-walk-sprite': `url(${heroSideWalkSprite})`,
     '--walk-sprite': `url(${heroWalkSprite})`,
   };
 
