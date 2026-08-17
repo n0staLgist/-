@@ -32,10 +32,8 @@ export function StartScreen({ onStart }: StartScreenProps) {
   return (
     <section className="opening-screen">
       <span className="opening-screen__margin" aria-hidden="true" />
-      <span className="opening-screen__pencil-mark opening-screen__pencil-mark--top" aria-hidden="true" />
-      <span className="opening-screen__pencil-mark opening-screen__pencil-mark--bottom" aria-hidden="true" />
-      <div className="opening-screen__sketch" aria-hidden="true"><i /><i /><i /></div>
-      <div className="opening-screen__doodles" aria-hidden="true"><i /><i /><i /><i /><i /></div>
+      <span className="opening-screen__fold" aria-hidden="true" />
+      <span className="opening-screen__bookmark" aria-hidden="true" />
       <div className="opening-screen__copy">
         <h1>До завтра</h1>
         <div className="opening-screen__setup-card">

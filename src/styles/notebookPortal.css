@@ -1,9 +1,12 @@
-.notebook-portal { position: fixed; inset: 0; z-index: 45; display: grid; place-items: center; overflow: hidden; color: #342e26; background: #16130f; }
-.notebook-portal__page { position: relative; width: min(900px, 92vw); height: min(620px, 78vh); display: grid; place-content: center; padding: 50px; text-align: center; background-color: #eee2c5; background-image: linear-gradient(#8097a51e 1px, transparent 1px), linear-gradient(90deg, #8097a51e 1px, transparent 1px); background-size: 28px 28px; box-shadow: 0 28px 100px #000b; animation: portal-page 8s ease-in both; }
-.notebook-portal__line { position: absolute; left: 8%; right: 8%; top: 53%; border-top: 5px solid #d0a333; transform-origin: left; animation: portal-line 5.4s .8s ease-out both; }
-.notebook-portal__figures { position: absolute; left: 48%; top: 46%; display: flex; gap: 13px; align-items: flex-end; animation: portal-walk 5.4s 1.2s ease-in-out both; }.notebook-portal__figures i, .notebook-portal__figures b { display: block; width: 22px; height: 49px; border: 3px solid #34302a; border-radius: 45% 45% 30% 30%; background: #73808b; }.notebook-portal__figures b { width: 18px; height: 42px; background: #eee2c5; }
-.notebook-portal p, .notebook-portal strong { position: relative; z-index: 2; max-width: 520px; opacity: 0; }.notebook-portal p { margin: 0 0 12px; font: 600 25px Caveat, cursive; animation: portal-copy 7s .35s both; }.notebook-portal strong { color: #8b6923; font: 700 19px Caveat, cursive; animation: portal-copy 5.8s 1.75s both; }
+.notebook-portal { position: fixed; inset: 0; z-index: 45; overflow: hidden; background: #17130f; }
+.notebook-portal__page { position: absolute; inset: 0; overflow: hidden; background-color: #eee2c5; background-image: linear-gradient(#8097a523 1px, transparent 1px), linear-gradient(90deg, #8097a523 1px, transparent 1px); background-size: 28px 28px; animation: portal-page 5.2s ease-in both; }
+.notebook-portal__margin { position: absolute; z-index: 3; top: 0; bottom: 0; left: 9%; width: 2px; background: #ad5d536e; }
+.notebook-portal__line { position: absolute; z-index: 4; left: 7%; right: 7%; top: 54%; border-top: 5px solid #c99d30; transform-origin: left; animation: portal-line 3.7s .35s ease-out both; }
+.notebook-portal__figures { position: absolute; z-index: 5; left: 47%; top: calc(54% - 45px); display: flex; gap: 12px; align-items: flex-end; animation: portal-walk 3.8s .65s ease-in-out both; }
+.notebook-portal__figures i, .notebook-portal__figures b { display: block; width: 22px; height: 48px; border: 3px solid #34302a; border-radius: 45% 45% 30% 30%; background: #73808b; }
+.notebook-portal__figures b { width: 18px; height: 42px; background: #eee2c5; }
+.notebook-portal__asphalt { position: absolute; z-index: 2; inset: 48% 0 0; background-color: #776746; background-image: radial-gradient(circle at 20% 40%, #3c332922 0 1px, transparent 2px), linear-gradient(7deg, transparent 49.5%, #40372e42 50%, transparent 50.5%); background-size: 15px 13px, 110px 75px; transform-origin: bottom; animation: portal-asphalt 5.2s ease-in both; }
 @keyframes portal-line { from { transform: scaleX(0); } }
-@keyframes portal-walk { from { opacity: 0; transform: translateX(-180px); } 25% { opacity: 1; } to { opacity: 0; transform: translateX(220px); } }
-@keyframes portal-copy { 0%, 8% { opacity: 0; transform: translateY(8px); } 20%, 75% { opacity: 1; transform: none; } 100% { opacity: 0; } }
-@keyframes portal-page { 0%, 78% { filter: sepia(0); transform: scale(1); } 100% { filter: sepia(.35) brightness(.75); transform: scale(1.18); opacity: 0; } }
+@keyframes portal-walk { 0% { opacity: 0; transform: translateX(-38vw); } 18%, 78% { opacity: 1; } 100% { opacity: 0; transform: translateX(36vw); } }
+@keyframes portal-asphalt { 0%, 48% { opacity: 0; transform: translateY(35%); } 82%, 100% { opacity: 1; transform: none; } }
+@keyframes portal-page { 0%, 72% { filter: none; transform: scale(1); } 100% { filter: sepia(.28) brightness(.72); transform: scale(1.06); opacity: 0; } }

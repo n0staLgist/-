@@ -27,7 +27,7 @@ import '../styles/prologue.css';
 import '../styles/roomMemory.css';
 
 const PROLOGUE_EXIT_DURATION_MS = 5200;
-const YARD_TRANSITION_DURATION_MS = 8000;
+const YARD_TRANSITION_DURATION_MS = 5200;
 
 export function GamePage() {
   const [stage, setStage] = useState<GameStage>('start');
