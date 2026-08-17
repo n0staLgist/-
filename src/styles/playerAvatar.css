@@ -1,23 +1,25 @@
-.player-avatar { --facing-row: 0%; --idle-column: 0%; position: absolute; z-index: 5; width: clamp(225px, 20vw, 290px); aspect-ratio: 1; pointer-events: none; transform: translate(-50%, -84%) scale(var(--player-scale)); transform-origin: 50% 100%; filter: saturate(.72) sepia(.12) contrast(.92) brightness(.88) drop-shadow(3px 5px 2px #39291f55); will-change: left, top, transform; }
+.player-avatar { --facing-row: 0%; --idle-column: 0%; position: absolute; z-index: 5; width: clamp(195px, 17vw, 245px); aspect-ratio: 1; pointer-events: none; transform: translate(-50%, -84%) scale(var(--player-scale)); transform-origin: 50% 100%; filter: saturate(.72) sepia(.12) contrast(.92) brightness(.88); will-change: left, top, transform; }
+.player-avatar.is-walking { transform: translate(-50%, -91%) scale(var(--player-scale)); }
 .player-avatar[data-facing='up'] { --facing-row: 33.333%; --idle-column: 33.333%; }
 .player-avatar[data-facing='left'] { --facing-row: 66.667%; --idle-column: 66.667%; }
 .player-avatar[data-facing='right'] { --facing-row: 100%; --idle-column: 100%; }
-.player-avatar__sprite { width: 100%; height: 100%; display: block; background: var(--idle-sprite) var(--idle-column) center / 400% 100% no-repeat; transform-origin: 50% 84%; will-change: background-position, transform; }
-.player-avatar.is-walking .player-avatar__sprite { background-image: var(--walk-sprite); background-size: 400% 400%; background-position: 0 var(--facing-row); animation: avatar-walk .5s steps(1) infinite; }
+.player-avatar__shadow { position: absolute; z-index: -1; left: 50%; bottom: 6%; width: 28%; height: 7%; border-radius: 50%; background: #21180f4f; filter: blur(2px); transform: translateX(-50%); }
+.player-avatar__sprite { position: relative; width: 100%; height: 100%; display: block; background: var(--idle-sprite) var(--idle-column) center / 400% 100% no-repeat; transform-origin: 50% 90%; will-change: background-position, transform; }
+.player-avatar.is-walking .player-avatar__sprite { background-image: var(--walk-sprite); background-size: 400% 400%; background-position: 0 var(--facing-row); animation: avatar-walk .44s steps(1) infinite; }
 .player-avatar.is-walking[data-facing='up'] .player-avatar__sprite, .player-avatar.is-walking[data-facing='down'] .player-avatar__sprite { animation-name: avatar-walk-vertical; }
 .player-avatar:not(.is-walking) .player-avatar__sprite { animation: avatar-idle 5.8s ease-in-out infinite; }
 .player-avatar.is-walking[data-facing='up'] .player-avatar__sprite, .player-avatar.is-walking[data-facing='left'] .player-avatar__sprite, .player-avatar.is-walking[data-facing='right'] .player-avatar__sprite { clip-path: inset(7% 0 0); }
 @keyframes avatar-walk {
-  0%, 24.99% { background-position: 0 var(--facing-row); transform: translateY(0) rotate(-.35deg); }
-  25%, 49.99% { background-position: 33.333% var(--facing-row); transform: translateY(-1.2%) rotate(0); }
-  50%, 74.99% { background-position: 66.667% var(--facing-row); transform: translateY(0) rotate(.35deg); }
-  75%, 100% { background-position: 100% var(--facing-row); transform: translateY(-1.2%) rotate(0); }
+  0%, 24.99% { background-position: 0 var(--facing-row); transform: translateY(0); }
+  25%, 49.99% { background-position: 33.333% var(--facing-row); transform: translateY(-2px); }
+  50%, 74.99% { background-position: 66.667% var(--facing-row); transform: translateY(0); }
+  75%, 100% { background-position: 100% var(--facing-row); transform: translateY(-2px); }
 }
 @keyframes avatar-walk-vertical {
   0%, 24.99% { background-position: 0 var(--facing-row); transform: translateY(0); }
-  25%, 49.99% { background-position: 33.333% var(--facing-row); transform: translateY(-.7%); }
+  25%, 49.99% { background-position: 33.333% var(--facing-row); transform: translateY(-2px); }
   50%, 74.99% { background-position: 66.667% var(--facing-row); transform: translateY(0); }
-  75%, 100% { background-position: 100% var(--facing-row); transform: translateY(-.7%); }
+  75%, 100% { background-position: 100% var(--facing-row); transform: translateY(-2px); }
 }
 @keyframes avatar-idle { 45%, 55% { transform: scale(1.006); } }
 @media (max-width: 700px) { .player-avatar { width: clamp(140px, 32vw, 170px); } }

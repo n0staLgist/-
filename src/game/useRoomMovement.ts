@@ -76,12 +76,12 @@ export function useRoomMovement(enabled: boolean, onInteract: (position: RoomPos
       const targetX = length > 0 ? (dx / length) * speed : 0;
       const targetY = length > 0 ? (dy / length) * speed : 0;
       const deltaSeconds = Math.min(time - previousTime, 32) / 1000;
-      const easing = 1 - Math.exp(-(length > 0 ? 14 : 20) * deltaSeconds);
+      const easing = 1 - Math.exp(-(length > 0 ? 30 : 16) * deltaSeconds);
       velocityRef.current = {
         x: velocityRef.current.x + (targetX - velocityRef.current.x) * easing,
         y: velocityRef.current.y + (targetY - velocityRef.current.y) * easing,
       };
-      const moving = Math.hypot(velocityRef.current.x, velocityRef.current.y) > 0.35;
+      const moving = Math.hypot(velocityRef.current.x, velocityRef.current.y) > 0.18;
       setIsMoving((current) => current === moving ? current : moving);
       const nextFacing: FacingDirection | null = Math.abs(dx) > Math.abs(dy)
         ? (dx < 0 ? 'left' : 'right')

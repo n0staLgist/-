@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 import heroIdleSprite from '../../assets/game/hero-idle-four-direction-v1.webp';
-import heroWalkSprite from '../../assets/game/hero-four-direction-v4.webp';
+import heroWalkSprite from '../../assets/game/hero-four-direction-v5.webp';
 import type { FacingDirection, RoomPosition } from '../../game/useRoomMovement';
 import '../../styles/playerAvatar.css';
 
@@ -28,6 +28,7 @@ export function PlayerAvatar({ position, facing, isMoving }: PlayerAvatarProps) 
 
   return (
     <div className={`player-avatar ${isMoving ? 'is-walking' : ''}`} data-facing={facing} style={style} aria-label="Герой">
+      <span className="player-avatar__shadow" aria-hidden="true" />
       <span className="player-avatar__sprite" aria-hidden="true" />
     </div>
   );
