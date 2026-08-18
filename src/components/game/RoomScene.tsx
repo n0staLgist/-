@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { roomItems } from '../../game/story';
 import type { RoomItem } from '../../game/types';
-import { useRoomMovement, type RoomPosition } from '../../game/useRoomMovement';
+import { selectInteractionTarget, type InteractionCandidate } from '../../game/interactionTarget';
+import { useRoomMovement, type FacingDirection, type RoomPosition } from '../../game/useRoomMovement';
 import { useIdleItemHint } from '../../game/useIdleItemHint';
 import roomItemsSprite from '../../assets/game/room-items-v1.webp';
 import { MovementControls } from './MovementControls';
@@ -42,10 +43,11 @@ const roomDetails = [
   { position: { x: 75, y: 72 }, text: 'На полу остался светлый прямоугольник от кровати.' },
   { position: { x: 93, y: 57 }, text: 'Дверь в коридор. Ая ушла, не хлопнув ею.' },
 ];
-const distance = (first: RoomPosition, second: RoomPosition) => Math.hypot(first.x - second.x, first.y - second.y);
 const ITEM_REACH = 5;
 const NOTEBOOK_REACH = 10;
 const DETAIL_REACH = 5.5;
+type RoomAction = { kind: 'item'; item: RoomItem } | { kind: 'notebook' } |
+  { kind: 'detail'; text: string };
 const roomHints: Record<RoomItem, string> = {
   photo: 'Фотография лежит у батареи, в левой части комнаты.',
   cassette: 'Кассета осталась на полу возле раскрытой коробки.',
@@ -63,20 +65,25 @@ export function RoomScene({ packed, isInteractive = true, showTouchControls, onI
     const timer = window.setTimeout(() => setShowCompletion(false), 2800);
     return () => window.clearTimeout(timer);
   }, [allPacked]);
-  const interact = useCallback((position: RoomPosition) => {
-    if (allPacked && distance(position, notebookPosition) < NOTEBOOK_REACH) return onNotebook();
-    const nearest = (Object.keys(itemPositions) as RoomItem[])
+  const candidates = useMemo<InteractionCandidate<RoomAction>[]>(() => [
+    ...(Object.keys(itemPositions) as RoomItem[])
       .filter((item) => !packed.includes(item))
-      .sort((a, b) => distance(position, itemPositions[a]) - distance(position, itemPositions[b]))[0];
-    if (nearest && distance(position, itemPositions[nearest]) < ITEM_REACH) return onInspectItem(nearest);
-    if (!allPacked && distance(position, notebookPosition) < NOTEBOOK_REACH) {
-      return setExamination('Старая тетрадь лежит на столе. Сначала стоит закончить с коробкой.');
-    }
-    const detail = [...roomDetails]
-      .sort((first, second) => distance(position, first.position) - distance(position, second.position))
-      .find((entry) => distance(position, entry.position) < DETAIL_REACH);
-    if (detail) setExamination(detail.text);
-  }, [allPacked, onInspectItem, onNotebook, packed]);
+      .map((item) => ({ id: `item-${item}`, value: { kind: 'item' as const, item },
+        label: `Взять: ${roomItems[item].label}`, position: itemPositions[item], priority: 30, reach: ITEM_REACH })),
+    { id: 'notebook', value: { kind: 'notebook' }, label: allPacked ? 'Взять тетрадь' : 'Осмотреть тетрадь',
+      position: notebookPosition, priority: 24, reach: NOTEBOOK_REACH },
+    ...roomDetails.map((detail, index) => ({ id: `detail-${index}`, value: { kind: 'detail' as const, text: detail.text },
+      label: 'Осмотреть', position: detail.position, priority: 10, reach: DETAIL_REACH })),
+  ], [allPacked, packed]);
+  const interact = useCallback((position: RoomPosition, facing: FacingDirection) => {
+    const target = selectInteractionTarget(candidates, position, facing);
+    if (!target) return;
+    if (target.value.kind === 'item') return onInspectItem(target.value.item);
+    if (target.value.kind === 'notebook') return allPacked
+      ? onNotebook()
+      : setExamination('Старая тетрадь лежит на столе. Сначала стоит закончить с коробкой.');
+    setExamination(target.value.text);
+  }, [allPacked, candidates, onInspectItem, onNotebook]);
   const canMove = isInteractive && !examination;
   const { position, isMoving, facing, startMoving, stopMoving } = useRoomMovement(canMove, interact, {
     start: { x: 88, y: 58 },
@@ -85,12 +92,11 @@ export function RoomScene({ packed, isInteractive = true, showTouchControls, onI
     if (isMoving) setShowFirstStep(false);
   }, [isMoving]);
 
-  const nearbyItem = (Object.keys(itemPositions) as RoomItem[])
-    .find((item) => !packed.includes(item) && distance(position, itemPositions[item]) < ITEM_REACH);
+  const target = selectInteractionTarget(candidates, position, facing);
+  const nearbyItem = target?.value.kind === 'item' ? target.value.item : undefined;
   const remainingItems = (Object.keys(itemPositions) as RoomItem[]).filter((item) => !packed.includes(item));
   const hintedItem = useIdleItemHint(remainingItems, isMoving);
-  const nearNotebook = distance(position, notebookPosition) < NOTEBOOK_REACH;
-  const nearDetail = roomDetails.some((entry) => distance(position, entry.position) < DETAIL_REACH);
+  const nearNotebook = target?.value.kind === 'notebook';
   const nextItem = (Object.keys(roomItems) as RoomItem[]).find((item) => !packed.includes(item));
 
   return (
@@ -112,8 +118,8 @@ export function RoomScene({ packed, isInteractive = true, showTouchControls, onI
         <button className={`notebook-hotspot ${nearNotebook ? 'is-near' : ''}`} onClick={onNotebook} disabled={!allPacked || !nearNotebook}>Открыть тетрадь</button>
         {isInteractive && <>
           <PlayerAvatar position={position} facing={facing} isMoving={isMoving} />
-          <InteractionPrompt position={position} text={nearbyItem ? `Взять: ${roomItems[nearbyItem].label}` : nearNotebook ? (allPacked ? 'Взять тетрадь' : 'Осмотреть тетрадь') : nearDetail ? 'Осмотреть' : ''} />
-          {showTouchControls && <MovementControls onMoveStart={startMoving} onMoveEnd={stopMoving} onInteract={() => interact(position)} />}
+          <InteractionPrompt position={target?.position ?? position} text={target?.label ?? ''} />
+          {showTouchControls && <MovementControls onMoveStart={startMoving} onMoveEnd={stopMoving} onInteract={() => interact(position, facing)} />}
         </>}
         {examination && <ExamineText text={examination} onClose={() => setExamination(null)} />}
       </div>

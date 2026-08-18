@@ -1,20 +1,22 @@
 .red-chapter, .red-school-world { position: relative; min-height: 100svh; overflow: hidden; background-color: #b9a47e; background-image: linear-gradient(#655b4b20 1px, transparent 1px), linear-gradient(90deg, #655b4b20 1px, transparent 1px); background-size: 28px 28px; }
 .red-school-map { position: absolute; left: 50%; top: 50%; width: max(180vw, 270svh); aspect-ratio: 3 / 2; transform-origin: 0 0; transition: width .35s ease; will-change: transform, width; }
-.red-school-map--stairs { width: max(230vw, 345svh); }
+.red-school-map--artroom { width: max(220vw, 330svh); }
 .red-school-map--classroom { width: max(200vw, 300svh); }
 .red-school-map__art { position: absolute; inset: 0; width: 100%; height: 100%; filter: saturate(.72) sepia(.1) brightness(.77); }
 .red-school-world::after { content: ''; position: absolute; z-index: 8; inset: 0; background: radial-gradient(circle at center, transparent 58%, #130e0a91 115%); pointer-events: none; }
 .red-school-map .player-avatar { z-index: 7; width: clamp(98px, 8vw, 122px); }
-.red-school-map .interaction-prompt { z-index: 10; }
+.red-school-map .interaction-prompt { z-index: 10; transform: translate(-50%, -112px) rotate(-.5deg); }
 .red-school-area { position: fixed; z-index: 12; left: 24px; bottom: 18px; padding: 7px 12px; color: #eadbbd; background: #241c17d9; font: 700 15px Caveat, cursive; transform: rotate(-.4deg); }
 .red-chapter__objective { position: absolute; z-index: 14; top: 76px; left: 50%; margin: 0; padding: 8px 18px; color: #efe1c4; background: #2b211be8; box-shadow: 3px 4px 0 #8f3b30; font: 700 17px Caveat, cursive; transform: translateX(-50%) rotate(-.4deg); }
 .red-school-shtrikh { position: absolute; z-index: 6; width: 104px; max-height: 170px; object-fit: contain; filter: sepia(.18) saturate(.7) brightness(.82); transform: translate(-50%, -82%); animation: red-shtrikh-idle 4.8s ease-in-out infinite; }
-.faceless-classmate { position: absolute; z-index: 5; width: 72px; aspect-ratio: .514; background-repeat: no-repeat; background-size: 400% 100%; filter: saturate(.55) sepia(.18) brightness(.76); transform: translate(-50%, -88%); }
+.faceless-classmate { position: absolute; z-index: 5; width: 72px; aspect-ratio: .666; background-repeat: no-repeat; background-size: 300% 100%; filter: saturate(.55) sepia(.18) brightness(.76); transform: translate(-50%, -88%); transition: transform .35s ease, filter .35s ease; }
 .faceless-classmate--0 { background-position: 0 center; }
-.faceless-classmate--1 { background-position: 33.333% center; }
-.faceless-classmate--2 { background-position: 66.667% center; }
-.faceless-classmate--3 { background-position: 100% center; }
-.red-sharpener { position: absolute; z-index: 6; left: 5.3%; top: 46.4%; width: 17px; height: 14px; border: 2px solid #51231f; border-radius: 3px; background: #9d3d32; box-shadow: 0 0 0 5px #efd28c30, 0 0 24px #d65e45; transform: translate(-50%, -50%) rotate(-7deg); animation: red-item-hint 1.8s ease-in-out infinite; }
+.faceless-classmate--1 { background-position: 50% center; }
+.faceless-classmate--2 { background-position: 100% center; }
+.faceless-classmate--0.has-reacted { transform: translate(-50%, -88%) rotate(-2deg); }
+.faceless-classmate--1.has-reacted { transform: translate(-50%, -88%) translateX(8px); filter: saturate(.48) sepia(.22) brightness(.72); }
+.faceless-classmate--2.has-reacted { transform: translate(-50%, -88%) translateY(3px); }
+.red-sharpener { position: absolute; z-index: 6; left: 11.5%; top: 69%; width: 17px; height: 14px; border: 2px solid #51231f; border-radius: 3px; background: #9d3d32; box-shadow: 0 0 0 5px #efd28c30, 0 0 24px #d65e45; transform: translate(-50%, -50%) rotate(-7deg); animation: red-item-hint 1.8s ease-in-out infinite; }
 .red-erasure { position: absolute; z-index: 4; inset: 0; pointer-events: none; }
 .red-erasure i { position: absolute; width: 48px; height: 70px; border: 3px solid #ead9b52b; border-radius: 48% 48% 40% 40%; filter: blur(1px); }
 .red-erasure i::after { content: ''; position: absolute; left: -14px; right: -14px; top: 32px; height: 7px; background: #241a15d6; transform: rotate(-18deg); }

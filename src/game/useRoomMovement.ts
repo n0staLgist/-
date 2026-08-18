@@ -15,12 +15,16 @@ const DIRECTIONS: Record<string, MoveDirection> = {
   ArrowLeft: [-1, 0], KeyA: [-1, 0], ArrowRight: [1, 0], KeyD: [1, 0],
 };
 
-export function useRoomMovement(enabled: boolean, onInteract: (position: RoomPosition) => void, options: MovementOptions = {}) {
+export function useRoomMovement(enabled: boolean, onInteract: (
+  position: RoomPosition,
+  facing: FacingDirection,
+) => void, options: MovementOptions = {}) {
   const { start = { x: 86, y: 56 }, speed = 15, isWalkable = isRoomPositionWalkable } = options;
   const [position, setPosition] = useState(start);
   const [isMoving, setIsMoving] = useState(false);
   const [facing, setFacing] = useState<FacingDirection>('down');
   const positionRef = useRef(position);
+  const facingRef = useRef(facing);
   const velocityRef = useRef<RoomPosition>({ x: 0, y: 0 });
   const pressedKeys = useRef(new Set<string>());
   const touchDirection = useRef<MoveDirection | null>(null);
@@ -41,7 +45,7 @@ export function useRoomMovement(enabled: boolean, onInteract: (position: RoomPos
       }
       if ((event.code === 'KeyE' || event.code === 'Enter') && !event.repeat) {
         event.preventDefault();
-        onInteract(positionRef.current);
+        onInteract(positionRef.current, facingRef.current);
       }
     };
     const handleKeyUp = (event: KeyboardEvent) => pressedKeys.current.delete(event.code);
@@ -86,7 +90,10 @@ export function useRoomMovement(enabled: boolean, onInteract: (position: RoomPos
       const nextFacing: FacingDirection | null = Math.abs(dx) > Math.abs(dy)
         ? (dx < 0 ? 'left' : 'right')
         : dy !== 0 ? (dy < 0 ? 'up' : 'down') : null;
-      if (nextFacing) setFacing((current) => current === nextFacing ? current : nextFacing);
+      if (nextFacing) {
+        facingRef.current = nextFacing;
+        setFacing((current) => current === nextFacing ? current : nextFacing);
+      }
       if (moving) {
         setPosition((current) => {
           let next = current;

@@ -43,7 +43,7 @@ export function RedChapterScene({ playerName, showTouchControls, onComplete }: R
     if (event === 'last-desk' && !foundSharpener) {
       return openDialogue([
         { speaker: 'Ты', text: 'Парта знакомая. Но я не помню, почему именно эта.' },
-        { speaker: 'Штрих', text: 'На лестнице кое-что осталось. Маленькое и красное.' },
+        { speaker: 'Штрих', text: 'В кабинете ИЗО кое-что осталось. Маленькое и красное.' },
       ]);
     }
     if (event === 'sharpener') {
@@ -71,7 +71,7 @@ export function RedChapterScene({ playerName, showTouchControls, onComplete }: R
 
   const objective = phase === 'returning'
     ? 'Вернись к Штриху в коридоре'
-    : foundSharpener ? 'Найди последнюю парту в классе' : 'Осмотри лестничную площадку';
+    : foundSharpener ? 'Найди последнюю парту в классе' : 'Осмотри старый кабинет ИЗО';
 
   return (
     <div className="red-chapter">

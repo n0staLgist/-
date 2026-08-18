@@ -3,9 +3,15 @@ import type { RoomPosition } from './useRoomMovement';
 
 export type RedEvent = 'notice' | 'lockers' | 'erased-exit' | 'sharpener' | 'window' |
   'board' | 'desks' | 'last-desk' | 'companion' | 'shtrikh' |
-  'classmate-1' | 'classmate-2' | 'classmate-3' | 'classmate-4';
+  'classmate-1' | 'classmate-2' | 'classmate-3';
 
-export type RedHotspot = { event: RedEvent; label: string; position: RoomPosition };
+export type RedHotspot = {
+  event: RedEvent;
+  label: string;
+  position: RoomPosition;
+  priority: number;
+  reach: number;
+};
 
 export const redChapterIntro: DialogueLine[] = [
   { text: 'Жёлтая страница переворачивается сама. Под ней — школа после звонка.' },
@@ -43,40 +49,45 @@ export const redEventDialogue: Partial<Record<RedEvent, DialogueLine[]>> = {
     { speaker: 'Ты', text: 'Я сидел здесь на переменах и рисовал, пока все были внизу.' },
     { speaker: 'Штрих', text: 'Не прятался. Мы просто рисовали вдвоём.' },
   ],
-  window: [{ text: 'За стеклом нет двора. Только клетчатая бумага с другой стороны.' }],
+  window: [{ text: 'В раковине засохла красная вода. Ты помнишь запах гуаши раньше, чем лица вокруг.' }],
   board: [{ text: 'Красная борозда на доске заканчивается точно над последней партой.' }],
   desks: [{ text: 'Стулья отодвинуты, будто звонок прозвенел секунду назад.' }],
   companion: [
     { speaker: 'Ты', text: 'Ты всё время ходил здесь один?' },
     { speaker: 'Штрих', text: 'Нет. Я ходил там, где ты меня оставлял.' },
   ],
-  'classmate-1': [{ speaker: 'Одноклассница', text: 'Ты опять носишь эту тетрадь с собой?' }],
-  'classmate-2': [{ speaker: 'Одноклассник', text: 'На лестнице сегодня холодно. Не сиди там весь перерыв.' }],
-  'classmate-3': [{ speaker: 'Одноклассница', text: 'Если не хочешь показывать рисунок — я не буду смотреть.' }],
-  'classmate-4': [{ text: 'Карандаш стучит по рукаву. Лицо не возвращается, а звук — да.' }],
+  'classmate-1': [
+    { speaker: 'Одноклассница', text: 'Ты опять носишь эту тетрадь с собой?' },
+    { speaker: 'Ты', text: 'Она просто лежит в рюкзаке.' },
+    { speaker: 'Одноклассница', text: 'Ты всегда говоришь «просто», когда не хочешь отвечать.' },
+  ],
+  'classmate-2': [{ speaker: 'Одноклассник', text: 'В ИЗО опять пахнет водой из-под красок. Я оставил дверь открытой.' }],
+  'classmate-3': [
+    { text: 'Карандаш перестаёт стучать по рукаву, когда ты подходишь.' },
+    { speaker: 'Одноклассник', text: 'Если не хочешь показывать рисунок — я не буду смотреть.' },
+  ],
 };
 
 const commonHotspots: RedHotspot[] = [
-  { event: 'notice', label: 'Осмотреть стенд', position: { x: 65, y: 66 } },
-  { event: 'lockers', label: 'Осмотреть шкафчики', position: { x: 31, y: 68 } },
-  { event: 'erased-exit', label: 'Осмотреть стёртую стрелку', position: { x: 91, y: 70 } },
-  { event: 'window', label: 'Посмотреть в окно', position: { x: 8, y: 47 } },
-  { event: 'board', label: 'Осмотреть доску', position: { x: 77, y: 15 } },
-  { event: 'desks', label: 'Осмотреть парты', position: { x: 76, y: 39 } },
-  { event: 'last-desk', label: 'Открыть тетрадь', position: { x: 87, y: 52 } },
-  { event: 'companion', label: 'Поговорить со Штрихом', position: { x: 72, y: 73 } },
-  { event: 'classmate-1', label: 'Заговорить', position: { x: 40, y: 75 } },
-  { event: 'classmate-2', label: 'Заговорить', position: { x: 48, y: 88 } },
-  { event: 'classmate-3', label: 'Заговорить', position: { x: 61, y: 74 } },
-  { event: 'classmate-4', label: 'Прислушаться', position: { x: 79, y: 85 } },
+  { event: 'notice', label: 'Осмотреть стенд', position: { x: 65, y: 66 }, priority: 10, reach: 5 },
+  { event: 'lockers', label: 'Осмотреть шкафчики', position: { x: 31, y: 68 }, priority: 10, reach: 5 },
+  { event: 'erased-exit', label: 'Осмотреть стёртую стрелку', position: { x: 91, y: 70 }, priority: 20, reach: 5 },
+  { event: 'window', label: 'Осмотреть раковину', position: { x: 5, y: 63 }, priority: 10, reach: 5 },
+  { event: 'board', label: 'Осмотреть доску', position: { x: 77, y: 16 }, priority: 10, reach: 6.5 },
+  { event: 'desks', label: 'Осмотреть парты', position: { x: 76, y: 39 }, priority: 10, reach: 5 },
+  { event: 'last-desk', label: 'Открыть тетрадь', position: { x: 91, y: 52 }, priority: 30, reach: 5.5 },
+  { event: 'companion', label: 'Поговорить со Штрихом', position: { x: 72, y: 73 }, priority: 22, reach: 5 },
+  { event: 'classmate-1', label: 'Заговорить', position: { x: 42, y: 76 }, priority: 20, reach: 5 },
+  { event: 'classmate-2', label: 'Заговорить', position: { x: 61, y: 78 }, priority: 20, reach: 5 },
+  { event: 'classmate-3', label: 'Прислушаться', position: { x: 84, y: 71 }, priority: 20, reach: 5 },
 ];
 
 const sharpenerHotspot: RedHotspot = {
-  event: 'sharpener', label: 'Взять красную точилку', position: { x: 5.5, y: 47 },
+  event: 'sharpener', label: 'Взять красную точилку', position: { x: 11.5, y: 69 }, priority: 35, reach: 5.5,
 };
 const returningHotspots: RedHotspot[] = commonHotspots
-  .filter(({ event }) => event !== 'companion')
-  .concat({ event: 'shtrikh', label: 'Поговорить со Штрихом', position: { x: 54, y: 76 } });
+  .filter(({ event }) => event !== 'companion' && !event.startsWith('classmate'))
+  .concat({ event: 'shtrikh', label: 'Поговорить со Штрихом', position: { x: 54, y: 76 }, priority: 30, reach: 5 });
 
 export const getRedHotspots = (returning: boolean, foundSharpener: boolean) => returning
   ? returningHotspots

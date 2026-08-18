@@ -1,9 +1,10 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import shtrikhYard from '../../assets/game/shtrikh-yard-present-v1.webp';
+import { selectInteractionTarget, type InteractionCandidate } from '../../game/interactionTarget';
 import { taskCopy } from '../../game/story';
 import type { YardTask } from '../../game/types';
 import { isYardPositionWalkable } from '../../game/yardGeometry';
-import { useRoomMovement, type RoomPosition } from '../../game/useRoomMovement';
+import { useRoomMovement, type FacingDirection, type RoomPosition } from '../../game/useRoomMovement';
 import { ExamineText } from './ExamineText';
 import { HintButton } from './HintButton';
 import { InteractionPrompt } from './InteractionPrompt';
@@ -25,11 +26,12 @@ const details = [
   { position: { x: 40, y: 67 }, text: 'Меловой город расходится стрелками во все стороны. Ни одна не ведёт домой.' },
   { position: { x: 85, y: 52 }, text: 'В луже отражается пустое окно. Ветер не может пошевелить отражение.' },
 ];
-const distance = (a: RoomPosition, b: RoomPosition) => Math.hypot(a.x - b.x, a.y - b.y);
 const TASK_REACH = 6.5;
 const DETAIL_REACH = 5.5;
 const ENDING_REACH = 7;
 const SHTRIKH_POSITION = { x: 69, y: 34 };
+type YardAction = { kind: 'task'; task: YardTask } | { kind: 'shtrikh' } |
+  { kind: 'detail'; text: string };
 const shtrikhObservations = [
   'Штрих смотрит на пустой двор так, будто ждёт, что ты узнаешь его первым.',
   '— Помнишь? — спрашивает Штрих быстрее, чем ты успеваешь ответить.',
@@ -44,25 +46,29 @@ const yardHints: Record<YardTask, string> = {
 export function YardScene({ completed, isInteractive, showTouchControls, onTask, onFinish }: YardSceneProps) {
   const [examination, setExamination] = useState<string | null>(null);
   const allDone = completed.length === 3;
-  const interact = useCallback((position: RoomPosition) => {
-    if (distance(position, SHTRIKH_POSITION) < ENDING_REACH) {
-      if (allDone) return onFinish();
-      return setExamination(shtrikhObservations[completed.length]);
-    }
-    const task = (Object.keys(taskPositions) as YardTask[])
-      .find((item) => !completed.includes(item) && distance(position, taskPositions[item]) < TASK_REACH);
-    if (task) return onTask(task);
-    const detail = details.find((entry) => distance(position, entry.position) < DETAIL_REACH);
-    if (detail) setExamination(detail.text);
-  }, [allDone, completed, onFinish, onTask]);
+  const candidates = useMemo<InteractionCandidate<YardAction>[]>(() => [
+    ...(Object.keys(taskPositions) as YardTask[])
+      .filter((task) => !completed.includes(task))
+      .map((task) => ({ id: `task-${task}`, value: { kind: 'task' as const, task },
+        label: taskCopy[task].title, position: taskPositions[task], priority: 30, reach: TASK_REACH })),
+    { id: 'shtrikh', value: { kind: 'shtrikh' }, label: allDone ? 'Подойти к Штриху' : 'Поговорить со Штрихом',
+      position: SHTRIKH_POSITION, priority: 24, reach: ENDING_REACH },
+    ...details.map((detail, index) => ({ id: `detail-${index}`, value: { kind: 'detail' as const, text: detail.text },
+      label: 'Осмотреть', position: detail.position, priority: 10, reach: DETAIL_REACH })),
+  ], [allDone, completed]);
+  const interact = useCallback((position: RoomPosition, facing: FacingDirection) => {
+    const target = selectInteractionTarget(candidates, position, facing);
+    if (!target) return;
+    if (target.value.kind === 'task') return onTask(target.value.task);
+    if (target.value.kind === 'shtrikh') return allDone
+      ? onFinish() : setExamination(shtrikhObservations[completed.length]);
+    setExamination(target.value.text);
+  }, [allDone, candidates, completed.length, onFinish, onTask]);
   const canMove = isInteractive && !examination;
   const movement = useRoomMovement(canMove, interact, {
     start: { x: 65, y: 82 }, speed: 15, isWalkable: isYardPositionWalkable,
   });
-  const nearbyTask = (Object.keys(taskPositions) as YardTask[])
-    .find((task) => !completed.includes(task) && distance(movement.position, taskPositions[task]) < TASK_REACH);
-  const nearShtrikh = distance(movement.position, SHTRIKH_POSITION) < ENDING_REACH;
-  const nearDetail = details.some((entry) => distance(movement.position, entry.position) < DETAIL_REACH);
+  const target = selectInteractionTarget(candidates, movement.position, movement.facing);
   const nextTask = (Object.keys(taskPositions) as YardTask[]).find((task) => !completed.includes(task));
 
   return (
@@ -76,8 +82,8 @@ export function YardScene({ completed, isInteractive, showTouchControls, onTask,
       {completed.includes('window') && <div className="yard-restored-window" aria-label="В окне горит тёплый свет" />}
       <YardMemoryEchoes completed={completed} />
       <PlayerAvatar position={movement.position} facing={movement.facing} isMoving={movement.isMoving} />
-      <InteractionPrompt position={movement.position} text={nearbyTask ? taskCopy[nearbyTask].title : nearShtrikh ? (allDone ? 'Подойти к Штриху' : 'Поговорить со Штрихом') : nearDetail ? 'Осмотреть' : ''} />
-      {showTouchControls && <MovementControls onMoveStart={movement.startMoving} onMoveEnd={movement.stopMoving} onInteract={() => interact(movement.position)} />}
+      <InteractionPrompt position={target?.position ?? movement.position} text={target?.label ?? ''} />
+      {showTouchControls && <MovementControls onMoveStart={movement.startMoving} onMoveEnd={movement.stopMoving} onInteract={() => interact(movement.position, movement.facing)} />}
       <YardProgress completed={completed} />
       {examination && <ExamineText text={examination} onClose={() => setExamination(null)} />}
     </section>
