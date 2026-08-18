@@ -1,26 +1,33 @@
-.red-chapter, .red-location { position: relative; min-height: 100svh; overflow: hidden; background: #241d18; }
-.red-location__background { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: fill; filter: saturate(.72) sepia(.12) brightness(.8); }
-.red-location__shade { position: absolute; inset: 0; background: linear-gradient(#19130e40, transparent 35%, #120d0966); pointer-events: none; }
-.red-location__name { position: absolute; z-index: 4; left: 24px; bottom: 18px; padding: 7px 12px; color: #eadbbd; background: #241c17c7; font: 700 15px Caveat, cursive; letter-spacing: .04em; transform: rotate(-.4deg); }
-.red-chapter__objective { position: absolute; z-index: 9; top: 76px; left: 50%; margin: 0; padding: 8px 18px; color: #efe1c4; background: #2b211bd9; box-shadow: 3px 4px 0 #8f3b30; font: 700 17px Caveat, cursive; transform: translateX(-50%) rotate(-.4deg); }
-.red-location .interaction-prompt { z-index: 9; }
-.red-location .player-avatar { z-index: 7; }
-.red-location__shtrikh { position: absolute; z-index: 6; left: 72%; top: 42%; width: clamp(74px, 7vw, 104px); max-height: 30vh; object-fit: contain; filter: sepia(.18) saturate(.7) brightness(.82); transform: translate(-50%, -82%); animation: red-shtrikh-idle 4.8s ease-in-out infinite; }
-.red-location--stairs .red-location__shtrikh { left: 72%; top: 46%; }
-.red-location--classroom .red-location__shtrikh { left: 20%; top: 44%; }
-.red-location--corridor.is-returning .red-location__shtrikh { left: 52%; top: 48%; }
-.erased-students { position: absolute; z-index: 2; inset: 0; pointer-events: none; }
-.erased-students i { position: absolute; width: 52px; height: 70px; border: 3px solid #eee0c02e; border-radius: 48% 48% 40% 40%; filter: blur(1px); box-shadow: 0 0 18px #f2ddaf1f; }
-.erased-students i::after { content: ''; position: absolute; left: -15px; right: -15px; top: 32px; height: 7px; background: #2a211cb8; transform: rotate(-18deg); }
-.erased-students i:first-child { left: 29%; top: 43%; }
-.erased-students i:nth-child(2) { left: 65%; top: 53%; transform: scale(.86); }
-.erased-students i:last-child { left: 82%; top: 47%; transform: scale(.72); }
-.red-location.is-returning .red-location__background { animation: red-return 1.1s ease both; filter: saturate(.5) sepia(.2) brightness(.65) contrast(1.08); }
-@keyframes red-return { from { filter: saturate(.72) sepia(.12) brightness(.8); } }
+.red-chapter, .red-school-world { position: relative; min-height: 100svh; overflow: hidden; background-color: #b9a47e; background-image: linear-gradient(#655b4b20 1px, transparent 1px), linear-gradient(90deg, #655b4b20 1px, transparent 1px); background-size: 28px 28px; }
+.red-school-map { position: absolute; left: 50%; top: 50%; width: max(180vw, 270svh); aspect-ratio: 3 / 2; transform-origin: 0 0; transition: width .35s ease; will-change: transform, width; }
+.red-school-map--stairs { width: max(230vw, 345svh); }
+.red-school-map--classroom { width: max(200vw, 300svh); }
+.red-school-map__art { position: absolute; inset: 0; width: 100%; height: 100%; filter: saturate(.72) sepia(.1) brightness(.77); }
+.red-school-world::after { content: ''; position: absolute; z-index: 8; inset: 0; background: radial-gradient(circle at center, transparent 58%, #130e0a91 115%); pointer-events: none; }
+.red-school-map .player-avatar { z-index: 7; width: clamp(98px, 8vw, 122px); }
+.red-school-map .interaction-prompt { z-index: 10; }
+.red-school-area { position: fixed; z-index: 12; left: 24px; bottom: 18px; padding: 7px 12px; color: #eadbbd; background: #241c17d9; font: 700 15px Caveat, cursive; transform: rotate(-.4deg); }
+.red-chapter__objective { position: absolute; z-index: 14; top: 76px; left: 50%; margin: 0; padding: 8px 18px; color: #efe1c4; background: #2b211be8; box-shadow: 3px 4px 0 #8f3b30; font: 700 17px Caveat, cursive; transform: translateX(-50%) rotate(-.4deg); }
+.red-school-shtrikh { position: absolute; z-index: 6; width: 104px; max-height: 170px; object-fit: contain; filter: sepia(.18) saturate(.7) brightness(.82); transform: translate(-50%, -82%); animation: red-shtrikh-idle 4.8s ease-in-out infinite; }
+.faceless-classmate { position: absolute; z-index: 5; width: 72px; aspect-ratio: .514; background-repeat: no-repeat; background-size: 400% 100%; filter: saturate(.55) sepia(.18) brightness(.76); transform: translate(-50%, -88%); }
+.faceless-classmate--0 { background-position: 0 center; }
+.faceless-classmate--1 { background-position: 33.333% center; }
+.faceless-classmate--2 { background-position: 66.667% center; }
+.faceless-classmate--3 { background-position: 100% center; }
+.red-sharpener { position: absolute; z-index: 6; left: 5.3%; top: 46.4%; width: 17px; height: 14px; border: 2px solid #51231f; border-radius: 3px; background: #9d3d32; box-shadow: 0 0 0 5px #efd28c30, 0 0 24px #d65e45; transform: translate(-50%, -50%) rotate(-7deg); animation: red-item-hint 1.8s ease-in-out infinite; }
+.red-erasure { position: absolute; z-index: 4; inset: 0; pointer-events: none; }
+.red-erasure i { position: absolute; width: 48px; height: 70px; border: 3px solid #ead9b52b; border-radius: 48% 48% 40% 40%; filter: blur(1px); }
+.red-erasure i::after { content: ''; position: absolute; left: -14px; right: -14px; top: 32px; height: 7px; background: #241a15d6; transform: rotate(-18deg); }
+.red-erasure i:first-child { left: 40%; top: 75%; }.red-erasure i:nth-child(2) { left: 61%; top: 74%; }.red-erasure i:last-child { left: 79%; top: 85%; }
+.red-school-world.is-returning .red-school-map__art { filter: saturate(.48) sepia(.2) brightness(.63) contrast(1.08); animation: red-return 1.1s ease both; }
+@keyframes red-return { from { filter: saturate(.72) sepia(.1) brightness(.77); } }
 @keyframes red-shtrikh-idle { 50% { transform: translate(-50%, -84%) rotate(.8deg); } }
+@keyframes red-item-hint { 50% { box-shadow: 0 0 0 8px #efd28c1c, 0 0 32px #d65e45; } }
 
 @media (max-width: 700px) {
-  .red-location__name { left: 12px; bottom: 12px; }
+  .red-school-map { width: max(250vw, 375svh); }
+  .red-school-map .player-avatar { width: 82px; }
+  .red-school-area { left: 12px; bottom: 12px; }
   .red-chapter__objective { top: 68px; max-width: 84vw; font-size: 14px; text-align: center; white-space: nowrap; }
-  .red-location__shtrikh { width: 66px; }
+  .red-school-shtrikh { width: 84px; }.faceless-classmate { width: 60px; }
 }

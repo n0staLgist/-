@@ -1,32 +1,28 @@
 import type { DialogueLine } from './types';
 import type { RoomPosition } from './useRoomMovement';
 
-export type RedLocation = 'corridor' | 'stairs' | 'classroom';
-export type RedEvent = 'stairs' | 'corridor' | 'classroom' | 'notice' | 'lockers' |
-  'erased-exit' | 'sharpener' | 'window' | 'chalk' | 'board' | 'desks' | 'last-desk' | 'companion' | 'shtrikh';
+export type RedEvent = 'notice' | 'lockers' | 'erased-exit' | 'sharpener' | 'window' |
+  'board' | 'desks' | 'last-desk' | 'companion' | 'shtrikh' |
+  'classmate-1' | 'classmate-2' | 'classmate-3' | 'classmate-4';
 
-export type RedHotspot = {
-  event: RedEvent;
-  label: string;
-  position: RoomPosition;
-};
+export type RedHotspot = { event: RedEvent; label: string; position: RoomPosition };
 
 export const redChapterIntro: DialogueLine[] = [
-  { text: 'Жёлтая страница переворачивается сама. Под ней — школьный коридор после звонка.' },
+  { text: 'Жёлтая страница переворачивается сама. Под ней — школа после звонка.' },
   { speaker: 'Штрих', text: 'Последняя парта всё ещё там. Я ничего не трогал.' },
-  { speaker: 'Ты', text: 'В этом коридоре даже выхода нет.' },
-  { speaker: 'Штрих', text: 'Зато класс на месте.' },
+  { speaker: 'Ты', text: 'Кроме лиц.' },
+  { speaker: 'Штрих', text: 'Ты сам их не запомнил.' },
 ];
 
 export const redReturnDialogue: DialogueLine[] = [
-  { text: 'Коридор встречает тебя той же тишиной. Теперь затёртые места видны отчётливее.' },
-  { speaker: 'Ты', text: 'Эти следы были здесь до того, как я перечеркнул рисунок.' },
-  { speaker: 'Штрих', text: 'Ты уже вспомнил главное. Зачем снова смотреть на двери?' },
+  { text: 'Ты выходишь из класса в ту же школу. Теперь затёртые места видны отчётливее.' },
+  { speaker: 'Ты', text: 'Эти следы появились раньше красной линии.' },
+  { speaker: 'Штрих', text: 'Ты уже вспомнил главное. Зачем снова смотреть на выход?' },
 ];
 
 export const redEndingDialogue: DialogueLine[] = [
-  { speaker: 'Ты', text: 'Потому что кто-то очень старательно их стирал.' },
-  { text: 'Штрих поправляет шарф. Его ровная улыбка впервые кажется не доброй, а выученной.' },
+  { speaker: 'Ты', text: 'Потому что кто-то очень старательно его стирал.' },
+  { text: 'Штрих поправляет шарф. Его ровная улыбка впервые кажется выученной.' },
   { speaker: 'Штрих', text: 'Синяя комната всё объяснит.' },
   { speaker: 'Ты', text: 'Ты всё время говоришь это про следующую страницу.' },
   { speaker: 'Штрих', text: 'А ты всё-таки идёшь.' },
@@ -34,71 +30,54 @@ export const redEndingDialogue: DialogueLine[] = [
 
 export const redEventDialogue: Partial<Record<RedEvent, DialogueLine[]>> = {
   notice: [
-    { text: 'Под кнопками и объявлениями остались прямоугольники более светлой бумаги. Ни одного имени.' },
-    { speaker: 'Ты', text: 'Ты и стенд решил обезличить?' },
-    { speaker: 'Штрих', text: 'Это просто фон. Ты никогда его не читал.' },
+    { text: 'На стенде остались светлые прямоугольники от объявлений. Ни одной фамилии.' },
+    { speaker: 'Штрих', text: 'Ты никогда их не читал. Пойдём дальше?' },
   ],
-  lockers: [
-    { text: 'Один шкафчик приоткрыт. Внутри — только серый отпечаток ладони и крошки от ластика.' },
-    { speaker: 'Штрих', text: 'Там ничего важного.' },
-  ],
+  lockers: [{ text: 'В шкафчике — серый отпечаток ладони и крошки от ластика.' }],
   'erased-exit': [
-    { text: 'На полу сохранилась белая борозда. Здесь была стрелка, направленная к выходу.' },
+    { text: 'На полу сохранилась белая борозда. Здесь была стрелка к выходу.' },
     { speaker: 'Ты', text: 'Странно забыть именно дорогу наружу.' },
   ],
   sharpener: [
-    { text: 'На подоконнике лежит красная точилка. Ты узнаёшь скол на углу раньше, чем вспоминаешь класс.' },
-    { speaker: 'Ты', text: 'Я прятался здесь на переменах и рисовал, пока все были внизу.' },
-    { speaker: 'Штрих', text: 'Ты не прятался. Мы просто рисовали вдвоём.' },
+    { text: 'Красная точилка со сколом. Ты узнаёшь её раньше, чем вспоминаешь кабинет.' },
+    { speaker: 'Ты', text: 'Я сидел здесь на переменах и рисовал, пока все были внизу.' },
+    { speaker: 'Штрих', text: 'Не прятался. Мы просто рисовали вдвоём.' },
   ],
-  window: [{ text: 'За стеклом нет двора. Только клетчатая бумага, продавленная с другой стороны.' }],
-  chalk: [{ text: 'Дом, дерево и двое рядом. Вторую фигуру кто-то почти стёр рукавом.' }],
-  board: [{ text: 'Доска чистая, кроме красной борозды. Она заканчивается точно над последней партой.' }],
-  desks: [{ text: 'Стулья отодвинуты, будто класс только что вышел. На сиденьях нет ни пыли, ни имён.' }],
+  window: [{ text: 'За стеклом нет двора. Только клетчатая бумага с другой стороны.' }],
+  board: [{ text: 'Красная борозда на доске заканчивается точно над последней партой.' }],
+  desks: [{ text: 'Стулья отодвинуты, будто звонок прозвенел секунду назад.' }],
   companion: [
     { speaker: 'Ты', text: 'Ты всё время ходил здесь один?' },
     { speaker: 'Штрих', text: 'Нет. Я ходил там, где ты меня оставлял.' },
   ],
+  'classmate-1': [{ speaker: 'Одноклассница', text: 'Ты опять носишь эту тетрадь с собой?' }],
+  'classmate-2': [{ speaker: 'Одноклассник', text: 'На лестнице сегодня холодно. Не сиди там весь перерыв.' }],
+  'classmate-3': [{ speaker: 'Одноклассница', text: 'Если не хочешь показывать рисунок — я не буду смотреть.' }],
+  'classmate-4': [{ text: 'Карандаш стучит по рукаву. Лицо не возвращается, а звук — да.' }],
 };
 
-const corridorHotspots: RedHotspot[] = [
-  { event: 'stairs', label: 'Выйти на лестницу', position: { x: 14, y: 34 } },
-  { event: 'classroom', label: 'Войти в класс', position: { x: 79, y: 34 } },
-  { event: 'notice', label: 'Осмотреть стенд', position: { x: 59, y: 34 } },
-  { event: 'lockers', label: 'Осмотреть шкафчики', position: { x: 90, y: 39 } },
-  { event: 'erased-exit', label: 'Коснуться стёртого места', position: { x: 48, y: 52 } },
-  { event: 'companion', label: 'Поговорить со Штрихом', position: { x: 72, y: 42 } },
+const commonHotspots: RedHotspot[] = [
+  { event: 'notice', label: 'Осмотреть стенд', position: { x: 65, y: 66 } },
+  { event: 'lockers', label: 'Осмотреть шкафчики', position: { x: 31, y: 68 } },
+  { event: 'erased-exit', label: 'Осмотреть стёртую стрелку', position: { x: 91, y: 70 } },
+  { event: 'window', label: 'Посмотреть в окно', position: { x: 8, y: 47 } },
+  { event: 'board', label: 'Осмотреть доску', position: { x: 77, y: 15 } },
+  { event: 'desks', label: 'Осмотреть парты', position: { x: 76, y: 39 } },
+  { event: 'last-desk', label: 'Открыть тетрадь', position: { x: 87, y: 52 } },
+  { event: 'companion', label: 'Поговорить со Штрихом', position: { x: 72, y: 73 } },
+  { event: 'classmate-1', label: 'Заговорить', position: { x: 40, y: 75 } },
+  { event: 'classmate-2', label: 'Заговорить', position: { x: 48, y: 88 } },
+  { event: 'classmate-3', label: 'Заговорить', position: { x: 61, y: 74 } },
+  { event: 'classmate-4', label: 'Прислушаться', position: { x: 79, y: 85 } },
 ];
 
-const stairsHotspots: RedHotspot[] = [
-  { event: 'corridor', label: 'Вернуться в коридор', position: { x: 90, y: 70 } },
-  { event: 'sharpener', label: 'Взять точилку', position: { x: 59, y: 34 } },
-  { event: 'window', label: 'Посмотреть в окно', position: { x: 52, y: 38 } },
-  { event: 'chalk', label: 'Осмотреть рисунок', position: { x: 84, y: 45 } },
-  { event: 'companion', label: 'Поговорить со Штрихом', position: { x: 72, y: 46 } },
-];
-
-const classroomHotspots: RedHotspot[] = [
-  { event: 'corridor', label: 'Вернуться в коридор', position: { x: 10, y: 42 } },
-  { event: 'board', label: 'Осмотреть доску', position: { x: 52, y: 28 } },
-  { event: 'desks', label: 'Осмотреть пустые парты', position: { x: 58, y: 58 } },
-  { event: 'last-desk', label: 'Открыть тетрадь', position: { x: 80, y: 76 } },
-  { event: 'companion', label: 'Поговорить со Штрихом', position: { x: 20, y: 44 } },
-];
-
-const revisitedStairsHotspots = stairsHotspots.filter(({ event }) => event !== 'sharpener');
-
-const returningCorridorHotspots: RedHotspot[] = [
-  { event: 'stairs', label: 'Выйти на лестницу', position: { x: 14, y: 34 } },
-  { event: 'notice', label: 'Осмотреть стенд', position: { x: 59, y: 34 } },
-  { event: 'lockers', label: 'Осмотреть шкафчики', position: { x: 90, y: 39 } },
-  { event: 'erased-exit', label: 'Коснуться стёртого места', position: { x: 38, y: 52 } },
-  { event: 'shtrikh', label: 'Поговорить со Штрихом', position: { x: 52, y: 48 } },
-];
-
-export const getRedHotspots = (location: RedLocation, returning: boolean, foundSharpener: boolean) => {
-  if (location === 'stairs') return foundSharpener ? revisitedStairsHotspots : stairsHotspots;
-  if (location === 'classroom') return classroomHotspots;
-  if (returning) return returningCorridorHotspots;
-  return corridorHotspots;
+const sharpenerHotspot: RedHotspot = {
+  event: 'sharpener', label: 'Взять красную точилку', position: { x: 5.5, y: 47 },
 };
+const returningHotspots: RedHotspot[] = commonHotspots
+  .filter(({ event }) => event !== 'companion')
+  .concat({ event: 'shtrikh', label: 'Поговорить со Штрихом', position: { x: 54, y: 76 } });
+
+export const getRedHotspots = (returning: boolean, foundSharpener: boolean) => returning
+  ? returningHotspots
+  : foundSharpener ? commonHotspots : [...commonHotspots, sharpenerHotspot];

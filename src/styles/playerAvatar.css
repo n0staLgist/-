@@ -1,4 +1,4 @@
-.player-avatar { --facing-row: 0%; --idle-column: 0%; position: absolute; z-index: 5; width: clamp(195px, 17vw, 245px); aspect-ratio: 1; pointer-events: none; transform: translate(-50%, -84%) scale(var(--player-scale)); transform-origin: 50% 100%; filter: saturate(.72) sepia(.12) contrast(.92) brightness(.88); will-change: left, top, transform; }
+.player-avatar { --facing-row: 0%; --idle-column: 0%; position: absolute; z-index: 5; width: clamp(150px, 13vw, 190px); aspect-ratio: 1; pointer-events: none; transform: translate(-50%, -84%) scale(var(--player-scale)); transform-origin: 50% 100%; filter: saturate(.72) sepia(.12) contrast(.92) brightness(.88); will-change: left, top, transform; }
 .player-avatar.is-walking { transform: translate(-50%, -91%) scale(var(--player-scale)); }
 .player-avatar:not(.is-walking)[data-facing='left'], .player-avatar:not(.is-walking)[data-facing='right'] { transform: translate(-50%, -91%) scale(var(--player-scale)); }
 .player-avatar[data-facing='up'] { --facing-row: 33.333%; --idle-column: 33.333%; }
@@ -34,4 +34,4 @@
   83.33%, 100% { background-position: 100% center; }
 }
 @keyframes avatar-idle { 45%, 55% { transform: scale(1.006); } }
-@media (max-width: 700px) { .player-avatar { width: clamp(140px, 32vw, 170px); } }
+@media (max-width: 700px) { .player-avatar { width: clamp(112px, 27vw, 145px); } }

@@ -10,8 +10,14 @@ const OBSTACLES: Zone[] = [
   { left: 8, right: 27, top: 58, bottom: 82 },
   { left: 0, right: 10, top: 66, bottom: 96 },
 ];
+const PLAYER_RADIUS = { x: 1.3, y: 1.7 };
 
-export function isYardPositionWalkable({ x, y }: RoomPosition) {
-  if (x < 7 || x > 93 || y < 24 || y > 91) return false;
-  return !OBSTACLES.some((zone) => x > zone.left && x < zone.right && y > zone.top && y < zone.bottom);
+const inside = ({ x, y }: RoomPosition, zone: Zone) => x > zone.left - PLAYER_RADIUS.x &&
+  x < zone.right + PLAYER_RADIUS.x && y > zone.top - PLAYER_RADIUS.y &&
+  y < zone.bottom + PLAYER_RADIUS.y;
+
+export function isYardPositionWalkable(position: RoomPosition) {
+  const { x, y } = position;
+  if (x < 8.3 || x > 91.7 || y < 25.7 || y > 89.3) return false;
+  return !OBSTACLES.some((zone) => inside(position, zone));
 }

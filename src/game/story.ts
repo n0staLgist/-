@@ -21,9 +21,9 @@ export const introLines: DialogueLine[] = [
   { speaker: 'Ая (младшая сестра)', text: 'Ты всё ещё разбираешь последнюю коробку?' },
   { speaker: 'Ты', text: 'Эта правда последняя.' },
   { speaker: 'Ая (младшая сестра)', text: 'Я почти дорисовала. Посмотришь?' },
-  { speaker: 'Ты', text: 'Если сейчас отвлекусь, я её никогда не закончу.' },
+  { speaker: 'Ты', text: 'Давай завтра.' },
   { speaker: 'Ая (младшая сестра)', text: 'Завтра?' },
-  { speaker: 'Ты', text: 'Завтра. Честно.' },
+  { speaker: 'Ты', text: 'Да. Обещаю.' },
 ];
 
 export const notebookLines: DialogueLine[] = [
