@@ -8,14 +8,14 @@ import { GameHeader } from '../components/game/GameHeader';
 import { NotebookScene } from '../components/game/NotebookScene';
 import { NotebookPortalTransition } from '../components/game/NotebookPortalTransition';
 import { PrologueScene } from '../components/game/PrologueScene';
-import { RedClassScene } from '../components/game/RedClassScene';
+import { RedChapterScene } from '../components/game/RedChapterScene';
 import { ReturnToRoomScene } from '../components/game/ReturnToRoomScene';
 import { RoomScene } from '../components/game/RoomScene';
 import { RoomMemory } from '../components/game/RoomMemory';
 import { StartScreen } from '../components/game/StartScreen';
 import { TaskCard } from '../components/game/TaskCard';
 import { YardScene } from '../components/game/YardScene';
-import { blueRoomScenes, redClassScenes } from '../game/chapters';
+import { blueRoomScenes } from '../game/chapters';
 import { startAmbience, stopAmbience } from '../game/audio';
 import { endingLines, introLines, notebookLines, taskCopy, yardArrivalLines } from '../game/story';
 import { getChapterTitle, shouldShowGameHeader, type GameStage } from '../game/stage';
@@ -144,7 +144,7 @@ export function GamePage() {
       {stage === 'yardIntro' && <YardScene completed={completed} isInteractive={false} showTouchControls={false} onTask={setActiveTask} onFinish={() => undefined} />}
       {stage === 'yard' && <YardScene completed={completed} isInteractive={!activeTask && dialogue.length === 0} showTouchControls={controlsMode === 'touch'} onTask={setActiveTask} onFinish={() => showDialogue(endingLines, 'yellowReveal')} />}
       {stage === 'yellowReveal' && <ColorReveal color="yellow" title="Жёлтый" text="Цвет окон, мела и того вечера, когда тебя позвали домой." nextChapter="Следующая страница — красная" autoAdvanceMs={4300} onContinue={() => setStage('red')} />}
-      {stage === 'red' && <RedClassScene scenes={redClassScenes} sceneIndex={storyIndex} playerName={playerName} onNext={() => advanceStory(redClassScenes.length, 'redReveal')} />}
+      {stage === 'red' && <RedChapterScene playerName={playerName} showTouchControls={controlsMode === 'touch'} onComplete={() => setStage('redReveal')} />}
       {stage === 'redReveal' && <ColorReveal color="red" title="Красный" text="Не цвет стыда и исправлений. Цвет смелости оставить важное видимым." nextChapter="Войти в синюю комнату" onContinue={() => setStage('blue')} />}
       {stage === 'blue' && <BlueRoomScene scenes={blueRoomScenes} sceneIndex={storyIndex} playerName={playerName} onNext={() => advanceStory(blueRoomScenes.length, 'return')} />}
       {stage === 'return' && <ReturnToRoomScene onContinue={() => setStage('finale')} />}
