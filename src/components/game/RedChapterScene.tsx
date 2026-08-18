@@ -1,14 +1,15 @@
 import { useCallback, useState } from 'react';
-import { redClassScenes } from '../../game/chapters';
 import {
   redChapterIntro, redEndingDialogue, redEventDialogue, redReturnDialogue,
   type RedEvent,
 } from '../../game/redChapter';
 import type { DialogueLine } from '../../game/types';
 import { DialogueBox } from './DialogueBox';
-import { RedClassScene } from './RedClassScene';
+import { PaintSinkScene } from './PaintSinkScene';
+import { RedLineMemory } from './RedLineMemory';
 import { RedSchoolWorld } from './RedSchoolWorld';
 import '../../styles/redChapter.css';
+import '../../styles/redInteractions.css';
 
 type RedChapterSceneProps = {
   playerName: string;
@@ -21,7 +22,8 @@ type RedPhase = 'explore' | 'memory' | 'returning';
 export function RedChapterScene({ playerName, showTouchControls, onComplete }: RedChapterSceneProps) {
   const [phase, setPhase] = useState<RedPhase>('explore');
   const [foundSharpener, setFoundSharpener] = useState(false);
-  const [memoryIndex, setMemoryIndex] = useState(0);
+  const [showSink, setShowSink] = useState(false);
+  const [sinkSeen, setSinkSeen] = useState(false);
   const [dialogue, setDialogue] = useState<DialogueLine[]>(redChapterIntro);
   const [lineIndex, setLineIndex] = useState(0);
   const [finishAfterDialogue, setFinishAfterDialogue] = useState(false);
@@ -40,6 +42,10 @@ export function RedChapterScene({ playerName, showTouchControls, onComplete }: R
   };
 
   const handleEvent = useCallback((event: RedEvent) => {
+    if (event === 'window' && !sinkSeen) {
+      setShowSink(true);
+      return;
+    }
     if (event === 'last-desk' && !foundSharpener) {
       return openDialogue([
         { speaker: 'Ты', text: 'Парта знакомая. Но я не помню, почему именно эта.' },
@@ -52,22 +58,29 @@ export function RedChapterScene({ playerName, showTouchControls, onComplete }: R
     }
     if (event === 'last-desk') {
       setPhase('memory');
-      setMemoryIndex(0);
       return;
     }
     if (event === 'shtrikh') return openDialogue(redEndingDialogue, true);
     const lines = redEventDialogue[event];
     if (lines) openDialogue(lines);
-  }, [foundSharpener, openDialogue]);
+  }, [foundSharpener, openDialogue, sinkSeen]);
 
-  const advanceMemory = () => {
-    if (memoryIndex < redClassScenes.length - 1) return setMemoryIndex((index) => index + 1);
+  const finishMemory = () => {
     setPhase('returning');
-    setMemoryIndex(0);
     openDialogue(redReturnDialogue);
   };
+  const finishSink = () => {
+    setShowSink(false);
+    setSinkSeen(true);
+    openDialogue([
+      { text: 'Красный след расплылся по раковине. Чище не стало.' },
+      { speaker: 'Штрих', text: 'Это просто краска.' },
+      { speaker: 'Ты', text: 'Я не спрашивал.' },
+    ]);
+  };
 
-  if (phase === 'memory') return <RedClassScene scenes={redClassScenes} sceneIndex={memoryIndex} playerName={playerName} onNext={advanceMemory} />;
+  if (showSink) return <PaintSinkScene onComplete={finishSink} />;
+  if (phase === 'memory') return <RedLineMemory playerName={playerName} onComplete={finishMemory} />;
 
   const objective = phase === 'returning'
     ? 'Вернись к Штриху в коридоре'
