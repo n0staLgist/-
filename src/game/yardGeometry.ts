@@ -3,14 +3,15 @@ import type { RoomPosition } from './useRoomMovement';
 type Zone = { left: number; right: number; top: number; bottom: number };
 
 const OBSTACLES: Zone[] = [
-  { left: 4, right: 22, top: 0, bottom: 40 },
-  { left: 17, right: 39, top: 35, bottom: 61 },
-  { left: 74, right: 88, top: 32, bottom: 47 },
-  { left: 87, right: 97, top: 42, bottom: 78 },
-  { left: 8, right: 27, top: 58, bottom: 82 },
-  { left: 0, right: 10, top: 66, bottom: 96 },
+  { left: 26.4, right: 29.5, top: 30, bottom: 51.5 }, // левая опора качелей
+  { left: 41.2, right: 44.6, top: 25.5, bottom: 50 }, // правая опора качелей
+  { left: 71.5, right: 77.5, top: 27.5, bottom: 34.5 }, // скамейка
+  { left: 79.2, right: 84.8, top: 43.5, bottom: 66.5 }, // футбольные ворота
+  { left: 10, right: 25.2, top: 58, bottom: 77.5 }, // песочница
+  { left: 0, right: 9.4, top: 67, bottom: 90 }, // угол дома
+  { left: 68.2, right: 69.8, top: 32.5, bottom: 35 }, // ноги Штриха
 ];
-const PLAYER_RADIUS = { x: 1.3, y: 1.7 };
+const PLAYER_RADIUS = { x: .85, y: .7 };
 
 const inside = ({ x, y }: RoomPosition, zone: Zone) => x > zone.left - PLAYER_RADIUS.x &&
   x < zone.right + PLAYER_RADIUS.x && y > zone.top - PLAYER_RADIUS.y &&

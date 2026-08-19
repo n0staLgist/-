@@ -2,7 +2,7 @@ import type { RoomPosition } from './useRoomMovement';
 
 type Zone = { left: number; right: number; top: number; bottom: number };
 
-const PLAYER_RADIUS = { x: 1.15, y: 1.45 };
+const PLAYER_RADIUS = { x: .8, y: .6 };
 const SCENERY: Zone[] = [
   { left: 2.5, right: 8.6, top: 52, bottom: 67.5 }, // раковина и длинный стол ИЗО
   { left: 7.6, right: 13.9, top: 38, bottom: 54 }, // сушилка для рисунков
@@ -22,12 +22,12 @@ const SCENERY: Zone[] = [
   { left: 89.5, right: 94.2, top: 47.4, bottom: 55.2 }, // последняя парта
 ];
 const CLASSMATES: Zone[] = [
-  { left: 40.7, right: 43.3, top: 72, bottom: 80 },
-  { left: 59.7, right: 62.3, top: 74, bottom: 82 },
-  { left: 82.7, right: 85.3, top: 67, bottom: 75 },
+  { left: 41.2, right: 42.8, top: 75, bottom: 77.5 },
+  { left: 60.2, right: 61.8, top: 77, bottom: 79.5 },
+  { left: 83.2, right: 84.8, top: 70, bottom: 72.5 },
 ];
-const INITIAL_SHTRIKH: Zone = { left: 70.8, right: 73.2, top: 69, bottom: 75 };
-const RETURNING_SHTRIKH: Zone = { left: 52.8, right: 55.2, top: 72, bottom: 78 };
+const INITIAL_SHTRIKH: Zone = { left: 71.2, right: 72.8, top: 72, bottom: 74.5 };
+const RETURNING_SHTRIKH: Zone = { left: 53.2, right: 54.8, top: 75, bottom: 77.5 };
 
 const inside = (position: RoomPosition, zone: Zone) => position.x > zone.left - PLAYER_RADIUS.x &&
   position.x < zone.right + PLAYER_RADIUS.x && position.y > zone.top - PLAYER_RADIUS.y &&

@@ -1,7 +1,7 @@
 import type { DialogueLine } from './types';
 import type { RoomPosition } from './useRoomMovement';
 
-export type RedEvent = 'notice' | 'lockers' | 'erased-exit' | 'sharpener' | 'window' |
+export type RedEvent = 'notice' | 'lockers' | 'erased-exit' | 'artroom-entry' | 'sharpener' | 'window' |
   'board' | 'desks' | 'last-desk' | 'companion' | 'shtrikh' |
   'classmate-1' | 'classmate-2' | 'classmate-3';
 
@@ -35,6 +35,11 @@ export const redEndingDialogue: DialogueLine[] = [
 ];
 
 export const redEventDialogue: Partial<Record<RedEvent, DialogueLine[]>> = {
+  'artroom-entry': [
+    { speaker: 'Ты', text: 'Я был здесь во втором классе.' },
+    { text: 'До крана тогда получалось дотянуться только на носках.' },
+    { speaker: 'Ты', text: 'А рукава всё равно были мокрыми.' },
+  ],
   notice: [
     { text: 'На стенде остались светлые прямоугольники от объявлений. Ни одной фамилии.' },
     { speaker: 'Штрих', text: 'Ты никогда их не читал. Пойдём дальше?' },

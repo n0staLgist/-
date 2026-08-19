@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import classmatesSprite from '../../assets/game/faceless-classmates-v2.webp';
 import schoolMap from '../../assets/game/red-school-world-v2.webp';
 import shtrikhImage from '../../assets/game/shtrikh-yard-present-v1.webp';
@@ -27,6 +27,7 @@ const clamp = (value: number, min: number, max: number) => Math.min(max, Math.ma
 
 export function RedSchoolWorld({ foundSharpener, isInteractive, returning, showTouchControls, onEvent }: RedSchoolWorldProps) {
   const [reacted, setReacted] = useState<RedEvent[]>([]);
+  const enteredArtRoom = useRef(false);
   const hotspots = useMemo(() => getRedHotspots(returning, foundSharpener), [foundSharpener, returning]);
   const candidates = useMemo(() => hotspots.map((hotspot) => ({
     id: hotspot.event, value: hotspot.event, label: hotspot.label,
@@ -52,6 +53,11 @@ export function RedSchoolWorld({ foundSharpener, isInteractive, returning, showT
   const mapStyle: CSSProperties = { transform: `translate(-${cameraX}%, -${cameraY}%)` };
   const area = movement.position.x < 24
     ? 'Кабинет ИЗО' : movement.position.y < 59 ? 'Красный класс' : 'Школьный коридор';
+  useEffect(() => {
+    if (returning || area !== 'Кабинет ИЗО' || enteredArtRoom.current) return;
+    enteredArtRoom.current = true;
+    onEvent('artroom-entry');
+  }, [area, onEvent, returning]);
   const areaClass = area === 'Кабинет ИЗО' ? 'artroom' : area === 'Красный класс' ? 'classroom' : 'corridor';
   const shtrikh = returning ? { x: 54, y: 76 } : { x: 72, y: 73 };
 
