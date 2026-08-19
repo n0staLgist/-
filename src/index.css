@@ -42,7 +42,7 @@ button:focus-visible { outline: 3px solid #f4bd3b; outline-offset: 3px; }
 .speaker-portrait { position: absolute; left: -92px; bottom: -1px; width: 80px; height: 94px; overflow: hidden; border: 2px solid #171410; background: #eee6d4; filter: grayscale(.15) contrast(1.05); }
 .speaker-portrait::before { content: ''; position: absolute; inset: 15px 20px; border: 2px solid #776e60; border-radius: 50% 50% 44% 46%; opacity: .42; }.speaker-portrait img { position: relative; width: 100%; height: 100%; display: block; object-fit: cover; opacity: 0; transition: opacity .2s; }.speaker-portrait.is-loaded img { opacity: 1; }
 .speaker-portrait--hero img { transform: scale(1.05); transform-origin: 50% 38%; }.speaker-portrait--aya img { transform: scale(1.18); transform-origin: 50% 40%; }
-.speaker-portrait--classmate { filter: grayscale(1) brightness(.42); }
+.speaker-portrait--classmate { background-color: #e8dfce; background-repeat: no-repeat; background-size: 300% auto; background-position-y: top; filter: grayscale(.45) sepia(.12) contrast(.96); }.speaker-portrait--classmate::before { display: none; }.speaker-portrait--frame-0 { background-position-x: 0; }.speaker-portrait--frame-1 { background-position-x: 50%; }.speaker-portrait--frame-2 { background-position-x: 100%; }
 .opening-screen__copy, .controls-sheet, .dialogue, .task-card, .classroom-copy, .blue-room__copy, .childhood-memory__dialogue { color: #11100e; }
 .dialogue .speaker-portrait { left: 26px; bottom: 22px; }.dialogue:has(.speaker-portrait) { padding-left: 126px; }
 .classroom-copy blockquote, .blue-room__copy blockquote { position: relative; }.classroom-copy .speaker-portrait, .blue-room__copy .speaker-portrait { left: auto; right: calc(100% + 14px); bottom: 0; width: 70px; height: 82px; }

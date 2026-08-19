@@ -19,7 +19,7 @@ export function DialogueBox({ line, current, total, playerName, onNext }: Dialog
 
   return (
     <section className="dialogue" aria-live="polite">
-      <SpeakerPortrait speaker={line.speaker} />
+      <SpeakerPortrait speaker={line.speaker} portrait={line.portrait} />
       {line.speaker && <span className="dialogue__speaker">{displaySpeaker(line.speaker, playerName)}</span>}
       <p>{visibleText}<i className={isComplete ? '' : 'typewriter-caret'} aria-hidden="true" /></p>
       {isComplete && <button className="dialogue__next" onClick={onNext}>

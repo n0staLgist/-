@@ -24,6 +24,7 @@ export function RedChapterScene({ playerName, showTouchControls, onComplete }: R
   const [foundSharpener, setFoundSharpener] = useState(false);
   const [showSink, setShowSink] = useState(false);
   const [sinkSeen, setSinkSeen] = useState(false);
+  const [sinkQueued, setSinkQueued] = useState(false);
   const [dialogue, setDialogue] = useState<DialogueLine[]>(redChapterIntro);
   const [lineIndex, setLineIndex] = useState(0);
   const [finishAfterDialogue, setFinishAfterDialogue] = useState(false);
@@ -38,13 +39,27 @@ export function RedChapterScene({ playerName, showTouchControls, onComplete }: R
     if (lineIndex < dialogue.length - 1) return setLineIndex((index) => index + 1);
     setDialogue([]);
     setLineIndex(0);
+    if (sinkQueued) {
+      setSinkQueued(false);
+      setShowSink(true);
+    }
     if (finishAfterDialogue) onComplete();
   };
 
   const handleEvent = useCallback((event: RedEvent) => {
     if (event === 'window' && !sinkSeen) {
-      setShowSink(true);
-      return;
+      setSinkQueued(true);
+      return openDialogue([
+        { text: 'На краю раковины засохла красная краска.' },
+        { speaker: 'Ты', text: 'Такая же осталась у меня на пальцах перед тем уроком.' },
+        { speaker: 'Ты', text: 'Я тогда тёр её до звонка. Проверим, смоется ли сейчас.' },
+      ]);
+    }
+    if (event === 'last-desk' && !sinkSeen) {
+      return openDialogue([
+        { text: 'Красная черта расплывается, стоит попытаться вспомнить её.' },
+        { speaker: 'Ты', text: 'Сначала запах краски. Кабинет ИЗО.' },
+      ]);
     }
     if (event === 'last-desk' && !foundSharpener) {
       return openDialogue([
@@ -79,21 +94,22 @@ export function RedChapterScene({ playerName, showTouchControls, onComplete }: R
     ]);
   };
 
-  if (showSink) return <PaintSinkScene onComplete={finishSink} />;
   if (phase === 'memory') return <RedLineMemory playerName={playerName} onComplete={finishMemory} />;
 
   const objective = phase === 'returning'
     ? 'Вернись к Штриху в коридоре'
-    : foundSharpener ? 'Найди последнюю парту в классе' : 'Осмотри старый кабинет ИЗО';
+    : !sinkSeen ? 'Найди раковину в кабинете ИЗО'
+      : foundSharpener ? 'Найди последнюю парту в классе' : 'Найди красную точилку в кабинете ИЗО';
 
   return (
     <div className="red-chapter">
       <RedSchoolWorld key={phase} returning={phase === 'returning'} foundSharpener={foundSharpener}
-        isInteractive={dialogue.length === 0}
+        sinkSeen={sinkSeen} isInteractive={dialogue.length === 0 && !showSink}
         showTouchControls={showTouchControls} onEvent={handleEvent} />
-      <p className="red-chapter__objective">{objective}</p>
+      <aside className="red-chapter__objective"><small>Сейчас</small><strong>{objective}</strong></aside>
       {dialogue.length > 0 && <DialogueBox line={dialogue[lineIndex]} current={lineIndex} total={dialogue.length}
         playerName={playerName} onNext={nextDialogueLine} />}
+      {showSink && <PaintSinkScene onComplete={finishSink} />}
     </div>
   );
 }

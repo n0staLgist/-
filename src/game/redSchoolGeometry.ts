@@ -22,12 +22,12 @@ const SCENERY: Zone[] = [
   { left: 89.5, right: 94.2, top: 47.4, bottom: 55.2 }, // последняя парта
 ];
 const CLASSMATES: Zone[] = [
-  { left: 41.2, right: 42.8, top: 75, bottom: 77.5 },
-  { left: 60.2, right: 61.8, top: 77, bottom: 79.5 },
-  { left: 83.2, right: 84.8, top: 70, bottom: 72.5 },
+  { left: 40.6, right: 43.4, top: 68.3, bottom: 76.5 },
+  { left: 59.6, right: 62.4, top: 70.3, bottom: 78.5 },
+  { left: 82.6, right: 85.4, top: 63.3, bottom: 71.5 },
 ];
-const INITIAL_SHTRIKH: Zone = { left: 71.2, right: 72.8, top: 72, bottom: 74.5 };
-const RETURNING_SHTRIKH: Zone = { left: 53.2, right: 54.8, top: 75, bottom: 77.5 };
+const INITIAL_SHTRIKH: Zone = { left: 70.3, right: 73.7, top: 67.2, bottom: 74.2 };
+const RETURNING_SHTRIKH: Zone = { left: 52.3, right: 55.7, top: 70.2, bottom: 77.2 };
 
 const inside = (position: RoomPosition, zone: Zone) => position.x > zone.left - PLAYER_RADIUS.x &&
   position.x < zone.right + PLAYER_RADIUS.x && position.y > zone.top - PLAYER_RADIUS.y &&

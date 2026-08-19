@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import classmatesSprite from '../../assets/game/faceless-classmates-v2.webp';
 import notebookChildhood from '../../assets/game/notebook-childhood-v4.webp';
 import { useHoldProgress } from '../../game/useHoldProgress';
 import type { DialogueLine } from '../../game/types';
 import { DialogueBox } from './DialogueBox';
+import { SpeakerPortrait } from './SpeakerPortrait';
 
 type RedLineMemoryProps = {
   playerName: string;
@@ -16,8 +18,8 @@ const afterErasing: DialogueLine[] = [
   { speaker: 'Ты', text: 'Да. И сам провёл эту линию.' },
 ];
 
-const memoryBeats = [
-  { speaker: 'Одноклассник', text: 'Ты всё ещё рисуешь эту детскую ерунду?' },
+const memoryBeats: DialogueLine[] = [
+  { speaker: 'Одноклассник', portrait: 'classmate-2', text: 'Ты всё ещё рисуешь эту детскую ерунду?' },
   { speaker: 'Ты, тогда', text: 'Если засмеюсь первым, они решат, что мне тоже всё равно.' },
   { speaker: 'Ты, тогда', text: 'Да так. Просто каракули.' },
 ];
@@ -54,7 +56,10 @@ export function RedLineMemory({ playerName, onComplete }: RedLineMemoryProps) {
   return (
     <section className={`red-memory ${isHolding ? 'is-erasing' : ''} ${erased ? 'is-erased' : ''}`}>
       <div className="red-memory__grid" />
-      <div className="red-memory__faces" aria-hidden="true"><i /><i /><i /><i /></div>
+      <div className="red-memory__faces" aria-hidden="true">
+        {[0, 1, 2].map((frame) => <i className={`red-memory__face--${frame}`} key={frame}
+          style={{ backgroundImage: `url(${classmatesSprite})` }} />)}
+      </div>
       <div className="red-memory__desk">
         <div className="red-memory__notebook">
           <img src={notebookChildhood} alt="Знакомая тетрадь «Штрих и его мир» с детским рисунком Штриха" />
@@ -64,6 +69,7 @@ export function RedLineMemory({ playerName, onComplete }: RedLineMemoryProps) {
         </div>
       </div>
       {!erased && <article className={`red-memory__echo ${isReading ? 'is-paused' : ''}`} aria-live="polite">
+        <SpeakerPortrait speaker={echo.speaker} portrait={echo.portrait} />
         <b>{echo.speaker}</b><p>{echo.text}</p>
         {isReading && <button onClick={continueErasing}>{started ? 'Продолжить стирать' : 'Начать стирать'}</button>}
       </article>}

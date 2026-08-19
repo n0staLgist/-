@@ -12,6 +12,7 @@ export type GameSetup = {
 export type DialogueLine = {
   speaker?: string;
   text: string;
+  portrait?: 'classmate-1' | 'classmate-2' | 'classmate-3';
 };
 
 export type StoryScene = {

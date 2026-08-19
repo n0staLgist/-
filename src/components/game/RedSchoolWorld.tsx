@@ -7,6 +7,7 @@ import { getRedHotspots, type RedEvent } from '../../game/redChapter';
 import { getRedWorldStart, isRedSchoolPositionWalkable } from '../../game/redSchoolGeometry';
 import { useRoomMovement, type FacingDirection, type RoomPosition } from '../../game/useRoomMovement';
 import { InteractionPrompt } from './InteractionPrompt';
+import { HintButton } from './HintButton';
 import { MovementControls } from './MovementControls';
 import { PlayerAvatar } from './PlayerAvatar';
 
@@ -14,6 +15,7 @@ type RedSchoolWorldProps = {
   foundSharpener: boolean;
   isInteractive: boolean;
   returning: boolean;
+  sinkSeen: boolean;
   showTouchControls: boolean;
   onEvent: (event: RedEvent) => void;
 };
@@ -24,8 +26,13 @@ const classmates = [
   { event: 'classmate-3' as const, x: 84, y: 71, frame: 2 },
 ];
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+const guideDirection = (from: RoomPosition, to: RoomPosition) => {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  return Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 'left' : 'right') : (dy < 0 ? 'up' : 'down');
+};
 
-export function RedSchoolWorld({ foundSharpener, isInteractive, returning, showTouchControls, onEvent }: RedSchoolWorldProps) {
+export function RedSchoolWorld({ foundSharpener, isInteractive, returning, sinkSeen, showTouchControls, onEvent }: RedSchoolWorldProps) {
   const [reacted, setReacted] = useState<RedEvent[]>([]);
   const enteredArtRoom = useRef(false);
   const hotspots = useMemo(() => getRedHotspots(returning, foundSharpener), [foundSharpener, returning]);
@@ -60,6 +67,13 @@ export function RedSchoolWorld({ foundSharpener, isInteractive, returning, showT
   }, [area, onEvent, returning]);
   const areaClass = area === 'Кабинет ИЗО' ? 'artroom' : area === 'Красный класс' ? 'classroom' : 'corridor';
   const shtrikh = returning ? { x: 54, y: 76 } : { x: 72, y: 73 };
+  const guide = returning
+    ? { position: shtrikh, text: 'Штрих ждёт в опустевшем коридоре.' }
+    : !sinkSeen
+      ? { position: { x: 5, y: 63 }, text: 'Иди в кабинет ИЗО слева. Красный след остался у раковины.' }
+      : !foundSharpener
+        ? { position: { x: 11.5, y: 69 }, text: 'Красная точилка лежит на большом столе в кабинете ИЗО.' }
+        : { position: { x: 91, y: 52 }, text: 'Последняя парта находится в нижнем ряду Красного класса.' };
 
   return (
     <section className={`red-school-world ${returning ? 'is-returning' : ''}`} aria-label={area}>
@@ -75,6 +89,7 @@ export function RedSchoolWorld({ foundSharpener, isInteractive, returning, showT
         <InteractionPrompt position={target?.position ?? movement.position} text={target?.label ?? ''} />
       </div>
       <span className="red-school-area">Глава II · {area}</span>
+      {isInteractive && <HintButton hint={guide.text} direction={guideDirection(movement.position, guide.position)} />}
       {showTouchControls && <MovementControls onMoveStart={movement.startMoving}
         onMoveEnd={movement.stopMoving} onInteract={() => interact(movement.position, movement.facing)} />}
     </section>
