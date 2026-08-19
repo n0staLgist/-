@@ -63,12 +63,12 @@ export const redEventDialogue: Partial<Record<RedEvent, DialogueLine[]>> = {
   'classmate-1': [
     { speaker: 'Одноклассница', portrait: 'classmate-1', text: 'Ты опять носишь эту тетрадь с собой?' },
     { speaker: 'Ты', text: 'Она просто лежит в рюкзаке.' },
-    { speaker: 'Одноклассница', portrait: 'classmate-1', text: 'Ты всегда говоришь «просто», когда не хочешь отвечать.' },
+    { speaker: 'Одноклассница', portrait: 'classmate-1', text: 'Ладно. Я просто спросила.' },
   ],
-  'classmate-2': [{ speaker: 'Одноклассник', portrait: 'classmate-2', text: 'В ИЗО опять пахнет водой из-под красок. Я оставил дверь открытой.' }],
+  'classmate-2': [{ speaker: 'Одноклассник', portrait: 'classmate-2', text: 'В ИЗО опять воняет гуашью. Дверь открыта, если тебе туда.' }],
   'classmate-3': [
     { text: 'Карандаш перестаёт стучать по рукаву, когда ты подходишь.' },
-    { speaker: 'Одноклассник', portrait: 'classmate-3', text: 'Если не хочешь показывать рисунок — я не буду смотреть.' },
+    { speaker: 'Одноклассник', portrait: 'classmate-3', text: 'Я не подсматриваю. Честно.' },
   ],
 };
 
@@ -81,9 +81,9 @@ const commonHotspots: RedHotspot[] = [
   { event: 'desks', label: 'Осмотреть парты', position: { x: 76, y: 39 }, priority: 10, reach: 5 },
   { event: 'last-desk', label: 'Открыть тетрадь', position: { x: 91, y: 52 }, priority: 30, reach: 5.5 },
   { event: 'companion', label: 'Поговорить со Штрихом', position: { x: 72, y: 73 }, priority: 22, reach: 5 },
-  { event: 'classmate-1', label: 'Заговорить', position: { x: 42, y: 76 }, priority: 20, reach: 5 },
-  { event: 'classmate-2', label: 'Заговорить', position: { x: 61, y: 78 }, priority: 20, reach: 5 },
-  { event: 'classmate-3', label: 'Прислушаться', position: { x: 84, y: 71 }, priority: 20, reach: 5 },
+  { event: 'classmate-1', label: 'Заговорить', position: { x: 42, y: 83 }, priority: 20, reach: 5 },
+  { event: 'classmate-2', label: 'Заговорить', position: { x: 61, y: 82 }, priority: 20, reach: 5 },
+  { event: 'classmate-3', label: 'Прислушаться', position: { x: 84, y: 80 }, priority: 20, reach: 5 },
 ];
 
 const sharpenerHotspot: RedHotspot = {

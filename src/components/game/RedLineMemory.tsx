@@ -28,6 +28,7 @@ export function RedLineMemory({ playerName, onComplete }: RedLineMemoryProps) {
   const [lineIndex, setLineIndex] = useState(0);
   const [dialogueDone, setDialogueDone] = useState(false);
   const [exitRevealed, setExitRevealed] = useState(false);
+  const [exitBreaking, setExitBreaking] = useState(false);
   const [started, setStarted] = useState(false);
   const [acknowledgedBeat, setAcknowledgedBeat] = useState(0);
   const { progress, isHolding, start, stop } = useHoldProgress(started, 5200);
@@ -40,12 +41,18 @@ export function RedLineMemory({ playerName, onComplete }: RedLineMemoryProps) {
     if (isReading) stop();
   }, [isReading, stop]);
 
+  useEffect(() => {
+    if (!exitBreaking) return;
+    const timer = window.setTimeout(() => setExitRevealed(true), 950);
+    return () => window.clearTimeout(timer);
+  }, [exitBreaking]);
+
   const nextLine = () => {
     if (lineIndex < afterErasing.length - 1) setLineIndex((current) => current + 1);
     else setDialogueDone(true);
   };
   const handleExit = () => {
-    if (!exitRevealed) return setExitRevealed(true);
+    if (!exitRevealed) return setExitBreaking(true);
     onComplete();
   };
   const continueErasing = () => {
@@ -68,11 +75,13 @@ export function RedLineMemory({ playerName, onComplete }: RedLineMemoryProps) {
           <i className="red-memory__dust" style={{ width: `${progress * .44}%` }} />
         </div>
       </div>
-      {!erased && <article className={`red-memory__echo ${isReading ? 'is-paused' : ''}`} aria-live="polite">
+      {!erased && isReading && <article className={`red-memory__echo ${echo.portrait ? 'is-classmate' : 'is-hero'} is-paused`} aria-live="polite">
         <SpeakerPortrait speaker={echo.speaker} portrait={echo.portrait} />
         <b>{echo.speaker}</b><p>{echo.text}</p>
-        {isReading && <button onClick={continueErasing}>{started ? 'Продолжить стирать' : 'Начать стирать'}</button>}
       </article>}
+      {!erased && isReading && <button className="red-memory__continue" onClick={continueErasing}>
+        {started ? 'Продолжить стирать' : 'Начать стирать'}
+      </button>}
       {!erased && !isReading && <div className="red-memory__action">
         <p>Не отпускай линию на полпути.</p>
         <button className="hold-action" onPointerDown={start} onPointerUp={stop}
@@ -81,8 +90,15 @@ export function RedLineMemory({ playerName, onComplete }: RedLineMemoryProps) {
       </div>}
       {erased && !dialogueDone && <DialogueBox line={afterErasing[lineIndex]} current={lineIndex}
         total={afterErasing.length} playerName={playerName} onNext={nextLine} />}
-      {erased && dialogueDone && <button className={`red-memory__exit ${exitRevealed ? 'is-revealed' : ''}`}
-        onClick={handleExit}>{exitRevealed ? 'Бросить его снова' : 'Выйти'}</button>}
+      {erased && dialogueDone && <button
+        className={`red-memory__exit ${exitBreaking ? 'is-breaking' : ''} ${exitRevealed ? 'is-revealed' : ''}`}
+        disabled={exitBreaking && !exitRevealed} onClick={handleExit}>
+        {exitRevealed ? <span className="red-memory__exit-reveal">Бросить его снова</span> : <>
+          <span className="red-memory__exit-label">Выйти</span>
+          <span className="red-memory__exit-piece red-memory__exit-piece--left" aria-hidden="true">Выйти</span>
+          <span className="red-memory__exit-piece red-memory__exit-piece--right" aria-hidden="true">Выйти</span>
+        </>}
+      </button>}
     </section>
   );
 }

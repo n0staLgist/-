@@ -24,7 +24,6 @@ export function RedChapterScene({ playerName, showTouchControls, onComplete }: R
   const [foundSharpener, setFoundSharpener] = useState(false);
   const [showSink, setShowSink] = useState(false);
   const [sinkSeen, setSinkSeen] = useState(false);
-  const [sinkQueued, setSinkQueued] = useState(false);
   const [dialogue, setDialogue] = useState<DialogueLine[]>(redChapterIntro);
   const [lineIndex, setLineIndex] = useState(0);
   const [finishAfterDialogue, setFinishAfterDialogue] = useState(false);
@@ -39,21 +38,13 @@ export function RedChapterScene({ playerName, showTouchControls, onComplete }: R
     if (lineIndex < dialogue.length - 1) return setLineIndex((index) => index + 1);
     setDialogue([]);
     setLineIndex(0);
-    if (sinkQueued) {
-      setSinkQueued(false);
-      setShowSink(true);
-    }
     if (finishAfterDialogue) onComplete();
   };
 
   const handleEvent = useCallback((event: RedEvent) => {
     if (event === 'window' && !sinkSeen) {
-      setSinkQueued(true);
-      return openDialogue([
-        { text: 'На краю раковины засохла красная краска.' },
-        { speaker: 'Ты', text: 'Такая же осталась у меня на пальцах перед тем уроком.' },
-        { speaker: 'Ты', text: 'Я тогда тёр её до звонка. Проверим, смоется ли сейчас.' },
-      ]);
+      setShowSink(true);
+      return;
     }
     if (event === 'last-desk' && !sinkSeen) {
       return openDialogue([
@@ -88,7 +79,7 @@ export function RedChapterScene({ playerName, showTouchControls, onComplete }: R
     setShowSink(false);
     setSinkSeen(true);
     openDialogue([
-      { text: 'Красный след расплылся по раковине. Чище не стало.' },
+      { text: 'Красная вода на секунду задерживается у слива.' },
       { speaker: 'Штрих', text: 'Это просто краска.' },
       { speaker: 'Ты', text: 'Я не спрашивал.' },
     ]);

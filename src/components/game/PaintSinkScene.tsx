@@ -1,4 +1,5 @@
 import { useHoldProgress } from '../../game/useHoldProgress';
+import sinkHands from '../../assets/game/paint-sink-hands-v1.webp';
 
 type PaintSinkSceneProps = { onComplete: () => void };
 
@@ -6,23 +7,19 @@ export function PaintSinkScene({ onComplete }: PaintSinkSceneProps) {
   const { progress, isHolding, start, stop } = useHoldProgress(true, 3600);
   const finished = progress >= 100;
   const instruction = progress < 25
-    ? 'Тот же след, который не удалось смыть перед уроком.'
-    : progress < 65 ? 'Краска отходит от края и растекается по воде.' : 'Чем дольше трёшь, тем краснее становится вода.';
+    ? 'Красное забилось в линии ладоней.'
+    : progress < 65 ? 'Вода уносит цвет, но не след.' : 'Кожа уже болит. Красное всё ещё здесь.';
 
   return (
     <section className={`paint-sink ${isHolding ? 'is-scrubbing' : ''} ${finished ? 'is-finished' : ''}`}>
       <div className="paint-sink__paper" aria-hidden="true" />
       <div className="paint-sink__closeup">
-        <span className="paint-sink__tap"><i /></span>
-        <div className="paint-sink__basin">
-          <i className="paint-sink__water" style={{ opacity: .18 + progress / 135 }} />
-          <i className="paint-sink__stain" style={{ opacity: 1 - progress / 150 }} />
-          <i className="paint-sink__hand" />
-        </div>
+        <img src={sinkHands} alt="Детские руки оттирают красную гуашь под краном в кабинете ИЗО" />
+        <i className="paint-sink__red-wash" style={{ opacity: .06 + progress / 520 }} aria-hidden="true" />
       </div>
       <article className="paint-sink__copy">
         <span>Глава II · Кабинет ИЗО</span>
-        <h1>Смыть красный след</h1>
+        <h1>Под водой</h1>
         <p aria-live="polite">{instruction}</p>
         {!finished ? <button className="hold-action" onPointerDown={start} onPointerUp={stop}
           onPointerCancel={stop} onPointerLeave={stop}>

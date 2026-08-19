@@ -21,9 +21,9 @@ type RedSchoolWorldProps = {
 };
 
 const classmates = [
-  { event: 'classmate-1' as const, x: 42, y: 76, frame: 0 },
-  { event: 'classmate-2' as const, x: 61, y: 78, frame: 1 },
-  { event: 'classmate-3' as const, x: 84, y: 71, frame: 2 },
+  { event: 'classmate-1' as const, x: 42, y: 83, frame: 0 },
+  { event: 'classmate-2' as const, x: 61, y: 82, frame: 1 },
+  { event: 'classmate-3' as const, x: 84, y: 80, frame: 2 },
 ];
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 const guideDirection = (from: RoomPosition, to: RoomPosition) => {
@@ -70,7 +70,7 @@ export function RedSchoolWorld({ foundSharpener, isInteractive, returning, sinkS
   const guide = returning
     ? { position: shtrikh, text: 'Штрих ждёт в опустевшем коридоре.' }
     : !sinkSeen
-      ? { position: { x: 5, y: 63 }, text: 'Иди в кабинет ИЗО слева. Красный след остался у раковины.' }
+      ? { position: { x: 5, y: 63 }, text: 'Зайди в кабинет ИЗО слева. Там осталась раковина.' }
       : !foundSharpener
         ? { position: { x: 11.5, y: 69 }, text: 'Красная точилка лежит на большом столе в кабинете ИЗО.' }
         : { position: { x: 91, y: 52 }, text: 'Последняя парта находится в нижнем ряду Красного класса.' };
