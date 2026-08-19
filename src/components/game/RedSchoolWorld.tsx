@@ -61,7 +61,7 @@ export function RedSchoolWorld({ foundSharpener, isInteractive, returning, showT
         <img className="red-school-map__art" src={schoolMap} alt="" />
         {!returning && classmates.map((npc) => <i className={`faceless-classmate faceless-classmate--${npc.frame} ${reacted.includes(npc.event) ? 'has-reacted' : ''}`}
           key={npc.frame} style={{ left: `${npc.x}%`, top: `${npc.y}%`, backgroundImage: `url(${classmatesSprite})` }} />)}
-        {!foundSharpener && !returning && <i className="red-sharpener" aria-label="Красная точилка" />}
+        {!foundSharpener && !returning && <span className="red-sharpener" aria-label="Красная точилка" />}
         <img className="red-school-shtrikh" src={shtrikhImage} alt="Штрих идёт рядом"
           style={{ left: `${shtrikh.x}%`, top: `${shtrikh.y}%` }} />
         {returning && <div className="red-erasure" aria-hidden="true"><i /><i /><i /></div>}
