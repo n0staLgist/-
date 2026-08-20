@@ -1,58 +1,57 @@
-import type { StoryScene } from '../../game/types';
-import { displaySpeaker } from '../../game/playerName';
-import { useAdvanceKeys } from '../../game/useAdvanceKeys';
-import { useTypewriter } from '../../game/useTypewriter';
-import { SpeakerPortrait } from './SpeakerPortrait';
+import { useCallback, useState } from 'react';
+import {
+  blueClues, blueIntro, blueSecondClue, blueThirdClue, blueTruth, type BlueClue,
+} from '../../game/blueChapter';
+import type { DialogueLine } from '../../game/types';
+import { BlueRepairScene } from './BlueRepairScene';
+import { BlueRoomWorld } from './BlueRoomWorld';
+import { DialogueBox } from './DialogueBox';
+import '../../styles/blueChapter.css';
+import '../../styles/blueRepair.css';
 
 type BlueRoomSceneProps = {
-  scenes: StoryScene[];
-  sceneIndex: number;
   playerName: string;
-  onNext: () => void;
+  showTouchControls: boolean;
+  onComplete: () => void;
 };
 
-export function BlueRoomScene({ scenes, sceneIndex, playerName, onNext }: BlueRoomSceneProps) {
-  const scene = scenes[sceneIndex];
-  const { visibleText, isComplete, complete } = useTypewriter(scene.dialogue, scene.speaker);
-  const advance = isComplete ? onNext : complete;
-  useAdvanceKeys(advance);
-  const trapped = sceneIndex === 4 || sceneIndex === 5;
-  const freed = sceneIndex >= 6;
-  const smiling = sceneIndex >= 7;
+export function BlueRoomScene({ playerName, showTouchControls, onComplete }: BlueRoomSceneProps) {
+  const [found, setFound] = useState<BlueClue[]>([]);
+  const [dialogue, setDialogue] = useState<DialogueLine[]>(blueIntro);
+  const [lineIndex, setLineIndex] = useState(0);
+  const [repairAfterDialogue, setRepairAfterDialogue] = useState(false);
+  const [repairing, setRepairing] = useState(false);
 
-  return (
-    <section className={`blue-room blue-room--${sceneIndex}`}>
-      <div className="blue-room__paper" />
-      <div className="empty-window"><span /></div>
-      <div className="moving-boxes" aria-hidden="true"><i /><i /><i /></div>
-      <div className="tally-wall" aria-label="Много отметок слова завтра">
-        {Array.from({ length: 18 }).map((_, index) => <i key={index} />)}
-      </div>
-      <div className={`scribbled-door ${trapped ? 'is-closed' : ''} ${freed ? 'is-erased' : ''}`}>
-        <span>ВЫХОД</span><i /><i /><i /><i />
-      </div>
+  const openDialogue = useCallback((lines: DialogueLine[], repairAfter = false) => {
+    setDialogue(lines);
+    setLineIndex(0);
+    setRepairAfterDialogue(repairAfter);
+  }, []);
+  const handleClue = useCallback((clue: BlueClue) => {
+    if (found.includes(clue)) return;
+    const nextFound = [...found, clue];
+    setFound(nextFound);
+    const lines = [...blueClues[clue].dialogue];
+    if (nextFound.length === 2) lines.push(...blueSecondClue);
+    if (nextFound.length === 3) lines.push(...blueThirdClue);
+    if (nextFound.length === 4) lines.push(...blueTruth);
+    openDialogue(lines, nextFound.length === 4);
+  }, [found, openDialogue]);
+  const nextDialogueLine = () => {
+    if (lineIndex < dialogue.length - 1) return setLineIndex((index) => index + 1);
+    setDialogue([]);
+    setLineIndex(0);
+    if (repairAfterDialogue) setRepairing(true);
+  };
 
-      <div className={`room-streak ${freed ? 'has-arm' : ''} ${smiling ? 'can-smile' : ''}`}>
-        <span className="room-streak__head"><i /><i /><b /></span>
-        <span className="room-streak__body" />
-        <span className="room-streak__scarf" />
-        <span className="room-streak__arm room-streak__arm--left" />
-        <span className="room-streak__arm room-streak__arm--right" />
-        <span className="room-streak__leg room-streak__leg--left" />
-        <span className="room-streak__leg room-streak__leg--right" />
-        {sceneIndex >= 3 && <span className="paper-tears"><i /><i /></span>}
-      </div>
+  if (repairing) return <BlueRepairScene playerName={playerName} onComplete={onComplete} />;
 
-      <article className="blue-room__copy">
-        <span className="eyebrow">Глава III · {scene.label}</span>
-        <h1>{scene.title}</h1>
-        <p>{scene.text}</p>
-        <blockquote><SpeakerPortrait speaker={scene.speaker} /><b>{displaySpeaker(scene.speaker, playerName)}</b>{visibleText}<i className={isComplete ? '' : 'typewriter-caret'} aria-hidden="true" /></blockquote>
-        {isComplete && <button className="pencil-button" onClick={onNext}>{scene.action}</button>}
-        <div className="blue-room__progress">
-          {scenes.map((item, index) => <i className={index <= sceneIndex ? 'is-filled' : ''} key={item.title} />)}
-        </div>
-      </article>
-    </section>
-  );
+  return <div className="blue-chapter">
+    <BlueRoomWorld found={found} isInteractive={dialogue.length === 0}
+      showTouchControls={showTouchControls} onClue={handleClue} />
+    <aside className="blue-chapter__objective"><small>То, что осталось</small>
+      <strong>{found.length < 4 ? `Осмотри комнату · ${found.length}/4` : 'Посмотри на Штриха'}</strong></aside>
+    {dialogue.length > 0 && <DialogueBox line={dialogue[lineIndex]} current={lineIndex}
+      total={dialogue.length} playerName={playerName} onNext={nextDialogueLine} />}
+  </div>;
 }

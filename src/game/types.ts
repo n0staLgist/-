@@ -15,12 +15,3 @@ export type DialogueLine = {
   portrait?: 'classmate-1' | 'classmate-2' | 'classmate-3';
   kind?: 'narration' | 'speech' | 'thought';
 };
-
-export type StoryScene = {
-  label: string;
-  title: string;
-  text: string;
-  speaker: string;
-  dialogue: string;
-  action: string;
-};

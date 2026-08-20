@@ -16,7 +16,6 @@ import { RoomMemory } from '../components/game/RoomMemory';
 import { StartScreen } from '../components/game/StartScreen';
 import { TaskCard } from '../components/game/TaskCard';
 import { YardScene } from '../components/game/YardScene';
-import { blueRoomScenes } from '../game/chapters';
 import { startAmbience, stopAmbience } from '../game/audio';
 import { endingLines, introLines, notebookLines, taskCopy, yardArrivalLines } from '../game/story';
 import { getChapterTitle, shouldShowGameHeader, type GameStage } from '../game/stage';
@@ -38,7 +37,6 @@ export function GamePage() {
   const [packed, setPacked] = useState<RoomItem[]>([]);
   const [completed, setCompleted] = useState<YardTask[]>([]);
   const [activeTask, setActiveTask] = useState<YardTask | null>(null);
-  const [storyIndex, setStoryIndex] = useState(0);
   const [activeMemory, setActiveMemory] = useState<RoomItem | null>(null);
   const { soundOn, musicLevel, effectsLevel, toggleSound, changeMusicLevel, changeEffectsLevel } = useAudioControls();
   const [playerName, setPlayerName] = useState('Ты');
@@ -84,7 +82,6 @@ export function GamePage() {
     saveGameSetup(setup);
     setPlayerName(setup.playerName);
     setControlsMode(setup.controlsMode);
-    setStoryIndex(0);
     setDialogue([]);
     if (chapter === 2) setStage('red');
     else if (chapter === 3) setStage('blue');
@@ -112,14 +109,6 @@ export function GamePage() {
     showDialogue(taskCopy[task].memory, 'yard');
   };
 
-  const advanceStory = (scenesLength: number, nextStage: GameStage) => {
-    if (storyIndex < scenesLength - 1) setStoryIndex((value) => value + 1);
-    else {
-      setStoryIndex(0);
-      setStage(nextStage);
-    }
-  };
-
   const restart = () => {
     stopAmbience();
     setStage('start');
@@ -129,7 +118,6 @@ export function GamePage() {
     setActiveMemory(null);
     setDialogue([]);
     setLineIndex(0);
-    setStoryIndex(0);
   };
 
   return (
@@ -149,7 +137,8 @@ export function GamePage() {
       {stage === 'yellowReveal' && <ColorReveal color="yellow" title="Жёлтый" text="Цвет окон, мела и того вечера, когда тебя позвали домой." nextChapter="Следующая страница — красная" autoAdvanceMs={4300} onContinue={() => setStage('red')} />}
       {stage === 'red' && <RedChapterScene playerName={playerName} showTouchControls={controlsMode === 'touch'} onComplete={() => setStage('redReveal')} />}
       {stage === 'redReveal' && <ColorReveal color="red" title="Красный" text="Не цвет стыда и исправлений. Цвет смелости оставить важное видимым." nextChapter="Войти в синюю комнату" onContinue={() => setStage('blue')} />}
-      {stage === 'blue' && <BlueRoomScene scenes={blueRoomScenes} sceneIndex={storyIndex} playerName={playerName} onNext={() => advanceStory(blueRoomScenes.length, 'return')} />}
+      {stage === 'blue' && <BlueRoomScene playerName={playerName} showTouchControls={controlsMode === 'touch'}
+        onComplete={() => setStage('return')} />}
       {stage === 'return' && <ReturnToRoomScene onContinue={() => setStage('finale')} />}
       {stage === 'finale' && <FinaleScene playerName={playerName} onRestart={restart} />}
       {activeTask && <TaskCard task={activeTask} onCancel={() => setActiveTask(null)} onComplete={finishTask} />}
