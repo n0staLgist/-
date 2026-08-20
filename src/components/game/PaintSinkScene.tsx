@@ -15,6 +15,11 @@ export function PaintSinkScene({ onComplete }: PaintSinkSceneProps) {
       <div className="paint-sink__paper" aria-hidden="true" />
       <div className="paint-sink__closeup">
         <img src={sinkHands} alt="Детские руки оттирают красную гуашь под краном в кабинете ИЗО" />
+        <span className="paint-sink__moving-hands" aria-hidden="true">
+          <img className="is-left" src={sinkHands} alt="" />
+          <img className="is-right" src={sinkHands} alt="" />
+        </span>
+        <i className="paint-sink__water" aria-hidden="true" />
         <i className="paint-sink__red-wash" style={{ opacity: .06 + progress / 520 }} aria-hidden="true" />
       </div>
       <article className="paint-sink__copy">

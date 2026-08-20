@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import classmatesSprite from '../../assets/game/faceless-classmates-v2.webp';
 import schoolMap from '../../assets/game/red-school-world-v2.webp';
-import shtrikhImage from '../../assets/game/shtrikh-yard-present-v1.webp';
+import shtrikhImage from '../../assets/game/shtrikh-yard-present-v2.webp';
 import { selectInteractionTarget } from '../../game/interactionTarget';
 import { getRedHotspots, type RedEvent } from '../../game/redChapter';
 import { getRedWorldStart, isRedSchoolPositionWalkable } from '../../game/redSchoolGeometry';
@@ -21,9 +21,9 @@ type RedSchoolWorldProps = {
 };
 
 const classmates = [
-  { event: 'classmate-1' as const, x: 42, y: 83, frame: 0 },
-  { event: 'classmate-2' as const, x: 61, y: 82, frame: 1 },
-  { event: 'classmate-3' as const, x: 84, y: 80, frame: 2 },
+  { event: 'classmate-1' as const, x: 42, y: 86, frame: 0 },
+  { event: 'classmate-2' as const, x: 61, y: 85, frame: 1 },
+  { event: 'classmate-3' as const, x: 84, y: 84, frame: 2 },
 ];
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 const guideDirection = (from: RoomPosition, to: RoomPosition) => {
@@ -52,10 +52,14 @@ export function RedSchoolWorld({ foundSharpener, isInteractive, returning, sinkS
     isRedSchoolPositionWalkable(position, returning), [returning]);
   const movement = useRoomMovement(isInteractive, interact, {
     start: getRedWorldStart(returning), speed: 8.5, isWalkable,
+    horizontalSpeedScale: showTouchControls ? 2 / 3 : 1,
   });
   const target = isInteractive
     ? selectInteractionTarget(candidates, movement.position, movement.facing) : null;
-  const cameraX = clamp(movement.position.x, 22, 78);
+  const requiredEvent: RedEvent = returning ? 'shtrikh' : !sinkSeen ? 'window' : !foundSharpener ? 'sharpener' : 'last-desk';
+  const visibleHotspots = hotspots.filter(({ event }) =>
+    !event.startsWith('classmate') && event !== 'companion' && event !== 'shtrikh');
+  const cameraX = clamp(movement.position.x, 22, 73);
   const cameraY = clamp(movement.position.y, 26, 74);
   const mapStyle: CSSProperties = { transform: `translate(-${cameraX}%, -${cameraY}%)` };
   const area = movement.position.x < 24
@@ -82,6 +86,9 @@ export function RedSchoolWorld({ foundSharpener, isInteractive, returning, sinkS
         {!returning && classmates.map((npc) => <i className={`faceless-classmate faceless-classmate--${npc.frame} ${reacted.includes(npc.event) ? 'has-reacted' : ''}`}
           key={npc.frame} style={{ left: `${npc.x}%`, top: `${npc.y}%`, backgroundImage: `url(${classmatesSprite})` }} />)}
         {!foundSharpener && !returning && <span className="red-sharpener" aria-label="Красная точилка" />}
+        {visibleHotspots.map((hotspot) => <i key={hotspot.event}
+          className={`red-inspect-mark ${hotspot.event === requiredEvent ? 'is-required' : ''} ${target?.value === hotspot.event ? 'is-near' : ''}`}
+          style={{ left: `${hotspot.position.x}%`, top: `${hotspot.position.y}%` }} aria-hidden="true" />)}
         <img className="red-school-shtrikh" src={shtrikhImage} alt="Штрих идёт рядом"
           style={{ left: `${shtrikh.x}%`, top: `${shtrikh.y}%` }} />
         {returning && <div className="red-erasure" aria-hidden="true"><i /><i /><i /></div>}

@@ -4,15 +4,16 @@
 .red-school-map--classroom { width: max(200vw, 300svh); }
 .red-school-map__art { position: absolute; inset: 0; width: 100%; height: 100%; filter: saturate(.72) sepia(.1) brightness(.77); }
 .red-school-world::after { content: ''; position: absolute; z-index: 8; inset: 0; background: radial-gradient(circle at center, transparent 58%, #130e0a91 115%); pointer-events: none; }
-.red-school-map .player-avatar { z-index: 7; width: clamp(98px, 8vw, 122px); }
-.red-school-map--artroom .player-avatar { width: clamp(124px, 10vw, 152px); }
-.red-school-map--classroom .player-avatar { width: clamp(110px, 9vw, 138px); }
+.red-school-map .player-avatar { z-index: 7; width: clamp(112px, 8.8vw, 136px); filter: sepia(.3) saturate(.48) contrast(.96) brightness(.8) drop-shadow(1px 2px 0 #34291f66); }
+.red-school-map .player-avatar__sprite { opacity: .92; }
+.red-school-map--artroom .player-avatar { width: clamp(132px, 10.5vw, 160px); }
+.red-school-map--classroom .player-avatar { width: clamp(118px, 9.5vw, 144px); }
 .red-school-map .interaction-prompt { z-index: 10; transform: translate(-50%, -112px) rotate(-.5deg); }
 .red-school-area { position: fixed; z-index: 12; left: 24px; bottom: 18px; padding: 7px 12px; color: #eee4cf; background: #111214e8; font: 700 15px Caveat, cursive; transform: rotate(-.4deg); }
 .red-chapter__objective { position: fixed; z-index: 14; top: 72px; left: 20px; display: grid; gap: 2px; width: min(300px, calc(100vw - 90px)); margin: 0; padding: 9px 14px; color: #f4ead7; background: #111214ed; border-left: 4px solid #a64037; box-shadow: 3px 4px 0 #0007; transform: rotate(-.25deg); }
 .red-chapter__objective small { color: #c95b4f; font: 800 11px Caveat, cursive; letter-spacing: .12em; text-transform: uppercase; }.red-chapter__objective strong { font: 700 17px/1.15 Caveat, cursive; }
-.red-school-shtrikh { position: absolute; z-index: 6; width: clamp(112px, 8.4vw, 132px); max-height: 190px; object-fit: contain; filter: sepia(.18) saturate(.7) brightness(.82); transform: translate(-50%, -82%); animation: red-shtrikh-idle 4.8s ease-in-out infinite; }
-.faceless-classmate { position: absolute; z-index: 5; width: clamp(100px, 7.6vw, 118px); aspect-ratio: .666; background-repeat: no-repeat; background-size: 300% 100%; filter: saturate(.55) sepia(.18) brightness(.76); transform: translate(-50%, -88%); transition: transform .35s ease, filter .35s ease; }
+.red-school-shtrikh { position: absolute; z-index: 6; width: clamp(120px, 9vw, 144px); max-height: 198px; object-fit: contain; filter: sepia(.18) saturate(.66) brightness(.84) contrast(1.05); transform: translate(-50%, -82%); animation: red-shtrikh-idle 4.8s ease-in-out infinite; }
+.faceless-classmate { position: absolute; z-index: 5; width: clamp(100px, 7.6vw, 118px); aspect-ratio: .666; background-repeat: no-repeat; background-size: 300% 100%; opacity: .88; filter: grayscale(.14) saturate(.42) sepia(.3) brightness(.73) contrast(.96) drop-shadow(1px 2px 0 #34291f55); transform: translate(-50%, -88%); transition: transform .35s ease, filter .35s ease; }
 .faceless-classmate--0 { background-position: 0 center; }
 .faceless-classmate--1 { background-position: 50% center; }
 .faceless-classmate--2 { background-position: 100% center; }
@@ -22,14 +23,20 @@
 .red-sharpener { position: absolute; z-index: 6; left: 11.5%; top: 69%; width: 34px; height: 25px; border: 3px solid #51231f; border-radius: 4px 7px 6px 4px; background: linear-gradient(155deg, #cc5b4d, #8e302a); box-shadow: 0 0 0 6px #efd28c35, 0 0 28px #d65e45; transform: translate(-50%, -50%) rotate(-7deg); animation: red-item-hint 1.8s ease-in-out infinite; }
 .red-sharpener::before { content: ''; position: absolute; left: 8px; top: 5px; width: 16px; height: 8px; border: 2px solid #514943; border-radius: 2px; background: #b9b09d; box-shadow: inset 0 0 0 2px #e5dcc8; transform: rotate(-4deg); }
 .red-sharpener::after { content: 'точилка'; position: absolute; left: 50%; bottom: 34px; padding: 2px 7px; color: #f1e7d2; background: #111214e8; font: 700 14px Caveat, cursive; white-space: nowrap; transform: translateX(-50%) rotate(4deg); }
+.red-inspect-mark { position: absolute; z-index: 4; width: 54px; height: 30px; border: 2px solid #4e403188; border-radius: 48% 52% 45% 55%; opacity: .3; transform: translate(-50%, -50%) rotate(-7deg); pointer-events: none; }
+.red-inspect-mark::after { content: ''; position: absolute; left: 8px; right: 5px; bottom: -7px; height: 2px; background: #4e403177; transform: rotate(5deg); }
+.red-inspect-mark.is-required { border-color: #a0443999; opacity: .6; animation: red-inspect-pulse 2.4s ease-in-out infinite; }
+.red-inspect-mark.is-near { border-color: #e9d7ad; opacity: .95; box-shadow: 0 0 18px #efd48399; }
 .red-erasure { position: absolute; z-index: 4; inset: 0; pointer-events: none; }
-.red-erasure i { position: absolute; width: 48px; height: 70px; border: 3px solid #ead9b52b; border-radius: 48% 48% 40% 40%; filter: blur(1px); }
-.red-erasure i::after { content: ''; position: absolute; left: -14px; right: -14px; top: 32px; height: 7px; background: #241a15d6; transform: rotate(-18deg); }
-.red-erasure i:first-child { left: 40%; top: 75%; }.red-erasure i:nth-child(2) { left: 61%; top: 74%; }.red-erasure i:last-child { left: 79%; top: 85%; }
+.red-erasure i { position: absolute; width: 62px; height: 118px; opacity: .58; filter: blur(.35px); background: linear-gradient(67deg, transparent 47%, #ead9b577 48% 52%, transparent 53%) 4px 43px / 27px 49px no-repeat, linear-gradient(-67deg, transparent 47%, #ead9b577 48% 52%, transparent 53%) 31px 43px / 27px 49px no-repeat, linear-gradient(76deg, transparent 47%, #ead9b577 48% 53%, transparent 54%) 17px 86px / 19px 32px no-repeat, linear-gradient(-76deg, transparent 47%, #ead9b577 48% 53%, transparent 54%) 29px 86px / 19px 32px no-repeat; }
+.red-erasure i::before { content: ''; position: absolute; left: 17px; top: 0; width: 27px; height: 27px; border: 3px solid #ead9b599; border-radius: 50%; box-shadow: inset 4px -2px 0 #5a4a3b30; }
+.red-erasure i::after { content: ''; position: absolute; left: 14px; top: 31px; width: 34px; height: 58px; border: 3px solid #ead9b588; background: repeating-linear-gradient(-17deg, #ead9b518 0 10px, #241a15b8 11px 15px, #ead9b518 16px 22px); clip-path: polygon(24% 0, 76% 0, 100% 100%, 0 100%); }
+.red-erasure i:first-child { left: 40%; top: 73%; }.red-erasure i:nth-child(2) { left: 61%; top: 72%; }.red-erasure i:last-child { left: 79%; top: 78%; }
 .red-school-world.is-returning .red-school-map__art { filter: saturate(.48) sepia(.2) brightness(.63) contrast(1.08); animation: red-return 1.1s ease both; }
 @keyframes red-return { from { filter: saturate(.72) sepia(.1) brightness(.77); } }
 @keyframes red-shtrikh-idle { 50% { transform: translate(-50%, -84%) rotate(.8deg); } }
 @keyframes red-item-hint { 50% { box-shadow: 0 0 0 8px #efd28c1c, 0 0 32px #d65e45; } }
+@keyframes red-inspect-pulse { 50% { opacity: .88; transform: translate(-50%, -50%) rotate(-3deg) scale(1.08); } }
 
 @media (max-width: 700px) {
   .red-school-map { width: max(250vw, 375svh); }
@@ -38,5 +45,5 @@
   .red-school-map--classroom .player-avatar { width: 90px; }
   .red-school-area { left: 12px; bottom: 12px; }
   .red-chapter__objective { top: 62px; left: 10px; width: min(245px, calc(100vw - 68px)); }.red-chapter__objective strong { font-size: 14px; }
-  .red-school-shtrikh { width: 94px; }.faceless-classmate { width: 86px; }
+  .red-school-shtrikh { width: 100px; }.faceless-classmate { width: 86px; }.red-inspect-mark { width: 44px; height: 25px; }
 }

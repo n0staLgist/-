@@ -1,9 +1,10 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   redChapterIntro, redEndingDialogue, redEventDialogue, redReturnDialogue,
   type RedEvent,
 } from '../../game/redChapter';
 import type { DialogueLine } from '../../game/types';
+import { setAmbienceMood } from '../../game/audio';
 import { DialogueBox } from './DialogueBox';
 import { PaintSinkScene } from './PaintSinkScene';
 import { RedLineMemory } from './RedLineMemory';
@@ -28,6 +29,10 @@ export function RedChapterScene({ playerName, showTouchControls, onComplete }: R
   const [lineIndex, setLineIndex] = useState(0);
   const [finishAfterDialogue, setFinishAfterDialogue] = useState(false);
 
+  useEffect(() => {
+    setAmbienceMood(phase === 'returning' ? 'red-empty' : 'red');
+  }, [phase]);
+
   const openDialogue = useCallback((lines: DialogueLine[], finish = false) => {
     setDialogue(lines);
     setLineIndex(0);
@@ -48,14 +53,14 @@ export function RedChapterScene({ playerName, showTouchControls, onComplete }: R
     }
     if (event === 'last-desk' && !sinkSeen) {
       return openDialogue([
-        { text: 'Красная черта расплывается, стоит попытаться вспомнить её.' },
-        { speaker: 'Ты', text: 'Сначала запах краски. Кабинет ИЗО.' },
+        { text: 'Красная черта дрожит под пальцем. Воспоминание обрывается на запахе гуаши.' },
+        { speaker: 'Ты', text: 'Сначала были руки под краном.' },
       ]);
     }
     if (event === 'last-desk' && !foundSharpener) {
       return openDialogue([
-        { speaker: 'Ты', text: 'Парта знакомая. Но я не помню, почему именно эта.' },
-        { speaker: 'Штрих', text: 'В кабинете ИЗО кое-что осталось. Маленькое и красное.' },
+        { speaker: 'Ты', text: 'Я помню эту парту. Не помню, зачем вернулся к ней.' },
+        { speaker: 'Штрих', text: 'Красный всегда оставался в точилке дольше, чем на бумаге.' },
       ]);
     }
     if (event === 'sharpener') {
@@ -89,15 +94,15 @@ export function RedChapterScene({ playerName, showTouchControls, onComplete }: R
 
   const objective = phase === 'returning'
     ? 'Вернись к Штриху в коридоре'
-    : !sinkSeen ? 'Найди раковину в кабинете ИЗО'
-      : foundSharpener ? 'Найди последнюю парту в классе' : 'Найди красную точилку в кабинете ИЗО';
+    : !sinkSeen ? 'Осмотри красный след у раковины в ИЗО'
+      : foundSharpener ? 'Вернись к тетради на последней парте' : 'Найди красную точилку в кабинете ИЗО';
 
   return (
     <div className="red-chapter">
       <RedSchoolWorld key={phase} returning={phase === 'returning'} foundSharpener={foundSharpener}
         sinkSeen={sinkSeen} isInteractive={dialogue.length === 0 && !showSink}
         showTouchControls={showTouchControls} onEvent={handleEvent} />
-      <aside className="red-chapter__objective"><small>Сейчас</small><strong>{objective}</strong></aside>
+      <aside className="red-chapter__objective"><small>След в памяти</small><strong>{objective}</strong></aside>
       {dialogue.length > 0 && <DialogueBox line={dialogue[lineIndex]} current={lineIndex} total={dialogue.length}
         playerName={playerName} onNext={nextDialogueLine} />}
       {showSink && <PaintSinkScene onComplete={finishSink} />}

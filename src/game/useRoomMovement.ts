@@ -9,6 +9,7 @@ type MovementOptions = {
   start?: RoomPosition;
   speed?: number;
   isWalkable?: (position: RoomPosition) => boolean;
+  horizontalSpeedScale?: number;
 };
 const DIRECTIONS: Record<string, MoveDirection> = {
   ArrowUp: [0, -1], KeyW: [0, -1], ArrowDown: [0, 1], KeyS: [0, 1],
@@ -19,7 +20,10 @@ export function useRoomMovement(enabled: boolean, onInteract: (
   position: RoomPosition,
   facing: FacingDirection,
 ) => void, options: MovementOptions = {}) {
-  const { start = { x: 86, y: 56 }, speed = 15, isWalkable = isRoomPositionWalkable } = options;
+  const {
+    start = { x: 86, y: 56 }, speed = 15,
+    isWalkable = isRoomPositionWalkable, horizontalSpeedScale = 1,
+  } = options;
   const [position, setPosition] = useState(start);
   const [isMoving, setIsMoving] = useState(false);
   const [facing, setFacing] = useState<FacingDirection>('down');
@@ -77,7 +81,7 @@ export function useRoomMovement(enabled: boolean, onInteract: (
       const dx = keyboard.reduce((sum, direction) => sum + direction[0], 0) + (touchDirection.current?.[0] ?? 0);
       const dy = keyboard.reduce((sum, direction) => sum + direction[1], 0) + (touchDirection.current?.[1] ?? 0);
       const length = Math.hypot(dx, dy);
-      const targetX = length > 0 ? (dx / length) * speed : 0;
+      const targetX = length > 0 ? (dx / length) * speed * horizontalSpeedScale : 0;
       const targetY = length > 0 ? (dy / length) * speed : 0;
       const deltaSeconds = Math.min(time - previousTime, 32) / 1000;
       const easing = 1 - Math.exp(-(length > 0 ? 30 : 16) * deltaSeconds);
@@ -112,7 +116,7 @@ export function useRoomMovement(enabled: boolean, onInteract: (
     };
     frame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frame);
-  }, [enabled, isWalkable, speed]);
+  }, [enabled, horizontalSpeedScale, isWalkable, speed]);
 
   return { position, isMoving, facing, startMoving, stopMoving };
 }

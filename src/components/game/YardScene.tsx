@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import shtrikhYard from '../../assets/game/shtrikh-yard-present-v1.webp';
+import shtrikhYard from '../../assets/game/shtrikh-yard-present-v2.webp';
 import { selectInteractionTarget, type InteractionCandidate } from '../../game/interactionTarget';
 import { taskCopy } from '../../game/story';
 import type { YardTask } from '../../game/types';
@@ -67,6 +67,7 @@ export function YardScene({ completed, isInteractive, showTouchControls, onTask,
   const canMove = isInteractive && !examination;
   const movement = useRoomMovement(canMove, interact, {
     start: { x: 65, y: 82 }, speed: 15, isWalkable: isYardPositionWalkable,
+    horizontalSpeedScale: showTouchControls ? 9 / 16 : 1,
   });
   const target = selectInteractionTarget(candidates, movement.position, movement.facing);
   const nextTask = (Object.keys(taskPositions) as YardTask[]).find((task) => !completed.includes(task));

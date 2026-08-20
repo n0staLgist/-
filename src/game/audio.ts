@@ -1,10 +1,13 @@
-export type AmbienceMood = 'room' | 'notebook' | 'yard' | 'memory' | 'red' | 'blue' | 'finale';
+import type { DialogueLine } from './types';
+
+export type AmbienceMood = 'room' | 'notebook' | 'yard' | 'memory' | 'red' | 'red-empty' | 'blue' | 'finale';
 
 let context: AudioContext | null = null;
 let master: GainNode | null = null;
 let effectsMaster: GainNode | null = null;
 let melodyTimer: number | null = null;
 let effectsEnabled = true;
+let ambienceSilenced = false;
 let musicVolume = .7;
 let effectsVolume = .7;
 let currentMood: AmbienceMood = 'room';
@@ -16,6 +19,7 @@ const themes: Record<AmbienceMood, { melody: number[]; interval: number }> = {
   yard: { melody: [185, 246.94, 293.66, 277.18, 246.94, 220, 246.94, 0], interval: 720 },
   memory: { melody: [130.81, 174.61, 196, 174.61, 0, 146.83, 164.81, 0], interval: 980 },
   red: { melody: [146.83, 138.59, 164.81, 0, 146.83, 174.61, 138.59, 0], interval: 930 },
+  'red-empty': { melody: [110, 0, 103.83, 0, 0, 116.54, 0, 0], interval: 1450 },
   blue: { melody: [130.81, 0, 146.83, 130.81, 116.54, 0, 130.81, 0], interval: 1080 },
   finale: { melody: [196, 246.94, 293.66, 246.94, 220, 293.66, 329.63, 0], interval: 760 },
 };
@@ -38,7 +42,7 @@ const getEffectsOutput = () => {
 
 export function setMusicVolume(volume: number) {
   musicVolume = Math.max(0, Math.min(1, volume));
-  if (context && master) master.gain.setTargetAtTime(effectsEnabled ? .24 * musicVolume : .0001, context.currentTime, .05);
+  if (context && master) master.gain.setTargetAtTime(effectsEnabled && !ambienceSilenced ? .24 * musicVolume : .0001, context.currentTime, .05);
 }
 
 export function setEffectsVolume(volume: number) {
@@ -83,7 +87,7 @@ export function startAmbience(mood: AmbienceMood = currentMood) {
   if (master) return;
   master = audioContext.createGain();
   master.gain.setValueAtTime(.0001, audioContext.currentTime);
-  master.gain.exponentialRampToValueAtTime(.24 * musicVolume, audioContext.currentTime + 1.2);
+  master.gain.exponentialRampToValueAtTime(ambienceSilenced ? .0001 : .24 * musicVolume, audioContext.currentTime + 1.2);
   master.connect(audioContext.destination);
   rebuildMusic();
 }
@@ -103,8 +107,26 @@ export function setAmbienceEnabled(enabled: boolean) {
   const now = context.currentTime;
   master.gain.cancelScheduledValues(now);
   master.gain.setValueAtTime(Math.max(master.gain.value, .0001), now);
-  master.gain.exponentialRampToValueAtTime(enabled ? .24 * musicVolume : .0001, now + .45);
+  master.gain.exponentialRampToValueAtTime(enabled && !ambienceSilenced ? .24 * musicVolume : .0001, now + .45);
   if (effectsMaster) effectsMaster.gain.setTargetAtTime(enabled ? effectsVolume : .0001, now, .05);
+}
+
+export function silenceAmbience(duration = .7) {
+  ambienceSilenced = true;
+  if (!context || !master) return;
+  const now = context.currentTime;
+  master.gain.cancelScheduledValues(now);
+  master.gain.setValueAtTime(Math.max(master.gain.value, .0001), now);
+  master.gain.exponentialRampToValueAtTime(.0001, now + duration);
+}
+
+export function restoreAmbience(duration = 1.2) {
+  ambienceSilenced = false;
+  if (!effectsEnabled || !context || !master) return;
+  const now = context.currentTime;
+  master.gain.cancelScheduledValues(now);
+  master.gain.setValueAtTime(Math.max(master.gain.value, .0001), now);
+  master.gain.exponentialRampToValueAtTime(.24 * musicVolume, now + duration);
 }
 
 export function stopAmbience() {
@@ -125,20 +147,23 @@ const voiceFrequency = (speaker?: string) => {
   return 360;
 };
 
-export function playWritingTick(speaker?: string) {
+export function playWritingTick(speaker?: string, kind?: DialogueLine['kind']) {
   if (!effectsEnabled) return;
   const audioContext = getAudioContext();
   const oscillator = audioContext.createOscillator();
   const gain = audioContext.createGain();
   const filter = audioContext.createBiquadFilter();
   const now = audioContext.currentTime;
-  oscillator.type = speaker?.includes('Штрих') ? 'triangle' : 'sine';
-  oscillator.frequency.setValueAtTime(voiceFrequency(speaker) + Math.random() * 18, now);
-  oscillator.frequency.exponentialRampToValueAtTime(voiceFrequency(speaker) * .92, now + .055);
+  const isClassmate = speaker?.includes('Однокласс') ?? false;
+  const isThought = kind === 'thought';
+  oscillator.type = isClassmate ? 'square' : speaker?.includes('Штрих') ? 'triangle' : 'sine';
+  const baseFrequency = isThought ? 190 : voiceFrequency(speaker);
+  oscillator.frequency.setValueAtTime(baseFrequency + Math.random() * (isClassmate ? 34 : 18), now);
+  oscillator.frequency.exponentialRampToValueAtTime(baseFrequency * (isThought ? .72 : .92), now + .055);
   filter.type = 'lowpass';
-  filter.frequency.value = 1150;
+  filter.frequency.value = isClassmate ? 720 : isThought ? 480 : 1150;
   gain.gain.setValueAtTime(.0001, now);
-  gain.gain.exponentialRampToValueAtTime(.026, now + .008);
+  gain.gain.exponentialRampToValueAtTime(isClassmate ? .012 : isThought ? .009 : .026, now + .008);
   gain.gain.exponentialRampToValueAtTime(.0001, now + .065);
   oscillator.connect(filter).connect(gain).connect(getEffectsOutput());
   oscillator.start();
@@ -156,5 +181,27 @@ export function playPageTurn() {
   gain.gain.value = .075;
   source.buffer = buffer;
   source.connect(gain).connect(getEffectsOutput());
+  source.start();
+}
+
+export function playPaperCrack() {
+  if (!effectsEnabled) return;
+  const audioContext = getAudioContext();
+  const buffer = audioContext.createBuffer(1, audioContext.sampleRate * .42, audioContext.sampleRate);
+  const samples = buffer.getChannelData(0);
+  for (let index = 0; index < samples.length; index += 1) {
+    const decay = Math.pow(1 - index / samples.length, 2.4);
+    const snap = index < audioContext.sampleRate * .035 ? 1 : .38;
+    samples[index] = (Math.random() * 2 - 1) * decay * snap;
+  }
+  const source = audioContext.createBufferSource();
+  const filter = audioContext.createBiquadFilter();
+  const gain = audioContext.createGain();
+  filter.type = 'bandpass';
+  filter.frequency.value = 920;
+  filter.Q.value = .7;
+  gain.gain.value = .22;
+  source.buffer = buffer;
+  source.connect(filter).connect(gain).connect(getEffectsOutput());
   source.start();
 }

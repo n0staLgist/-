@@ -22,9 +22,9 @@ const SCENERY: Zone[] = [
   { left: 89.5, right: 94.2, top: 47.4, bottom: 55.2 }, // последняя парта
 ];
 const CLASSMATES: Zone[] = [
-  { left: 40.6, right: 43.4, top: 75.3, bottom: 83.5 },
-  { left: 59.6, right: 62.4, top: 74.3, bottom: 82.5 },
-  { left: 82.6, right: 85.4, top: 72.3, bottom: 80.5 },
+  { left: 40.9, right: 43.1, top: 74.2, bottom: 86.4 },
+  { left: 59.9, right: 62.1, top: 73.2, bottom: 85.4 },
+  { left: 82.9, right: 85.1, top: 72.2, bottom: 84.4 },
 ];
 const INITIAL_SHTRIKH: Zone = { left: 70.3, right: 73.7, top: 67.2, bottom: 74.2 };
 const RETURNING_SHTRIKH: Zone = { left: 52.3, right: 55.7, top: 70.2, bottom: 77.2 };

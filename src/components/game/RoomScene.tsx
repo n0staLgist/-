@@ -86,7 +86,7 @@ export function RoomScene({ packed, isInteractive = true, showTouchControls, onI
   }, [allPacked, candidates, onInspectItem, onNotebook]);
   const canMove = isInteractive && !examination;
   const { position, isMoving, facing, startMoving, stopMoving } = useRoomMovement(canMove, interact, {
-    start: { x: 88, y: 58 },
+    start: { x: 88, y: 58 }, horizontalSpeedScale: showTouchControls ? 9 / 16 : 1,
   });
   useEffect(() => {
     if (isMoving) setShowFirstStep(false);
@@ -103,7 +103,9 @@ export function RoomScene({ packed, isInteractive = true, showTouchControls, onI
     <section className="scene room-scene" aria-label="Комната перед переездом">
       <RoomChecklist packed={packed} />
       <HintButton hint={nextItem ? roomHints[nextItem] : 'Все вещи собраны. Теперь подойди к тетради на столе.'} />
-      {showFirstStep && isInteractive && <div className="room-first-step"><strong>Осмотрись в комнате</strong><span>Иди на WASD или стрелках. Три нужные вещи слегка обведены карандашом.</span></div>}
+      {showFirstStep && isInteractive && <div className="room-first-step"><strong>Осмотрись в комнате</strong><span>{showTouchControls
+        ? 'Иди экранными стрелками. Круглая кнопка справа — действие.'
+        : 'Иди на WASD или стрелках. Три нужные вещи слегка обведены карандашом.'}</span></div>}
       <div className="room-map">
         <div className="scene__shade" />
         {(Object.keys(roomItems) as RoomItem[]).map((item) => (

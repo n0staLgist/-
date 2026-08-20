@@ -7,6 +7,7 @@ import { FinaleScene } from '../components/game/FinaleScene';
 import { GameHeader } from '../components/game/GameHeader';
 import { NotebookScene } from '../components/game/NotebookScene';
 import { NotebookPortalTransition } from '../components/game/NotebookPortalTransition';
+import { PhoneOrientationGuard } from '../components/game/PhoneOrientationGuard';
 import { PrologueScene } from '../components/game/PrologueScene';
 import { RedChapterScene } from '../components/game/RedChapterScene';
 import { ReturnToRoomScene } from '../components/game/ReturnToRoomScene';
@@ -25,6 +26,7 @@ import { saveGameSetup, unlockChapter, type ChapterNumber } from '../game/gameSa
 import type { ControlsMode, DialogueLine, GameSetup, RoomItem, YardTask } from '../game/types';
 import '../styles/prologue.css';
 import '../styles/roomMemory.css';
+import '../styles/mobile.css';
 
 const PROLOGUE_EXIT_DURATION_MS = 5200;
 const YARD_TRANSITION_DURATION_MS = 5200;
@@ -131,7 +133,8 @@ export function GamePage() {
   };
 
   return (
-    <main className="game-shell">
+    <main className={`game-shell ${controlsMode === 'touch' ? 'game-shell--touch' : ''}`}>
+      {controlsMode === 'touch' && stage !== 'start' && <PhoneOrientationGuard />}
       {shouldShowGameHeader(stage) && <GameHeader chapter={getChapterTitle(stage)} effectsVolume={effectsLevel} musicVolume={musicLevel} soundOn={soundOn} onEffectsVolumeChange={changeEffectsLevel} onMusicVolumeChange={changeMusicLevel} onSoundToggle={toggleSound} onRestart={restart} />}
       {stage === 'start' && <StartScreen onStart={start} />}
       {stage === 'prologue' && <PrologueScene lineIndex={lineIndex} />}

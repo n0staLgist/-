@@ -28,7 +28,7 @@ export function MovementControls({ onMoveStart, onMoveEnd, onInteract }: Movemen
           aria-label={label}
         >{symbol}</button>
       ))}
-      <button className="move-action" onClick={onInteract} aria-label="Взаимодействовать">E</button>
+      <button className="move-action" onClick={onInteract} aria-label="Взаимодействовать">●</button>
     </div>
   );
 }

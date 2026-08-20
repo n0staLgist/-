@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import classmatesSprite from '../../assets/game/faceless-classmates-v2.webp';
 import notebookChildhood from '../../assets/game/notebook-childhood-v4.webp';
+import { playPaperCrack, restoreAmbience, silenceAmbience } from '../../game/audio';
 import { useHoldProgress } from '../../game/useHoldProgress';
+import { useTypewriter } from '../../game/useTypewriter';
 import type { DialogueLine } from '../../game/types';
 import { DialogueBox } from './DialogueBox';
 import { SpeakerPortrait } from './SpeakerPortrait';
@@ -13,15 +15,15 @@ type RedLineMemoryProps = {
 
 const afterErasing: DialogueLine[] = [
   { speaker: 'Штрих', text: 'Если тебе было стыдно за меня, зачем ты вернулся?' },
-  { speaker: 'Ты', text: 'Мне было страшно, что они увидят, насколько это важно для меня.' },
-  { speaker: 'Штрих', text: 'Поэтому ты засмеялся первым.' },
-  { speaker: 'Ты', text: 'Да. И сам провёл эту линию.' },
+  { speaker: 'Ты', text: 'Мне было не стыдно за тебя. Мне было страшно, что они увидят: ты мне нужен.' },
+  { speaker: 'Штрих', text: 'Поэтому первым засмеялся ты.' },
+  { speaker: 'Ты', text: 'Да. Так их смех звучал тише.' },
 ];
 
 const memoryBeats: DialogueLine[] = [
   { speaker: 'Одноклассник', portrait: 'classmate-2', text: 'Ты всё ещё рисуешь эту детскую ерунду?' },
-  { speaker: 'Ты, тогда', text: 'Если засмеюсь первым, они решат, что мне тоже всё равно.' },
-  { speaker: 'Ты, тогда', text: 'Да так. Просто каракули.' },
+  { speaker: 'Ты, тогда', kind: 'thought', text: 'Только бы они не поняли, что мне не всё равно.' },
+  { speaker: 'Ты, тогда', kind: 'speech', text: 'Да брось. Это просто каракули.' },
 ];
 
 export function RedLineMemory({ playerName, onComplete }: RedLineMemoryProps) {
@@ -36,6 +38,8 @@ export function RedLineMemory({ playerName, onComplete }: RedLineMemoryProps) {
   const currentBeat = progress >= 67 ? 2 : progress >= 34 ? 1 : 0;
   const isReading = !started || currentBeat > acknowledgedBeat;
   const echo = memoryBeats[currentBeat];
+  const { visibleText: echoText, isComplete: isEchoComplete, complete: completeEcho } =
+    useTypewriter(echo.text, echo.speaker, echo.kind);
 
   useEffect(() => {
     if (isReading) stop();
@@ -47,15 +51,22 @@ export function RedLineMemory({ playerName, onComplete }: RedLineMemoryProps) {
     return () => window.clearTimeout(timer);
   }, [exitBreaking]);
 
+  useEffect(() => () => restoreAmbience(), []);
+
   const nextLine = () => {
     if (lineIndex < afterErasing.length - 1) setLineIndex((current) => current + 1);
     else setDialogueDone(true);
   };
   const handleExit = () => {
-    if (!exitRevealed) return setExitBreaking(true);
+    if (!exitRevealed) {
+      silenceAmbience();
+      playPaperCrack();
+      return setExitBreaking(true);
+    }
     onComplete();
   };
   const continueErasing = () => {
+    if (!isEchoComplete) return completeEcho();
     setAcknowledgedBeat(currentBeat);
     setStarted(true);
   };
@@ -75,12 +86,12 @@ export function RedLineMemory({ playerName, onComplete }: RedLineMemoryProps) {
           <i className="red-memory__dust" style={{ width: `${progress * .44}%` }} />
         </div>
       </div>
-      {!erased && isReading && <article className={`red-memory__echo ${echo.portrait ? 'is-classmate' : 'is-hero'} is-paused`} aria-live="polite">
+      {!erased && isReading && <article className={`red-memory__echo ${echo.portrait ? 'is-classmate' : 'is-hero'} ${echo.kind === 'thought' ? 'is-thought' : 'is-speech'} is-paused`} aria-live="polite">
         <SpeakerPortrait speaker={echo.speaker} portrait={echo.portrait} />
-        <b>{echo.speaker}</b><p>{echo.text}</p>
+        <b>{echo.kind === 'thought' ? 'Мысль' : echo.speaker}</b><p>{echoText}</p>
       </article>}
       {!erased && isReading && <button className="red-memory__continue" onClick={continueErasing}>
-        {started ? 'Продолжить стирать' : 'Начать стирать'}
+        {!isEchoComplete ? 'Дочитать' : started ? 'Продолжить стирать' : 'Начать стирать'}
       </button>}
       {!erased && !isReading && <div className="red-memory__action">
         <p>Не отпускай линию на полпути.</p>

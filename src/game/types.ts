@@ -13,6 +13,7 @@ export type DialogueLine = {
   speaker?: string;
   text: string;
   portrait?: 'classmate-1' | 'classmate-2' | 'classmate-3';
+  kind?: 'narration' | 'speech' | 'thought';
 };
 
 export type StoryScene = {
