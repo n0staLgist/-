@@ -9,6 +9,7 @@ import { ExamineText } from './ExamineText';
 import { HintButton } from './HintButton';
 import { InteractionPrompt } from './InteractionPrompt';
 import { MovementControls } from './MovementControls';
+import { ObjectivePanel } from './ObjectivePanel';
 import { PlayerAvatar } from './PlayerAvatar';
 import { YardProgress } from './YardProgress';
 import { YardMemoryEchoes } from './YardMemoryEchoes';
@@ -76,7 +77,9 @@ export function YardScene({ completed, isInteractive, showTouchControls, onTask,
     <section className={`scene yard-scene progress-${completed.length}`} aria-label="Жёлтый двор">
       <div className="scene__shade" />
       <HintButton hint={nextTask ? yardHints[nextTask] : 'Все детали возвращены. Штрих ждёт у подъезда.'} />
-      <div className="scene-instruction"><strong>{allDone ? 'Вернись к Штриху у подъезда' : 'Найди три потерянные детали'}</strong></div>
+      <ObjectivePanel className="scene-instruction" label="Текущее задание">
+        <strong>{allDone ? 'Вернись к Штриху у подъезда' : 'Найди три потерянные детали'}</strong>
+      </ObjectivePanel>
       <img className="yard-shtrikh" src={shtrikhYard} alt="Штрих ждёт у подъезда: две слезы, длинный шарф и недорисованная рука" />
       {completed.includes('swing') && <div className="yard-restored-swing" aria-label="Качеля восстановлена"><i /><b /></div>}
       {completed.includes('hopscotch') && <div className="yard-restored-hopscotch" aria-label="Классики снова видны">{[0, 1, 2, 3, 4, 5].map((cell) => <i key={cell} />)}</div>}

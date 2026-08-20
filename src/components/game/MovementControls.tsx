@@ -1,6 +1,6 @@
 type MovementControlsProps = {
   onMoveStart: (dx: number, dy: number) => void;
-  onMoveEnd: () => void;
+  onMoveEnd: (dx: number, dy: number) => void;
   onInteract: () => void;
 };
 
@@ -19,16 +19,23 @@ export function MovementControls({ onMoveStart, onMoveEnd, onInteract }: Movemen
           className={className}
           key={className}
           onPointerDown={(event) => {
-            event.currentTarget.setPointerCapture(event.pointerId);
+            event.preventDefault();
             onMoveStart(x, y);
+            try {
+              event.currentTarget.setPointerCapture(event.pointerId);
+            } catch {
+              // Some mobile browsers move correctly without pointer capture.
+            }
           }}
-          onPointerUp={onMoveEnd}
-          onPointerCancel={onMoveEnd}
-          onLostPointerCapture={onMoveEnd}
+          onPointerUp={() => onMoveEnd(x, y)}
+          onPointerCancel={() => onMoveEnd(x, y)}
+          onLostPointerCapture={() => onMoveEnd(x, y)}
+          onContextMenu={(event) => event.preventDefault()}
           aria-label={label}
+          type="button"
         >{symbol}</button>
       ))}
-      <button className="move-action" onClick={onInteract} aria-label="Взаимодействовать">●</button>
+      <button className="move-action" onClick={onInteract} aria-label="Взаимодействовать" type="button">●</button>
     </div>
   );
 }

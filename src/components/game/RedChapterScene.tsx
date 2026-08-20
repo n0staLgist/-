@@ -9,6 +9,7 @@ import { DialogueBox } from './DialogueBox';
 import { PaintSinkScene } from './PaintSinkScene';
 import { RedLineMemory } from './RedLineMemory';
 import { RedSchoolWorld } from './RedSchoolWorld';
+import { ObjectivePanel } from './ObjectivePanel';
 import '../../styles/redChapter.css';
 import '../../styles/redInteractions.css';
 
@@ -102,7 +103,9 @@ export function RedChapterScene({ playerName, showTouchControls, onComplete }: R
       <RedSchoolWorld key={phase} returning={phase === 'returning'} foundSharpener={foundSharpener}
         sinkSeen={sinkSeen} isInteractive={dialogue.length === 0 && !showSink}
         showTouchControls={showTouchControls} onEvent={handleEvent} />
-      <aside className="red-chapter__objective"><small>След в памяти</small><strong>{objective}</strong></aside>
+      <ObjectivePanel className="red-chapter__objective" label="След в памяти">
+        <small>След в памяти</small><strong>{objective}</strong>
+      </ObjectivePanel>
       {dialogue.length > 0 && <DialogueBox line={dialogue[lineIndex]} current={lineIndex} total={dialogue.length}
         playerName={playerName} onNext={nextDialogueLine} />}
       {showSink && <PaintSinkScene onComplete={finishSink} />}

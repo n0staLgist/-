@@ -7,6 +7,7 @@ import { useTypewriter } from '../../game/useTypewriter';
 import type { DialogueLine } from '../../game/types';
 import { DialogueBox } from './DialogueBox';
 import { SpeakerPortrait } from './SpeakerPortrait';
+import { HoldActionButton } from './HoldActionButton';
 
 type RedLineMemoryProps = {
   playerName: string;
@@ -95,8 +96,7 @@ export function RedLineMemory({ playerName, onComplete }: RedLineMemoryProps) {
       </button>}
       {!erased && !isReading && <div className="red-memory__action">
         <p>Не отпускай линию на полпути.</p>
-        <button className="hold-action" onPointerDown={start} onPointerUp={stop}
-          onPointerCancel={stop} onPointerLeave={stop}><b>Стирать</b><kbd>E</kbd><small>удерживать</small></button>
+        <HoldActionButton onStart={start} onStop={stop}><b>Стирать</b><kbd>E</kbd><small>удерживать</small></HoldActionButton>
         <div className="hold-progress"><i style={{ width: `${progress}%` }} /></div>
       </div>}
       {erased && !dialogueDone && <DialogueBox line={afterErasing[lineIndex]} current={lineIndex}

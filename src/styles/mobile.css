@@ -1,6 +1,7 @@
 @media (max-width: 700px) {
   html, body { min-height: 100%; overscroll-behavior: none; }
   body { overflow: hidden; touch-action: manipulation; }
+  .game-shell--touch { min-height: 100dvh; overflow: hidden; overscroll-behavior: none; touch-action: none; }
   button, input { min-height: 44px; }
 
   .opening-screen { min-height: 100dvh; overflow-x: hidden; overflow-y: auto; }
@@ -24,14 +25,14 @@
   .sound-panel { top: 50px; right: 0; width: min(280px, calc(100vw - 20px)); }
   .sound-panel input { min-height: 32px; }
 
-  .movement-controls { position: fixed; left: max(12px, env(safe-area-inset-left)); bottom: max(12px, env(safe-area-inset-bottom)); grid-template: repeat(2, 50px) / repeat(4, 50px); gap: 6px; filter: drop-shadow(0 4px 10px #0008); }
-  .movement-controls button { width: 50px; height: 50px; border-width: 2px; font-size: 22px; -webkit-tap-highlight-color: transparent; }
+  .movement-controls { position: fixed; left: max(12px, env(safe-area-inset-left)); bottom: max(10px, env(safe-area-inset-bottom)); grid-template: repeat(3, 48px) / repeat(4, 48px); gap: 5px; filter: drop-shadow(0 4px 10px #0008); }
+  .movement-controls button { width: 48px; height: 48px; border-width: 2px; font-size: 22px; touch-action: none; -webkit-tap-highlight-color: transparent; }
   .movement-controls .move-action { font-size: 25px; }
   .interaction-prompt { max-width: min(230px, 76vw); white-space: normal; }
   .interaction-prompt kbd { font-size: 0; }
   .interaction-prompt kbd::after { content: '●'; font-size: 14px; }
 
-  .dialogue { bottom: max(8px, env(safe-area-inset-bottom)); width: calc(100vw - 16px); max-height: min(46dvh, 300px); min-height: 148px; padding: 18px 18px 54px; overflow-y: auto; }
+  .dialogue { bottom: max(8px, env(safe-area-inset-bottom)); width: calc(100vw - 16px); max-height: min(46dvh, 300px); min-height: 148px; padding: 18px 18px 54px; overflow-y: auto; touch-action: pan-y; }
   .dialogue p { font-size: clamp(20px, 6vw, 25px); }
   .dialogue__next { right: 14px; bottom: 9px; min-height: 44px; padding: 8px; }
   .examine-text { bottom: calc(118px + env(safe-area-inset-bottom)); max-height: 34dvh; min-height: 74px; padding: 12px 14px; overflow-y: auto; }
@@ -44,6 +45,11 @@
   .task-overlay { padding: 64px 10px max(12px, env(safe-area-inset-bottom)); }
   .task-card { max-height: calc(100dvh - 76px); overflow-y: auto; }
   .hold-action { min-height: 48px; }
+  .objective-panel { transition: width .2s, padding .2s, background .2s; }
+  .objective-panel__toggle { position: absolute; z-index: 2; top: 4px; right: 4px; display: grid; place-items: center; width: 36px; height: 36px; min-height: 36px; padding: 0; border: 1px solid #fff5d777; border-radius: 50%; color: inherit; background: #08090a99; font: 800 22px/1 Caveat, cursive; }
+  .objective-panel:not(.is-collapsed) { padding-right: 46px; }
+  .objective-panel.is-collapsed { width: 44px !important; min-width: 44px; height: 44px; padding: 0 !important; border-left-width: 2px; }
+  .objective-panel.is-collapsed .objective-panel__content { display: none; }
 }
 
 .control-choice-hint { margin: -4px 0 12px; color: #645b4e; font: 600 15px/1.25 Caveat, cursive; }
@@ -73,12 +79,50 @@
   position: fixed;
   left: max(12px, env(safe-area-inset-left));
   bottom: max(12px, env(safe-area-inset-bottom));
-  grid-template: repeat(2, 52px) / repeat(4, 52px);
-  gap: 7px;
+  grid-template: repeat(3, 48px) / repeat(4, 48px);
+  gap: 5px;
   filter: drop-shadow(0 4px 10px #0008);
 }
-.game-shell--touch .movement-controls button { width: 52px; height: 52px; border-width: 2px; font-size: 23px; -webkit-tap-highlight-color: transparent; }
+.game-shell--touch .movement-controls button { width: 48px; height: 48px; border-width: 2px; font-size: 23px; touch-action: none; -webkit-tap-highlight-color: transparent; }
 .game-shell--touch .movement-controls .move-action { font-size: 26px; }
+
+/* Phone mode is explicit: landscape phones are often wider than 700px. */
+.game-shell--touch .game-header { align-items: start; padding: max(9px, env(safe-area-inset-top)) 10px 0; font-size: 13px; }
+.game-shell--touch .game-header > span { flex: 1 1 auto; min-width: 0; padding: 9px 8px 0 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.game-shell--touch .game-header button { min-width: 44px; height: 44px; }
+.game-shell--touch .dialogue { bottom: max(8px, env(safe-area-inset-bottom)); width: calc(100vw - 16px); max-height: min(55dvh, 260px); min-height: 120px; padding: 14px 18px 50px; overflow-y: auto; touch-action: pan-y; }
+.game-shell--touch .dialogue p { font-size: clamp(19px, 3.2vw, 24px); }
+.game-shell--touch .dialogue__next { right: 14px; bottom: 7px; min-height: 42px; padding: 7px; }
+.game-shell--touch .hint-button { top: 58px; right: 10px; }
+.game-shell--touch .hint-button button { width: 42px; height: 42px; }
+.game-shell--touch .objective-panel { transition: width .2s, padding .2s, background .2s; }
+.game-shell--touch .objective-panel__toggle { position: absolute; z-index: 2; top: 4px; right: 4px; display: grid; place-items: center; width: 36px; height: 36px; min-height: 36px; padding: 0; border: 1px solid #fff5d777; border-radius: 50%; color: inherit; background: #08090a99; font: 800 22px/1 Caveat, cursive; }
+.game-shell--touch .objective-panel:not(.is-collapsed) { padding-right: 46px; }
+.game-shell--touch .objective-panel.is-collapsed { width: 44px !important; min-width: 44px; height: 44px; padding: 0 !important; border-left-width: 2px; }
+.game-shell--touch .objective-panel.is-collapsed .objective-panel__content { display: none; }
+.game-shell--touch .room-checklist { top: 54px; left: max(10px, env(safe-area-inset-left)); width: 196px; padding: 9px 11px; }
+.game-shell--touch .room-checklist strong { font-size: 16px; }
+.game-shell--touch .room-checklist .objective-panel__content > span { font-size: 13px; }
+.game-shell--touch .scene-instruction, .game-shell--touch .red-chapter__objective,
+.game-shell--touch .blue-chapter__objective { top: 58px; left: max(10px, env(safe-area-inset-left)); width: min(245px, calc(100vw - 78px)); }
+.game-shell--touch .red-school-area, .game-shell--touch .blue-room-area { display: none; }
+.game-shell--touch .red-school-map { width: max(250vw, 375svh); }
+.game-shell--touch .red-school-map .player-avatar, .game-shell--touch .blue-room-map .player-avatar { width: 82px; }
+.game-shell--touch .red-school-map--artroom .player-avatar { width: 100px; }
+.game-shell--touch .red-school-map--classroom .player-avatar { width: 90px; }
+.game-shell--touch .red-school-shtrikh { width: 100px; }
+.game-shell--touch .faceless-classmate { width: 86px; }
+.game-shell--touch .blue-room-map { width: max(210vw, 315svh); }
+.game-shell--touch .blue-room-shtrikh { width: 112px; }
+.game-shell--touch .paint-sink__closeup { left: 4%; top: 5%; width: 52vw; }
+.game-shell--touch .paint-sink__copy { right: 3%; bottom: 4%; width: 43vw; padding: 14px 16px; }
+.game-shell--touch .paint-sink__copy h1 { font-size: 30px; }
+.game-shell--touch .red-memory__action { left: auto; right: 3%; bottom: 4%; width: 43vw; }
+.game-shell--touch .blue-repair__figure { left: 28%; top: 43%; width: min(230px, 34vw); }
+.game-shell--touch .blue-repair__copy { right: 3%; bottom: 4%; width: min(410px, 55vw); padding: 14px 17px; }
+.game-shell--touch .blue-repair__copy h1 { margin: 6px 0; font-size: 32px; }
+.game-shell--touch .blue-repair__copy p { min-height: 28px; margin: 6px 0; font-size: 14px; }
+.game-shell--touch .blue-repair__give { bottom: 4%; min-width: 58vw; padding: 12px 18px; font-size: 19px; }
 
 @media (orientation: portrait) {
   .phone-orientation {
@@ -102,7 +146,7 @@
 }
 
 @media (pointer: coarse) and (max-height: 520px) {
-  .movement-controls { grid-template: repeat(2, 44px) / repeat(4, 44px); }
+  .movement-controls { grid-template: repeat(3, 44px) / repeat(4, 44px); }
   .movement-controls button { width: 44px; height: 44px; }
   .dialogue { max-height: 55dvh; min-height: 120px; }
   .scene-instruction { top: 54px; }

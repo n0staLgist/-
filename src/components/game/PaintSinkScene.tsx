@@ -1,5 +1,6 @@
 import { useHoldProgress } from '../../game/useHoldProgress';
 import sinkHands from '../../assets/game/paint-sink-hands-v1.webp';
+import { HoldActionButton } from './HoldActionButton';
 
 type PaintSinkSceneProps = { onComplete: () => void };
 
@@ -26,10 +27,9 @@ export function PaintSinkScene({ onComplete }: PaintSinkSceneProps) {
         <span>Глава II · Кабинет ИЗО</span>
         <h1>Под водой</h1>
         <p aria-live="polite">{instruction}</p>
-        {!finished ? <button className="hold-action" onPointerDown={start} onPointerUp={stop}
-          onPointerCancel={stop} onPointerLeave={stop}>
+        {!finished ? <HoldActionButton onStart={start} onStop={stop}>
           <b>Удерживай</b><kbd>E</kbd><small>или кнопку</small>
-        </button> : <button className="pencil-button" onClick={onComplete}>Вернуться в кабинет</button>}
+        </HoldActionButton> : <button className="pencil-button" onClick={onComplete}>Вернуться в кабинет</button>}
         <div className="hold-progress"><i style={{ width: `${progress}%` }} /></div>
       </article>
     </section>

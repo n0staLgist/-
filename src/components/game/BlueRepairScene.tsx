@@ -4,6 +4,7 @@ import { restoreAmbience, silenceAmbience } from '../../game/audio';
 import { blueRepairDialogue } from '../../game/blueChapter';
 import { useHoldProgress } from '../../game/useHoldProgress';
 import { DialogueBox } from './DialogueBox';
+import { HoldActionButton } from './HoldActionButton';
 
 type BlueRepairSceneProps = { playerName: string; onComplete: () => void };
 type RepairStep = 'erase' | 'draw' | 'give' | 'dialogue';
@@ -35,8 +36,7 @@ function HoldStep({ kind, onDone }: { kind: 'erase' | 'draw'; onDone: () => void
       <p>{erasing
         ? 'Чёрные линии проходят вокруг Штриха. Бумага под ним остаётся целой.'
         : 'Недорисованная рука заканчивается там же, где закончился детский карандаш.'}</p>
-      {!finished ? <button className="hold-action" onPointerDown={start} onPointerUp={stop}
-        onPointerCancel={stop} onPointerLeave={stop}><b>{erasing ? 'Стирать вокруг' : 'Дорисовать руку'}</b><kbd>E</kbd><small>удерживать</small></button>
+      {!finished ? <HoldActionButton onStart={start} onStop={stop}><b>{erasing ? 'Стирать вокруг' : 'Дорисовать руку'}</b><kbd>E</kbd><small>удерживать</small></HoldActionButton>
         : <button className="pencil-button" onClick={onDone}>{erasing ? 'Отложить ластик' : 'Закончить линию'}</button>}
       <div className="hold-progress"><i style={{ width: `${progress}%` }} /></div>
     </article>

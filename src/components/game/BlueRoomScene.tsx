@@ -6,6 +6,7 @@ import type { DialogueLine } from '../../game/types';
 import { BlueRepairScene } from './BlueRepairScene';
 import { BlueRoomWorld } from './BlueRoomWorld';
 import { DialogueBox } from './DialogueBox';
+import { ObjectivePanel } from './ObjectivePanel';
 import '../../styles/blueChapter.css';
 import '../../styles/blueRepair.css';
 
@@ -49,8 +50,10 @@ export function BlueRoomScene({ playerName, showTouchControls, onComplete }: Blu
   return <div className="blue-chapter">
     <BlueRoomWorld found={found} isInteractive={dialogue.length === 0}
       showTouchControls={showTouchControls} onClue={handleClue} />
-    <aside className="blue-chapter__objective"><small>То, что осталось</small>
-      <strong>{found.length < 4 ? `Осмотри комнату · ${found.length}/4` : 'Посмотри на Штриха'}</strong></aside>
+    <ObjectivePanel className="blue-chapter__objective" label="То, что осталось">
+      <small>То, что осталось</small>
+      <strong>{found.length < 4 ? `Осмотри комнату · ${found.length}/4` : 'Посмотри на Штриха'}</strong>
+    </ObjectivePanel>
     {dialogue.length > 0 && <DialogueBox line={dialogue[lineIndex]} current={lineIndex}
       total={dialogue.length} playerName={playerName} onNext={nextDialogueLine} />}
   </div>;

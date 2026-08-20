@@ -31,13 +31,13 @@ export function useRoomMovement(enabled: boolean, onInteract: (
   const facingRef = useRef(facing);
   const velocityRef = useRef<RoomPosition>({ x: 0, y: 0 });
   const pressedKeys = useRef(new Set<string>());
-  const touchDirection = useRef<MoveDirection | null>(null);
+  const touchDirections = useRef(new Map<string, MoveDirection>());
 
   const startMoving = useCallback((dx: number, dy: number) => {
-    touchDirection.current = [dx, dy];
+    touchDirections.current.set(`${dx}:${dy}`, [dx, dy]);
   }, []);
-  const stopMoving = useCallback(() => {
-    touchDirection.current = null;
+  const stopMoving = useCallback((dx: number, dy: number) => {
+    touchDirections.current.delete(`${dx}:${dy}`);
   }, []);
 
   useEffect(() => {
@@ -53,21 +53,24 @@ export function useRoomMovement(enabled: boolean, onInteract: (
       }
     };
     const handleKeyUp = (event: KeyboardEvent) => pressedKeys.current.delete(event.code);
-    const clearKeys = () => pressedKeys.current.clear();
+    const clearInput = () => {
+      pressedKeys.current.clear();
+      touchDirections.current.clear();
+    };
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
-    window.addEventListener('blur', clearKeys);
+    window.addEventListener('blur', clearInput);
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
-      window.removeEventListener('blur', clearKeys);
-      clearKeys();
+      window.removeEventListener('blur', clearInput);
+      clearInput();
     };
   }, [enabled, onInteract]);
 
   useEffect(() => {
     if (!enabled) {
-      touchDirection.current = null;
+      touchDirections.current.clear();
       velocityRef.current = { x: 0, y: 0 };
       setIsMoving(false);
       return;
@@ -78,8 +81,11 @@ export function useRoomMovement(enabled: boolean, onInteract: (
       const keyboard = [...pressedKeys.current]
         .map((key) => DIRECTIONS[key])
         .filter((direction): direction is MoveDirection => Boolean(direction));
-      const dx = keyboard.reduce((sum, direction) => sum + direction[0], 0) + (touchDirection.current?.[0] ?? 0);
-      const dy = keyboard.reduce((sum, direction) => sum + direction[1], 0) + (touchDirection.current?.[1] ?? 0);
+      const touch = [...touchDirections.current.values()];
+      const dx = keyboard.reduce((sum, direction) => sum + direction[0], 0) +
+        touch.reduce((sum, direction) => sum + direction[0], 0);
+      const dy = keyboard.reduce((sum, direction) => sum + direction[1], 0) +
+        touch.reduce((sum, direction) => sum + direction[1], 0);
       const length = Math.hypot(dx, dy);
       const targetX = length > 0 ? (dx / length) * speed * horizontalSpeedScale : 0;
       const targetY = length > 0 ? (dy / length) * speed : 0;
