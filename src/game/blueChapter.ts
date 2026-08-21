@@ -57,7 +57,8 @@ export const blueClues: Record<BlueClue, {
 };
 
 export const blueSecondClue: DialogueLine[] = [
-  { text: 'Когда ты оборачиваешься, Штрих стоит уже не там. Теперь он между тобой и дверью.' },
+  { speaker: 'Штрих', text: 'Можно не осматривать всё.' },
+  { speaker: 'Ты', text: 'Ты ведь сказал, здесь осталось всё важное.' },
 ];
 
 export const blueThirdClue: DialogueLine[] = [

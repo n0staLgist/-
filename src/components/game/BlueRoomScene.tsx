@@ -1,4 +1,5 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { playInkShift } from '../../game/audio';
 import {
   blueClues, blueIntro, blueSecondClue, blueThirdClue, blueTruth, type BlueClue,
 } from '../../game/blueChapter';
@@ -22,6 +23,11 @@ export function BlueRoomScene({ playerName, showTouchControls, onComplete }: Blu
   const [lineIndex, setLineIndex] = useState(0);
   const [repairAfterDialogue, setRepairAfterDialogue] = useState(false);
   const [repairing, setRepairing] = useState(false);
+  const [shtrikhStep, setShtrikhStep] = useState(0);
+  const [isShtrikhMoving, setIsShtrikhMoving] = useState(false);
+  const shiftTimers = useRef<number[]>([]);
+
+  useEffect(() => () => shiftTimers.current.forEach(window.clearTimeout), []);
 
   const openDialogue = useCallback((lines: DialogueLine[], repairAfter = false) => {
     setDialogue(lines);
@@ -42,13 +48,26 @@ export function BlueRoomScene({ playerName, showTouchControls, onComplete }: Blu
     if (lineIndex < dialogue.length - 1) return setLineIndex((index) => index + 1);
     setDialogue([]);
     setLineIndex(0);
-    if (repairAfterDialogue) setRepairing(true);
+    const shouldRepair = repairAfterDialogue;
+    setRepairAfterDialogue(false);
+    if (found.length <= shtrikhStep) {
+      if (shouldRepair) setRepairing(true);
+      return;
+    }
+    setIsShtrikhMoving(true);
+    playInkShift();
+    shiftTimers.current.push(window.setTimeout(() => setShtrikhStep(found.length), 180));
+    shiftTimers.current.push(window.setTimeout(() => {
+      setIsShtrikhMoving(false);
+      if (shouldRepair) setRepairing(true);
+    }, 1350));
   };
 
   if (repairing) return <BlueRepairScene playerName={playerName} onComplete={onComplete} />;
 
   return <div className="blue-chapter">
-    <BlueRoomWorld found={found} isInteractive={dialogue.length === 0}
+    <BlueRoomWorld found={found} shtrikhStep={shtrikhStep} focusShtrikh={isShtrikhMoving}
+      isInteractive={dialogue.length === 0 && !isShtrikhMoving}
       showTouchControls={showTouchControls} onClue={handleClue} />
     <ObjectivePanel className="blue-chapter__objective" label="То, что осталось">
       <small>То, что осталось</small>

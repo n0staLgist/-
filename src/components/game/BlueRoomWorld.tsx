@@ -12,6 +12,8 @@ import { PlayerAvatar } from './PlayerAvatar';
 
 type BlueRoomWorldProps = {
   found: BlueClue[];
+  shtrikhStep: number;
+  focusShtrikh: boolean;
   isInteractive: boolean;
   showTouchControls: boolean;
   onClue: (clue: BlueClue) => void;
@@ -24,7 +26,7 @@ const guideDirection = (from: RoomPosition, to: RoomPosition) => {
   return Math.abs(dx) > Math.abs(dy) ? (dx < 0 ? 'left' : 'right') : (dy < 0 ? 'up' : 'down');
 };
 
-export function BlueRoomWorld({ found, isInteractive, showTouchControls, onClue }: BlueRoomWorldProps) {
+export function BlueRoomWorld({ found, shtrikhStep, focusShtrikh, isInteractive, showTouchControls, onClue }: BlueRoomWorldProps) {
   const candidates = useMemo(() => blueClueOrder.filter((clue) => !found.includes(clue)).map((clue) => ({
     id: clue, value: clue, label: `Осмотреть: ${blueClues[clue].label.toLowerCase()}`,
     position: blueClues[clue].position, priority: 30, reach: 8,
@@ -34,7 +36,7 @@ export function BlueRoomWorld({ found, isInteractive, showTouchControls, onClue 
     if (target) onClue(target.value);
   }, [candidates, onClue]);
   const isWalkable = useCallback((position: RoomPosition) =>
-    isBlueRoomPositionWalkable(position, found.length), [found.length]);
+    isBlueRoomPositionWalkable(position, shtrikhStep), [shtrikhStep]);
   const movement = useRoomMovement(isInteractive, interact, {
     start: blueRoomStart, speed: 8.5, isWalkable,
     horizontalSpeedScale: showTouchControls ? 2 / 3 : 1,
@@ -44,13 +46,14 @@ export function BlueRoomWorld({ found, isInteractive, showTouchControls, onClue 
   const closest = [...candidates].sort((a, b) =>
     Math.hypot(a.position.x - movement.position.x, a.position.y - movement.position.y) -
     Math.hypot(b.position.x - movement.position.x, b.position.y - movement.position.y))[0];
-  const cameraX = clamp(movement.position.x, showTouchControls ? 29 : 25, showTouchControls ? 71 : 74);
-  const cameraY = clamp(movement.position.y, showTouchControls ? 20 : 28, showTouchControls ? 80 : 72);
+  const shtrikh = getBlueShtrikhPosition(shtrikhStep);
+  const cameraTarget = focusShtrikh ? shtrikh : movement.position;
+  const cameraX = clamp(cameraTarget.x, showTouchControls ? 29 : 25, showTouchControls ? 71 : 74);
+  const cameraY = clamp(cameraTarget.y, showTouchControls ? 20 : 28, showTouchControls ? 80 : 72);
   const mapStyle: CSSProperties = { transform: `translate(-${cameraX}%, -${cameraY}%)` };
-  const shtrikh = getBlueShtrikhPosition(found.length);
 
   return (
-    <section className={`blue-room-world blue-room-world--${found.length}`}>
+    <section className={`blue-room-world blue-room-world--${found.length} ${focusShtrikh ? 'is-watching-shtrikh' : ''}`}>
       <div className="blue-room-map" style={mapStyle}>
         <img className="blue-room-map__art" src={blueRoomMap} alt="Искажённая синяя копия комнаты" />
         {candidates.map((candidate) => <i className={`blue-clue-mark ${target?.value === candidate.value ? 'is-near' : ''}`}

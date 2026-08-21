@@ -205,3 +205,67 @@ export function playPaperCrack() {
   source.connect(filter).connect(gain).connect(getEffectsOutput());
   source.start();
 }
+
+const playPaperNoise = (duration: number, frequency: number, volume: number) => {
+  if (!effectsEnabled) return;
+  const audioContext = getAudioContext();
+  const buffer = audioContext.createBuffer(1, audioContext.sampleRate * duration, audioContext.sampleRate);
+  const samples = buffer.getChannelData(0);
+  for (let index = 0; index < samples.length; index += 1) {
+    const envelope = Math.sin(Math.PI * index / samples.length);
+    samples[index] = (Math.random() * 2 - 1) * envelope;
+  }
+  const source = audioContext.createBufferSource();
+  const filter = audioContext.createBiquadFilter();
+  const gain = audioContext.createGain();
+  filter.type = 'bandpass';
+  filter.frequency.value = frequency;
+  filter.Q.value = 1.1;
+  gain.gain.value = volume;
+  source.buffer = buffer;
+  source.connect(filter).connect(gain).connect(getEffectsOutput());
+  source.start();
+};
+
+export function playPaperTool(kind: 'erase' | 'draw') {
+  playPaperNoise(kind === 'erase' ? .16 : .09, kind === 'erase' ? 540 : 1450, kind === 'erase' ? .12 : .075);
+}
+
+export function playInkShift() {
+  playPaperNoise(.48, 330, .095);
+}
+
+export function playPencilHandoff() {
+  playPaperNoise(.12, 1200, .08);
+  if (!effectsEnabled) return;
+  const audioContext = getAudioContext();
+  const oscillator = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+  const now = audioContext.currentTime;
+  oscillator.type = 'triangle';
+  oscillator.frequency.setValueAtTime(420, now);
+  oscillator.frequency.exponentialRampToValueAtTime(260, now + .18);
+  gain.gain.setValueAtTime(.035, now);
+  gain.gain.exponentialRampToValueAtTime(.0001, now + .2);
+  oscillator.connect(gain).connect(getEffectsOutput());
+  oscillator.start(now);
+  oscillator.stop(now + .21);
+}
+
+export function playColorConvergence() {
+  if (!effectsEnabled) return;
+  const audioContext = getAudioContext();
+  [196, 246.94, 293.66].forEach((frequency, index) => {
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    const now = audioContext.currentTime + index * .18;
+    oscillator.type = 'sine';
+    oscillator.frequency.value = frequency;
+    gain.gain.setValueAtTime(.0001, now);
+    gain.gain.exponentialRampToValueAtTime(.038, now + .12);
+    gain.gain.exponentialRampToValueAtTime(.0001, now + 1.4);
+    oscillator.connect(gain).connect(getEffectsOutput());
+    oscillator.start(now);
+    oscillator.stop(now + 1.45);
+  });
+}

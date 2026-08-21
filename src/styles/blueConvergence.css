@@ -1,0 +1,22 @@
+.blue-convergence { position: relative; min-height: 100svh; display: grid; place-items: center; overflow: hidden; color: #151719; background: #e9e3d4; }
+.blue-convergence__page { position: absolute; inset: 0; overflow: hidden; background-image: repeating-linear-gradient(0deg, transparent 0 31px, #7892a522 31px 32px); }
+.blue-convergence__stroke { position: absolute; left: -12%; width: 0; height: clamp(70px, 13vw, 160px); border-radius: 45% 55% 48% 52%; filter: saturate(.82); animation: blue-color-spread 1.55s cubic-bezier(.16,.72,.22,1) forwards; }
+.blue-convergence__stroke--yellow { top: 14%; background: #d3ae42cc; transform: rotate(4deg); }
+.blue-convergence__stroke--red { top: 43%; background: #9d4542c9; transform: rotate(-3deg); animation-delay: .16s; }
+.blue-convergence__stroke--blue { top: 69%; background: #477f9bc9; transform: rotate(2deg); animation-delay: .32s; }
+.blue-convergence__join { position: absolute; left: 50%; top: 50%; width: 12px; height: 0; background: #282b2caf; transform: translate(-50%, -50%) rotate(-4deg); animation: blue-color-join .8s 1.1s ease-out forwards; }
+.blue-convergence__copy { position: relative; z-index: 2; width: min(680px, 84vw); padding: 34px; text-align: center; background: #f2ecdfd9; box-shadow: 10px 15px 45px #302b244f; animation: blue-copy-arrive .9s 1.15s both; }
+.blue-convergence__copy span { color: #4f7180; font-size: 11px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.blue-convergence__copy h1 { margin: 10px 0 5px; font: 700 clamp(42px, 7vw, 76px)/.9 Caveat, cursive; }
+.blue-convergence__copy p { margin: 0 0 22px; font-size: clamp(16px, 2vw, 21px); }
+@keyframes blue-color-spread { to { width: 125%; } }
+@keyframes blue-color-join { to { height: 110%; } }
+@keyframes blue-copy-arrive { from { opacity: 0; transform: translateY(18px); } }
+@media (max-width: 700px) {
+  .blue-convergence__copy { width: min(620px, 74vw); padding: 20px 28px; }
+  .blue-convergence__copy h1 { font-size: clamp(35px, 7vw, 54px); }
+  .blue-convergence__stroke { height: 70px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .blue-convergence__stroke, .blue-convergence__join, .blue-convergence__copy { animation-duration: .01ms; animation-delay: 0s; }
+}
