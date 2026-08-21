@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { playInkShift } from '../../game/audio';
 import {
-  blueClues, blueIntro, blueSecondClue, blueThirdClue, blueTruth, type BlueClue,
+  blueClues, blueDoorGuard, blueDoorReminder, blueIntro,
+  blueSecondClue, blueThirdClue, blueTruth, type BlueClue,
 } from '../../game/blueChapter';
 import type { DialogueLine } from '../../game/types';
 import { BlueRepairScene } from './BlueRepairScene';
@@ -25,6 +26,8 @@ export function BlueRoomScene({ playerName, showTouchControls, onComplete }: Blu
   const [repairing, setRepairing] = useState(false);
   const [shtrikhStep, setShtrikhStep] = useState(0);
   const [isShtrikhMoving, setIsShtrikhMoving] = useState(false);
+  const [guardsDoor, setGuardsDoor] = useState(false);
+  const [doorArrival, setDoorArrival] = useState(false);
   const shiftTimers = useRef<number[]>([]);
 
   useEffect(() => () => shiftTimers.current.forEach(window.clearTimeout), []);
@@ -34,8 +37,25 @@ export function BlueRoomScene({ playerName, showTouchControls, onComplete }: Blu
     setLineIndex(0);
     setRepairAfterDialogue(repairAfter);
   }, []);
+  const startDoorGuard = useCallback(() => {
+    if (guardsDoor || found.filter((clue) => clue !== 'door').length >= 3) return;
+    setGuardsDoor(true);
+    setDoorArrival(true);
+    setIsShtrikhMoving(true);
+    playInkShift();
+    shiftTimers.current.push(window.setTimeout(() => {
+      setDoorArrival(false);
+      setIsShtrikhMoving(false);
+      openDialogue(blueDoorGuard);
+    }, 720));
+  }, [found, guardsDoor, openDialogue]);
   const handleClue = useCallback((clue: BlueClue) => {
     if (found.includes(clue)) return;
+    if (clue === 'door' && found.filter((item) => item !== 'door').length < 3) {
+      if (guardsDoor) openDialogue(blueDoorReminder);
+      else startDoorGuard();
+      return;
+    }
     const nextFound = [...found, clue];
     setFound(nextFound);
     const lines = [...blueClues[clue].dialogue];
@@ -43,13 +63,24 @@ export function BlueRoomScene({ playerName, showTouchControls, onComplete }: Blu
     if (nextFound.length === 3) lines.push(...blueThirdClue);
     if (nextFound.length === 4) lines.push(...blueTruth);
     openDialogue(lines, nextFound.length === 4);
-  }, [found, openDialogue]);
+  }, [found, guardsDoor, openDialogue, startDoorGuard]);
   const nextDialogueLine = () => {
     if (lineIndex < dialogue.length - 1) return setLineIndex((index) => index + 1);
     setDialogue([]);
     setLineIndex(0);
     const shouldRepair = repairAfterDialogue;
     setRepairAfterDialogue(false);
+    if (guardsDoor) {
+      setShtrikhStep(found.length);
+      if (shouldRepair) {
+        setIsShtrikhMoving(true);
+        shiftTimers.current.push(window.setTimeout(() => {
+          setIsShtrikhMoving(false);
+          setRepairing(true);
+        }, 1100));
+      }
+      return;
+    }
     if (found.length <= shtrikhStep) {
       if (shouldRepair) setRepairing(true);
       return;
@@ -67,6 +98,7 @@ export function BlueRoomScene({ playerName, showTouchControls, onComplete }: Blu
 
   return <div className="blue-chapter">
     <BlueRoomWorld found={found} shtrikhStep={shtrikhStep} focusShtrikh={isShtrikhMoving}
+      guardsDoor={guardsDoor} doorArrival={doorArrival} onDoorApproach={startDoorGuard}
       isInteractive={dialogue.length === 0 && !isShtrikhMoving}
       showTouchControls={showTouchControls} onClue={handleClue} />
     <ObjectivePanel className="blue-chapter__objective" label="То, что осталось">

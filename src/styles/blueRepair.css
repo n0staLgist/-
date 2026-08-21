@@ -17,12 +17,21 @@
 .blue-repair__copy > span { color: #537f92; font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
 .blue-repair__copy h1 { margin: 10px 0; font: 700 48px/.9 Caveat, cursive; }
 .blue-repair__copy p { min-height: 48px; color: #252b2d; }
-.blue-repair__give { position: absolute; left: 50%; bottom: 9%; min-width: min(430px, 84vw); padding: 18px 28px; border: 3px solid #e6e4da; color: #f2f2eb; background: #0c1115; box-shadow: 8px 10px 0 #0008; font: 800 23px Caveat, cursive; transform: translateX(-50%); cursor: pointer; }
+.blue-repair__decision { position: absolute; z-index: 6; right: 7%; top: 50%; width: min(500px, 43vw); padding: 28px 30px; color: #17191b; background: #eee8daf2; box-shadow: 12px 18px 55px #000b; transform: translateY(-50%) rotate(-.5deg); }
+.blue-repair__decision > span { color: #537f92; font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.blue-repair__decision h1 { margin: 8px 0 18px; font: 700 clamp(38px, 5vw, 58px)/.9 Caveat, cursive; }
+.blue-repair__decision p { margin: -4px 0 20px; line-height: 1.55; }
+.blue-repair__decision button { width: 100%; margin-top: 10px; padding: 14px 17px; border: 2px solid #22282b; color: #edf0eb; background: #151a1d; font: 700 20px Caveat, cursive; text-align: left; cursor: pointer; }
+.blue-repair__decision button:hover, .blue-repair__decision button:focus-visible { color: #111516; background: #e3ddd0; outline: 3px solid #698fa0; outline-offset: 2px; }
+.blue-repair__decision button.is-danger { color: #d3cbc0; border-color: #736f69; background: #292a2a; }
 .blue-repair .dialogue { border-color: #557f91; }
 @media (max-width: 700px) {
   .blue-repair__figure { left: 28%; top: 40%; width: min(230px, 36vw); }
   .blue-repair__copy { right: 3%; bottom: 5%; width: min(410px, 58vw); padding: 16px 18px; }
   .blue-repair__copy h1 { font-size: 34px; }
   .blue-repair__copy p { min-height: 32px; margin: 8px 0; font-size: 14px; }
-  .blue-repair__give { bottom: 4%; min-width: 58vw; padding: 12px 18px; font-size: 19px; }
+  .blue-repair__decision { right: 3%; width: min(430px, 59vw); padding: 16px 18px; }
+  .blue-repair__decision h1 { margin-bottom: 10px; font-size: 34px; }
+  .blue-repair__decision p { margin-bottom: 10px; font-size: 13px; }
+  .blue-repair__decision button { padding: 10px 13px; font-size: 17px; }
 }

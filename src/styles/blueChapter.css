@@ -9,6 +9,7 @@
 .blue-room-map .interaction-prompt { z-index: 11; transform: translate(-50%, -112px) rotate(-.8deg); }
 .blue-room-shtrikh { position: absolute; z-index: 6; width: clamp(140px, 10.5vw, 178px); max-height: 220px; object-fit: contain; filter: grayscale(.22) sepia(.08) saturate(.58) brightness(.76) contrast(1.08); transform: translate(-50%, -84%); transition: left .9s ease, top .9s ease, filter .9s ease; animation: blue-shtrikh-wait 5s ease-in-out infinite; }
 .blue-room-world.is-watching-shtrikh .blue-room-shtrikh { filter: grayscale(.45) saturate(.35) brightness(.9) drop-shadow(0 0 18px #a8d6e277); }
+.blue-room-world.is-door-arrival .blue-room-shtrikh { animation: blue-door-arrive .72s steps(2, end) both; }
 .blue-room-world--3 .blue-room-shtrikh, .blue-room-world--4 .blue-room-shtrikh { filter: grayscale(.42) sepia(.06) saturate(.42) brightness(.66) contrast(1.12); }
 .blue-clue-mark { position: absolute; z-index: 5; width: 62px; height: 36px; border: 2px solid #a9c5d08a; border-radius: 46% 54% 51% 49%; box-shadow: 0 0 22px #8db4c25c; opacity: .58; transform: translate(-50%, -50%) rotate(-7deg); animation: blue-clue-pulse 2.6s ease-in-out infinite; pointer-events: none; }
 .blue-clue-mark::after { content: ''; position: absolute; left: 9px; right: 7px; bottom: -7px; height: 2px; background: #b6d0da77; transform: rotate(5deg); }
@@ -20,6 +21,7 @@
 .blue-chapter .dialogue { border-color: #4d7587; }
 .blue-chapter .dialogue__speaker { color: #48798f; }
 @keyframes blue-shtrikh-wait { 50% { transform: translate(-50%, -86%) rotate(.7deg); } }
+@keyframes blue-door-arrive { 0%, 44% { opacity: 0; transform: translate(-50%, -84%) scale(.7); } 45% { opacity: 1; transform: translate(-50%, -84%) scale(1.08); } 100% { opacity: 1; transform: translate(-50%, -84%) scale(1); } }
 @keyframes blue-clue-pulse { 50% { opacity: .92; transform: translate(-50%, -50%) rotate(-3deg) scale(1.06); } }
 @media (max-width: 700px) {
   .blue-room-map { width: max(210vw, 315svh); }

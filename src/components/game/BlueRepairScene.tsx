@@ -1,19 +1,30 @@
 import { useEffect, useState, type CSSProperties } from 'react';
 import shtrikhImage from '../../assets/game/shtrikh-yard-present-v2.webp';
 import { playPaperTool, playPencilHandoff, restoreAmbience, silenceAmbience } from '../../game/audio';
-import { blueRepairDialogue } from '../../game/blueChapter';
+import {
+  blueEraseAround, blueEraseAttempt, bluePencilFound,
+  blueRepairDialogue, blueRepairIntro,
+} from '../../game/blueChapter';
+import type { DialogueLine } from '../../game/types';
 import { useHoldProgress } from '../../game/useHoldProgress';
-import { DialogueBox } from './DialogueBox';
 import { BlueConvergenceScene } from './BlueConvergenceScene';
+import { DialogueBox } from './DialogueBox';
 import { HoldActionButton } from './HoldActionButton';
 
 type BlueRepairSceneProps = { playerName: string; onComplete: () => void };
-type RepairStep = 'erase' | 'draw' | 'give' | 'dialogue' | 'reveal';
+type RepairStep = 'intro' | 'choice' | 'eraseAttempt' | 'eraseAround' |
+  'erase' | 'pencil' | 'draw' | 'give' | 'dialogue' | 'reveal';
+
+const stepDialogue: Partial<Record<RepairStep, DialogueLine[]>> = {
+  intro: blueRepairIntro,
+  eraseAttempt: blueEraseAttempt,
+  eraseAround: blueEraseAround,
+  pencil: bluePencilFound,
+  dialogue: blueRepairDialogue,
+};
 
 function RepairFigure({ cage = 0, arm = 0, changedSmile = false }: {
-  cage?: number;
-  arm?: number;
-  changedSmile?: boolean;
+  cage?: number; arm?: number; changedSmile?: boolean;
 }) {
   return <div className={`blue-repair__figure ${changedSmile ? 'has-changed-smile' : ''}`}>
     <img src={shtrikhImage} alt="Штрих с двумя бумажными слезами и недорисованной рукой" />
@@ -24,7 +35,7 @@ function RepairFigure({ cage = 0, arm = 0, changedSmile = false }: {
 }
 
 function HoldStep({ kind, onDone }: { kind: 'erase' | 'draw'; onDone: () => void }) {
-  const duration = kind === 'erase' ? 3800 : 3000;
+  const duration = kind === 'erase' ? 4200 : 3400;
   const { progress, isHolding, start, stop } = useHoldProgress(true, duration);
   const finished = progress >= 100;
   const erasing = kind === 'erase';
@@ -38,43 +49,54 @@ function HoldStep({ kind, onDone }: { kind: 'erase' | 'draw'; onDone: () => void
     <div className="blue-repair__paper" />
     <RepairFigure cage={erasing ? 1 - progress / 100 : 0} arm={erasing ? 0 : progress / 100} />
     <article className="blue-repair__copy">
-      <span>{erasing ? 'Ластик' : 'Карандаш'}</span>
-      <h1>{erasing ? 'Не его' : 'Одна линия'}</h1>
+      <span>{erasing ? 'Ластик с твоим именем' : 'Тот самый карандаш'}</span>
+      <h1>{erasing ? 'Не его' : 'Там, где остановился'}</h1>
       <p>{erasing
-        ? 'Чёрные линии проходят вокруг Штриха. Бумага под ним остаётся целой.'
-        : 'Недорисованная рука заканчивается там же, где закончился детский карандаш.'}</p>
-      {!finished ? <HoldActionButton onStart={start} onStop={stop}><b>{erasing ? 'Стирать вокруг' : 'Дорисовать руку'}</b><kbd>E</kbd><small>удерживать</small></HoldActionButton>
-        : <button className="pencil-button" onClick={onDone}>{erasing ? 'Отложить ластик' : 'Закончить линию'}</button>}
+        ? 'Ты ведёшь ластик по каждой чёрной полосе, не касаясь контура Штриха.'
+        : 'Линия продолжается с того места, где много лет назад дрогнула детская рука.'}</p>
+      {finished ? <button className="pencil-button" onClick={onDone}>{erasing ? 'Убрать последнюю полосу' : 'Опустить карандаш'}</button>
+        : <HoldActionButton onStart={start} onStop={stop}><b>{erasing ? 'Стереть линии вокруг' : 'Дорисовать руку'}</b><kbd>E</kbd><small>удерживать</small></HoldActionButton>}
       <div className="hold-progress"><i style={{ width: `${progress}%` }} /></div>
     </article>
   </section>;
 }
 
 export function BlueRepairScene({ playerName, onComplete }: BlueRepairSceneProps) {
-  const [step, setStep] = useState<RepairStep>('erase');
+  const [step, setStep] = useState<RepairStep>('intro');
   const [lineIndex, setLineIndex] = useState(0);
-  useEffect(() => {
-    silenceAmbience(1.1);
-    return () => restoreAmbience();
-  }, []);
+  const goTo = (nextStep: RepairStep) => { setLineIndex(0); setStep(nextStep); };
+  useEffect(() => { silenceAmbience(1.1); return () => restoreAmbience(); }, []);
 
   if (step === 'reveal') return <BlueConvergenceScene onComplete={onComplete} />;
-  if (step === 'erase') return <HoldStep kind="erase" onDone={() => setStep('draw')} />;
-  if (step === 'draw') return <HoldStep kind="draw" onDone={() => setStep('give')} />;
+  if (step === 'erase') return <HoldStep kind="erase" onDone={() => goTo('pencil')} />;
+  if (step === 'draw') return <HoldStep kind="draw" onDone={() => goTo('give')} />;
+  if (step === 'choice') return <section className="blue-repair blue-repair--choice">
+    <div className="blue-repair__paper" /><RepairFigure cage={1} />
+    <article className="blue-repair__decision"><span>Ластик лежит в ладони</span><h1>Что стереть?</h1>
+      <button className="is-danger" onClick={() => goTo('eraseAttempt')}>Стереть Штриха</button>
+      <button onClick={() => goTo('eraseAround')}>Стереть линии вокруг него</button>
+    </article>
+  </section>;
   if (step === 'give') return <section className="blue-repair">
-    <div className="blue-repair__paper" />
-    <RepairFigure arm={1} />
-    <button className="blue-repair__give" onClick={() => { playPencilHandoff(); setStep('dialogue'); }}>Отдать Штриху карандаш</button>
+    <div className="blue-repair__paper" /><RepairFigure arm={1} />
+    <article className="blue-repair__decision"><span>Новая рука держится</span><h1>Не рисовать за него</h1>
+      <p>Короткий карандаш всё ещё у тебя. Теперь Штрих может взять его сам.</p>
+      <button onClick={() => { playPencilHandoff(); goTo('dialogue'); }}>Протянуть Штриху карандаш</button>
+    </article>
   </section>;
 
-  const nextLine = () => {
-    if (lineIndex < blueRepairDialogue.length - 1) setLineIndex((index) => index + 1);
-    else setStep('reveal');
+  const lines = stepDialogue[step] ?? blueRepairDialogue;
+  const nextStep: Partial<Record<RepairStep, RepairStep>> = {
+    intro: 'choice', eraseAttempt: 'erase', eraseAround: 'erase', pencil: 'draw', dialogue: 'reveal',
   };
+  const nextLine = () => lineIndex < lines.length - 1
+    ? setLineIndex((index) => index + 1) : goTo(nextStep[step] ?? 'reveal');
+  const cage = step === 'intro' || step === 'eraseAttempt' || step === 'eraseAround' ? 1 : 0;
   return <section className="blue-repair">
     <div className="blue-repair__paper" />
-    <RepairFigure arm={1} changedSmile={lineIndex === blueRepairDialogue.length - 1} />
-    <DialogueBox line={blueRepairDialogue[lineIndex]} current={lineIndex}
-      total={blueRepairDialogue.length} playerName={playerName} onNext={nextLine} />
+    <RepairFigure cage={cage} arm={step === 'dialogue' ? 1 : 0}
+      changedSmile={step === 'dialogue' && lineIndex === lines.length - 1} />
+    <DialogueBox line={lines[lineIndex]} current={lineIndex}
+      total={lines.length} playerName={playerName} onNext={nextLine} />
   </section>;
 }
