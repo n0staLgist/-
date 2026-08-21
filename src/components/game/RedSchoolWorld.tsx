@@ -59,8 +59,8 @@ export function RedSchoolWorld({ foundSharpener, isInteractive, returning, sinkS
   const requiredEvent: RedEvent = returning ? 'shtrikh' : !sinkSeen ? 'window' : !foundSharpener ? 'sharpener' : 'last-desk';
   const visibleHotspots = hotspots.filter(({ event }) =>
     !event.startsWith('classmate') && event !== 'companion' && event !== 'shtrikh');
-  const cameraX = clamp(movement.position.x, 22, 73);
-  const cameraY = clamp(movement.position.y, 26, 74);
+  const cameraX = clamp(movement.position.x, showTouchControls ? 25 : 22, showTouchControls ? 75 : 73);
+  const cameraY = clamp(movement.position.y, showTouchControls ? 18 : 26, showTouchControls ? 82 : 74);
   const mapStyle: CSSProperties = { transform: `translate(-${cameraX}%, -${cameraY}%)` };
   const area = movement.position.x < 24
     ? 'Кабинет ИЗО' : movement.position.y < 59 ? 'Красный класс' : 'Школьный коридор';

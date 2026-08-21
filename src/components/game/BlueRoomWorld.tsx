@@ -44,8 +44,8 @@ export function BlueRoomWorld({ found, isInteractive, showTouchControls, onClue 
   const closest = [...candidates].sort((a, b) =>
     Math.hypot(a.position.x - movement.position.x, a.position.y - movement.position.y) -
     Math.hypot(b.position.x - movement.position.x, b.position.y - movement.position.y))[0];
-  const cameraX = clamp(movement.position.x, 25, 74);
-  const cameraY = clamp(movement.position.y, 28, 72);
+  const cameraX = clamp(movement.position.x, showTouchControls ? 29 : 25, showTouchControls ? 71 : 74);
+  const cameraY = clamp(movement.position.y, showTouchControls ? 20 : 28, showTouchControls ? 80 : 72);
   const mapStyle: CSSProperties = { transform: `translate(-${cameraX}%, -${cameraY}%)` };
   const shtrikh = getBlueShtrikhPosition(found.length);
 
