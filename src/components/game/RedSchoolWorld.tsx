@@ -52,7 +52,7 @@ export function RedSchoolWorld({ foundSharpener, isInteractive, returning, sinkS
     isRedSchoolPositionWalkable(position, returning), [returning]);
   const movement = useRoomMovement(isInteractive, interact, {
     start: getRedWorldStart(returning), speed: 8.5, isWalkable,
-    horizontalSpeedScale: showTouchControls ? 2 / 3 : 1,
+    horizontalSpeedScale: showTouchControls ? 2 / 3 : 1, footstepSurface: 'school',
   });
   const target = isInteractive
     ? selectInteractionTarget(candidates, movement.position, movement.facing) : null;

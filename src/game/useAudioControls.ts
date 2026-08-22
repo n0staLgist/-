@@ -4,7 +4,7 @@ import { setAmbienceEnabled, setEffectsVolume, setMusicVolume } from './audio';
 export function useAudioControls() {
   const [soundOn, setSoundOn] = useState(true);
   const [musicLevel, setMusicLevel] = useState(.9);
-  const [effectsLevel, setEffectsLevel] = useState(.82);
+  const [effectsLevel, setEffectsLevel] = useState(.9);
 
   const toggleSound = () => {
     const nextValue = !soundOn;

@@ -68,7 +68,7 @@ export function YardScene({ completed, isInteractive, showTouchControls, onTask,
   const canMove = isInteractive && !examination;
   const movement = useRoomMovement(canMove, interact, {
     start: { x: 65, y: 82 }, speed: 15, isWalkable: isYardPositionWalkable,
-    horizontalSpeedScale: showTouchControls ? 9 / 16 : 1,
+    horizontalSpeedScale: showTouchControls ? 9 / 16 : 1, footstepSurface: 'yard',
   });
   const target = selectInteractionTarget(candidates, movement.position, movement.facing);
   const nextTask = (Object.keys(taskPositions) as YardTask[]).find((task) => !completed.includes(task));

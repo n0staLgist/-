@@ -2,6 +2,7 @@ import type { DialogueLine } from './types';
 import { audioThemes, type AmbienceMood, type AudioTheme } from './audioThemes';
 
 export type { AmbienceMood } from './audioThemes';
+export type FootstepSurface = 'room' | 'yard' | 'school' | 'blue';
 
 let context: AudioContext | null = null;
 let master: GainNode | null = null;
@@ -10,9 +11,10 @@ let melodyTimer: number | null = null;
 let effectsEnabled = true;
 let ambienceSilenced = false;
 let musicVolume = .9;
-let effectsVolume = .82;
+let effectsVolume = .9;
 let currentMood: AmbienceMood = 'room';
 let noteIndex = 0;
+let footstepIndex = 0;
 
 const MUSIC_GAIN = .88;
 const getMusicGain = () => musicVolume === 0
@@ -170,11 +172,42 @@ export function playWritingTick(speaker?: string, kind?: DialogueLine['kind']) {
   filter.type = 'lowpass';
   filter.frequency.value = isClassmate ? 720 : isThought ? 480 : 1150;
   gain.gain.setValueAtTime(.0001, now);
-  gain.gain.exponentialRampToValueAtTime(isClassmate ? .017 : isThought ? .013 : .034, now + .008);
+  gain.gain.exponentialRampToValueAtTime(isClassmate ? .045 : isThought ? .027 : .07, now + .008);
   gain.gain.exponentialRampToValueAtTime(.0001, now + .065);
   oscillator.connect(filter).connect(gain).connect(getEffectsOutput());
   oscillator.start();
   oscillator.stop(now + .07);
+}
+
+const footstepSound: Record<FootstepSurface, { frequency: number; volume: number }> = {
+  room: { frequency: 260, volume: .105 },
+  yard: { frequency: 720, volume: .12 },
+  school: { frequency: 930, volume: .115 },
+  blue: { frequency: 180, volume: .09 },
+};
+
+export function playFootstep(surface: FootstepSurface) {
+  if (!effectsEnabled) return;
+  const audioContext = getAudioContext();
+  const settings = footstepSound[surface];
+  const duration = surface === 'school' ? .095 : .075;
+  const buffer = audioContext.createBuffer(1, audioContext.sampleRate * duration, audioContext.sampleRate);
+  const samples = buffer.getChannelData(0);
+  footstepIndex += 1;
+  for (let index = 0; index < samples.length; index += 1) {
+    const decay = Math.pow(1 - index / samples.length, 2.8);
+    samples[index] = (Math.random() * 2 - 1) * decay;
+  }
+  const source = audioContext.createBufferSource();
+  const filter = audioContext.createBiquadFilter();
+  const gain = audioContext.createGain();
+  filter.type = 'bandpass';
+  filter.frequency.value = settings.frequency * (footstepIndex % 2 === 0 ? .92 : 1.06);
+  filter.Q.value = surface === 'school' ? 1.4 : .8;
+  gain.gain.value = settings.volume;
+  source.buffer = buffer;
+  source.connect(filter).connect(gain).connect(getEffectsOutput());
+  source.start();
 }
 
 export function playPageTurn() {

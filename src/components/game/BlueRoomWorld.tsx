@@ -48,7 +48,7 @@ export function BlueRoomWorld({
     isBlueRoomPositionWalkable(position, shtrikhStep, guardsDoor), [guardsDoor, shtrikhStep]);
   const movement = useRoomMovement(isInteractive, interact, {
     start: blueRoomStart, speed: 8.5, isWalkable,
-    horizontalSpeedScale: showTouchControls ? 2 / 3 : 1,
+    horizontalSpeedScale: showTouchControls ? 2 / 3 : 1, footstepSurface: 'blue',
   });
   useEffect(() => {
     if (!isInteractive || guardsDoor || found.includes('door') || found.length >= 3) return;

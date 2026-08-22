@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { playFootstep, type FootstepSurface } from './audio';
 import { isRoomPositionWalkable } from './roomGeometry';
 
 export type RoomPosition = { x: number; y: number };
@@ -10,6 +11,7 @@ type MovementOptions = {
   speed?: number;
   isWalkable?: (position: RoomPosition) => boolean;
   horizontalSpeedScale?: number;
+  footstepSurface?: FootstepSurface;
 };
 const DIRECTIONS: Record<string, MoveDirection> = {
   ArrowUp: [0, -1], KeyW: [0, -1], ArrowDown: [0, 1], KeyS: [0, 1],
@@ -22,7 +24,7 @@ export function useRoomMovement(enabled: boolean, onInteract: (
 ) => void, options: MovementOptions = {}) {
   const {
     start = { x: 86, y: 56 }, speed = 15,
-    isWalkable = isRoomPositionWalkable, horizontalSpeedScale = 1,
+    isWalkable = isRoomPositionWalkable, horizontalSpeedScale = 1, footstepSurface = 'room',
   } = options;
   const [position, setPosition] = useState(start);
   const [isMoving, setIsMoving] = useState(false);
@@ -67,6 +69,13 @@ export function useRoomMovement(enabled: boolean, onInteract: (
       clearInput();
     };
   }, [enabled, onInteract]);
+
+  useEffect(() => {
+    if (!enabled || !isMoving) return;
+    playFootstep(footstepSurface);
+    const timer = window.setInterval(() => playFootstep(footstepSurface), 350);
+    return () => window.clearInterval(timer);
+  }, [enabled, footstepSurface, isMoving]);
 
   useEffect(() => {
     if (!enabled) {
