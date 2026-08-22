@@ -9,12 +9,15 @@ let effectsMaster: GainNode | null = null;
 let melodyTimer: number | null = null;
 let effectsEnabled = true;
 let ambienceSilenced = false;
-let musicVolume = .78;
+let musicVolume = .9;
 let effectsVolume = .82;
 let currentMood: AmbienceMood = 'room';
 let noteIndex = 0;
 
-const MUSIC_GAIN = .32;
+const MUSIC_GAIN = .88;
+const getMusicGain = () => musicVolume === 0
+  ? .0001
+  : MUSIC_GAIN * Math.pow(musicVolume, .55);
 
 const getAudioContext = () => {
   if (!context || context.state === 'closed') context = new AudioContext();
@@ -34,7 +37,7 @@ const getEffectsOutput = () => {
 
 export function setMusicVolume(volume: number) {
   musicVolume = Math.max(0, Math.min(1, volume));
-  if (context && master) master.gain.setTargetAtTime(effectsEnabled && !ambienceSilenced ? MUSIC_GAIN * musicVolume : .0001, context.currentTime, .05);
+  if (context && master) master.gain.setTargetAtTime(effectsEnabled && !ambienceSilenced ? getMusicGain() : .0001, context.currentTime, .05);
 }
 
 export function setEffectsVolume(volume: number) {
@@ -91,7 +94,7 @@ export function startAmbience(mood: AmbienceMood = currentMood) {
   if (master) return;
   master = audioContext.createGain();
   master.gain.setValueAtTime(.0001, audioContext.currentTime);
-  master.gain.exponentialRampToValueAtTime(ambienceSilenced ? .0001 : MUSIC_GAIN * musicVolume, audioContext.currentTime + 1.2);
+  master.gain.exponentialRampToValueAtTime(ambienceSilenced ? .0001 : getMusicGain(), audioContext.currentTime + 1.2);
   master.connect(audioContext.destination);
   rebuildMusic();
 }
@@ -111,7 +114,7 @@ export function setAmbienceEnabled(enabled: boolean) {
   const now = context.currentTime;
   master.gain.cancelScheduledValues(now);
   master.gain.setValueAtTime(Math.max(master.gain.value, .0001), now);
-  master.gain.exponentialRampToValueAtTime(enabled && !ambienceSilenced ? MUSIC_GAIN * musicVolume : .0001, now + .45);
+  master.gain.exponentialRampToValueAtTime(enabled && !ambienceSilenced ? getMusicGain() : .0001, now + .45);
   if (effectsMaster) effectsMaster.gain.setTargetAtTime(enabled ? effectsVolume : .0001, now, .05);
 }
 
@@ -130,7 +133,7 @@ export function restoreAmbience(duration = 1.2) {
   const now = context.currentTime;
   master.gain.cancelScheduledValues(now);
   master.gain.setValueAtTime(Math.max(master.gain.value, .0001), now);
-  master.gain.exponentialRampToValueAtTime(MUSIC_GAIN * musicVolume, now + duration);
+  master.gain.exponentialRampToValueAtTime(getMusicGain(), now + duration);
 }
 
 export function stopAmbience() {
