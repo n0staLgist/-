@@ -27,9 +27,9 @@ const details = [
   { position: { x: 40, y: 67 }, text: 'Меловой город расходится стрелками во все стороны. Ни одна не ведёт домой.' },
   { position: { x: 85, y: 52 }, text: 'В луже отражается пустое окно. Ветер не может пошевелить отражение.' },
 ];
-const TASK_REACH = 6.5;
-const DETAIL_REACH = 5.5;
-const ENDING_REACH = 7;
+const TASK_REACH = 10;
+const DETAIL_REACH = 7;
+const ENDING_REACH = 9;
 const SHTRIKH_POSITION = { x: 69, y: 34 };
 type YardAction = { kind: 'task'; task: YardTask } | { kind: 'shtrikh' } |
   { kind: 'detail'; text: string };
@@ -41,7 +41,7 @@ const shtrikhObservations = [
 const yardHints: Record<YardTask, string> = {
   swing: 'Слева осталась недорисованная качеля. Толкни её три раза у жёлтой линии.',
   hopscotch: 'Классики находятся в центре. Проведи по клеткам от первой до последней.',
-  window: 'Тёмное окно наверху. Зажги по очереди все четыре стекла.',
+  window: 'Тёмное окно наверху. Настрой старое радио, чтобы вернуть в него свет.',
 };
 
 export function YardScene({ completed, isInteractive, showTouchControls, onTask, onFinish }: YardSceneProps) {
@@ -80,6 +80,10 @@ export function YardScene({ completed, isInteractive, showTouchControls, onTask,
       <ObjectivePanel className="scene-instruction" label="Текущее задание">
         <strong>{allDone ? 'Вернись к Штриху у подъезда' : 'Найди три потерянные детали'}</strong>
       </ObjectivePanel>
+      {(Object.keys(taskPositions) as YardTask[]).filter((task) => !completed.includes(task)).map((task) => (
+        <i className={`yard-interaction-mark yard-interaction-mark--${task} ${target?.value.kind === 'task' && target.value.task === task ? 'is-near' : ''}`}
+          key={task} style={{ left: `${taskPositions[task].x}%`, top: `${taskPositions[task].y}%` }} aria-hidden="true" />
+      ))}
       <img className="yard-shtrikh" src={shtrikhYard} alt="Штрих ждёт у подъезда: две слезы, длинный шарф и недорисованная рука" />
       {completed.includes('swing') && <div className="yard-restored-swing" aria-label="Качеля восстановлена"><i /><b /></div>}
       {completed.includes('hopscotch') && <div className="yard-restored-hopscotch" aria-label="Классики снова видны">{[0, 1, 2, 3, 4, 5].map((cell) => <i key={cell} />)}</div>}

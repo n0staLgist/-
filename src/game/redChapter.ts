@@ -16,22 +16,24 @@ export type RedHotspot = {
 export const redChapterIntro: DialogueLine[] = [
   { text: 'Жёлтая страница липнет к пальцам. Под ней — школа, в которой звонок уже прозвенел.' },
   { speaker: 'Штрих', text: 'Последняя парта на месте. Я сохранил её для тебя.' },
-  { speaker: 'Ты', text: 'А лица — нет.' },
-  { speaker: 'Штрих', text: 'Их ты оставил раньше меня.' },
+  { speaker: 'Ты', text: 'Почему у одноклассников нет лиц?' },
+  { speaker: 'Штрих', text: 'Ты никогда их не рисовал. Я знаю их только по твоим рассказам.' },
+  { speaker: 'Ты', text: 'Значит, я просто забыл, как они выглядели.' },
+  { speaker: 'Штрих', text: 'Наверное. Тогда ты чаще смотрел в тетрадь, чем на них.' },
 ];
 
 export const redReturnDialogue: DialogueLine[] = [
-  { text: 'За дверью — та же школа. Только теперь шаги больше не отвечают.' },
-  { speaker: 'Ты', text: 'Стрелку к выходу стёрли раньше, чем линию в тетради.' },
-  { speaker: 'Штрих', text: 'Мы же пришли не за стрелкой.' },
+  { text: 'За дверью — та же школа. Одноклассники исчезли, и в коридоре слышны только твои шаги.' },
+  { speaker: 'Ты', text: 'Стрелку к выходу стёрли. А красная линия в тетради осталась.' },
+  { speaker: 'Штрих', text: 'Нам всё равно пора к следующей странице.' },
 ];
 
 export const redEndingDialogue: DialogueLine[] = [
-  { speaker: 'Ты', text: 'Похоже, кто-то боялся, что я по ней уйду.' },
+  { speaker: 'Ты', text: 'Ты стёр стрелку, чтобы я не нашёл выход?' },
   { text: 'Штрих подтягивает шарф к улыбке, которую нельзя спрятать.' },
   { speaker: 'Штрих', text: 'Дальше синяя страница.' },
-  { speaker: 'Ты', text: 'Ты опять отвечаешь следующей страницей.' },
-  { speaker: 'Штрих', text: 'А ты опять её открываешь.' },
+  { speaker: 'Ты', text: 'Это опять не ответ.' },
+  { speaker: 'Штрих', text: 'Если отвечу сейчас, ты можешь уйти.' },
 ];
 
 export const redEventDialogue: Partial<Record<RedEvent, DialogueLine[]>> = {
@@ -40,8 +42,8 @@ export const redEventDialogue: Partial<Record<RedEvent, DialogueLine[]>> = {
     { speaker: 'Ты', text: 'До крана я тогда доставал только на носках.' },
   ],
   notice: [
-    { text: 'Светлее всего там, где висели чужие имена.' },
-    { speaker: 'Штрих', text: 'Ты всё равно смотрел только вниз.' },
+    { text: 'На стенде остались светлые прямоугольники от фотографий и табличек с именами.' },
+    { speaker: 'Штрих', text: 'На переменах ты их не читал. Ты рисовал под партой.' },
   ],
   lockers: [{ text: 'Серый отпечаток ладони. Вокруг — крошки ластика, будто руку пытались убрать со стены.' }],
   'erased-exit': [
@@ -51,14 +53,14 @@ export const redEventDialogue: Partial<Record<RedEvent, DialogueLine[]>> = {
   sharpener: [
     { text: 'Большой палец сам находит скол на красной точилке.' },
     { speaker: 'Ты', text: 'На переменах я прятался здесь и рисовал.' },
-    { speaker: 'Штрих', text: 'Мы не прятались. Мы оставались вдвоём.' },
+    { speaker: 'Штрих', text: 'А я думал, ты приходил туда ко мне.' },
   ],
   window: [{ text: 'На белой раковине красная кайма. Запах гуаши приходит раньше воспоминания.' }],
   board: [{ text: 'Красная борозда на доске заканчивается точно над последней партой.' }],
   desks: [{ text: 'Стулья отодвинуты, будто звонок прозвенел секунду назад.' }],
   companion: [
     { speaker: 'Ты', text: 'Ты всё время ходил здесь один?' },
-    { speaker: 'Штрих', text: 'Нет. Я ходил там, где ты меня оставлял.' },
+    { speaker: 'Штрих', text: 'Когда ты рисовал школу, я был здесь. Когда рисовал двор — во дворе. Больше мне некуда было идти.' },
   ],
   'classmate-1': [
     { speaker: 'Одноклассница', portrait: 'classmate-1', text: 'Опять с этой тетрадью?' },
@@ -73,25 +75,25 @@ export const redEventDialogue: Partial<Record<RedEvent, DialogueLine[]>> = {
 };
 
 const commonHotspots: RedHotspot[] = [
-  { event: 'notice', label: 'Осмотреть стенд', position: { x: 65, y: 66 }, priority: 10, reach: 5 },
-  { event: 'lockers', label: 'Осмотреть шкафчики', position: { x: 31, y: 68 }, priority: 10, reach: 5 },
-  { event: 'erased-exit', label: 'Осмотреть стёртую стрелку', position: { x: 91, y: 70 }, priority: 20, reach: 5 },
-  { event: 'window', label: 'Осмотреть раковину', position: { x: 5, y: 63 }, priority: 10, reach: 5 },
-  { event: 'board', label: 'Осмотреть доску', position: { x: 77, y: 16 }, priority: 10, reach: 6.5 },
-  { event: 'desks', label: 'Осмотреть парты', position: { x: 76, y: 39 }, priority: 10, reach: 5 },
-  { event: 'last-desk', label: 'Открыть тетрадь', position: { x: 91, y: 52 }, priority: 30, reach: 5.5 },
-  { event: 'companion', label: 'Поговорить со Штрихом', position: { x: 72, y: 73 }, priority: 22, reach: 5 },
-  { event: 'classmate-1', label: 'Заговорить', position: { x: 42, y: 86 }, priority: 20, reach: 5 },
-  { event: 'classmate-2', label: 'Заговорить', position: { x: 61, y: 85 }, priority: 20, reach: 5 },
-  { event: 'classmate-3', label: 'Прислушаться', position: { x: 84, y: 84 }, priority: 20, reach: 5 },
+  { event: 'notice', label: 'Осмотреть стенд', position: { x: 65, y: 66 }, priority: 10, reach: 7 },
+  { event: 'lockers', label: 'Осмотреть шкафчики', position: { x: 31, y: 68 }, priority: 10, reach: 7 },
+  { event: 'erased-exit', label: 'Осмотреть стёртую стрелку', position: { x: 91, y: 70 }, priority: 20, reach: 7.5 },
+  { event: 'window', label: 'Осмотреть раковину', position: { x: 5, y: 63 }, priority: 10, reach: 8 },
+  { event: 'board', label: 'Осмотреть доску', position: { x: 77, y: 16 }, priority: 10, reach: 8.5 },
+  { event: 'desks', label: 'Осмотреть парты', position: { x: 76, y: 39 }, priority: 10, reach: 7 },
+  { event: 'last-desk', label: 'Открыть тетрадь', position: { x: 91, y: 52 }, priority: 30, reach: 8 },
+  { event: 'companion', label: 'Поговорить со Штрихом', position: { x: 72, y: 73 }, priority: 22, reach: 7 },
+  { event: 'classmate-1', label: 'Заговорить', position: { x: 42, y: 86 }, priority: 20, reach: 8 },
+  { event: 'classmate-2', label: 'Заговорить', position: { x: 61, y: 85 }, priority: 20, reach: 8 },
+  { event: 'classmate-3', label: 'Прислушаться', position: { x: 84, y: 84 }, priority: 20, reach: 8 },
 ];
 
 const sharpenerHotspot: RedHotspot = {
-  event: 'sharpener', label: 'Взять красную точилку', position: { x: 11.5, y: 69 }, priority: 35, reach: 5.5,
+  event: 'sharpener', label: 'Взять красную точилку', position: { x: 11.5, y: 69 }, priority: 35, reach: 8,
 };
 const returningHotspots: RedHotspot[] = commonHotspots
   .filter(({ event }) => event !== 'companion' && !event.startsWith('classmate'))
-  .concat({ event: 'shtrikh', label: 'Поговорить со Штрихом', position: { x: 54, y: 76 }, priority: 30, reach: 5 });
+  .concat({ event: 'shtrikh', label: 'Поговорить со Штрихом', position: { x: 54, y: 76 }, priority: 30, reach: 8 });
 
 export const getRedHotspots = (returning: boolean, foundSharpener: boolean) => returning
   ? returningHotspots

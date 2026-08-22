@@ -43,9 +43,9 @@ const roomDetails = [
   { position: { x: 75, y: 72 }, text: 'На полу остался светлый прямоугольник от кровати.' },
   { position: { x: 93, y: 57 }, text: 'Дверь в коридор. Ая ушла, не хлопнув ею.' },
 ];
-const ITEM_REACH = 5;
-const NOTEBOOK_REACH = 10;
-const DETAIL_REACH = 5.5;
+const ITEM_REACH = 7.5;
+const NOTEBOOK_REACH = 12;
+const DETAIL_REACH = 6.5;
 type RoomAction = { kind: 'item'; item: RoomItem } | { kind: 'notebook' } |
   { kind: 'detail'; text: string };
 const roomHints: Record<RoomItem, string> = {
@@ -71,7 +71,7 @@ export function RoomScene({ packed, isInteractive = true, showTouchControls, onI
       .map((item) => ({ id: `item-${item}`, value: { kind: 'item' as const, item },
         label: `Взять: ${roomItems[item].label}`, position: itemPositions[item], priority: 30, reach: ITEM_REACH })),
     { id: 'notebook', value: { kind: 'notebook' }, label: allPacked ? 'Взять тетрадь' : 'Осмотреть тетрадь',
-      position: notebookPosition, priority: 24, reach: NOTEBOOK_REACH },
+      position: notebookPosition, priority: allPacked ? 40 : 24, reach: NOTEBOOK_REACH },
     ...roomDetails.map((detail, index) => ({ id: `detail-${index}`, value: { kind: 'detail' as const, text: detail.text },
       label: 'Осмотреть', position: detail.position, priority: 10, reach: DETAIL_REACH })),
   ], [allPacked, packed]);
@@ -117,7 +117,7 @@ export function RoomScene({ packed, isInteractive = true, showTouchControls, onI
         <div className="packed-box-items" aria-label={`В коробке предметов: ${packed.length}`}>
           {packed.map((item, index) => <i className={`packed-box-item packed-box-item--${index}`} key={item} style={{ '--item-sprite': `url(${roomItemsSprite})`, '--item-sprite-position': itemSpritePositions[item] } as ItemStyle} />)}
         </div>
-        <button className={`notebook-hotspot ${nearNotebook ? 'is-near' : ''}`} onClick={onNotebook} disabled={!allPacked || !nearNotebook}>Открыть тетрадь</button>
+        <button className={`notebook-hotspot ${allPacked ? 'is-visible' : ''} ${nearNotebook ? 'is-near' : ''}`} onClick={onNotebook} disabled={!allPacked || !nearNotebook}>Открыть тетрадь</button>
         {isInteractive && <>
           <PlayerAvatar position={position} facing={facing} isMoving={isMoving} />
           <InteractionPrompt position={target?.position ?? position} text={target?.label ?? ''} />
