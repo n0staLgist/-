@@ -1,5 +1,6 @@
 import type { DialogueLine } from './types';
-import { audioThemes, type AmbienceMood, type AudioTheme } from './audioThemes';
+import { audioThemes, type AmbienceMood } from './audioThemes';
+import { playBassVoice, playChordPad, playMelodyVoice } from './musicVoices';
 
 export type { AmbienceMood } from './audioThemes';
 export type FootstepSurface = 'room' | 'yard' | 'school' | 'blue';
@@ -47,44 +48,21 @@ export function setEffectsVolume(volume: number) {
   if (context && effectsMaster) effectsMaster.gain.setTargetAtTime(effectsEnabled ? effectsVolume : .0001, context.currentTime, .05);
 }
 
-const playThemeVoice = (theme: AudioTheme, frequency: number, volume: number,
-  duration: number, startDelay = 0, wave = theme.wave) => {
-  if (!context || !master) return;
-  const now = context.currentTime + startDelay;
-  const tone = context.createOscillator();
-  const filter = context.createBiquadFilter();
-  const gain = context.createGain();
-  tone.type = wave;
-  tone.frequency.setValueAtTime(frequency, now);
-  tone.frequency.exponentialRampToValueAtTime(frequency * .997, now + duration * .82);
-  filter.type = 'lowpass';
-  filter.frequency.value = theme.filter;
-  gain.gain.setValueAtTime(.0001, now);
-  gain.gain.exponentialRampToValueAtTime(volume, now + .055);
-  gain.gain.exponentialRampToValueAtTime(.0001, now + duration);
-  tone.connect(filter).connect(gain).connect(master);
-  tone.start(now);
-  tone.stop(now + duration + .05);
-};
-
 const playMusicNote = () => {
   if (!effectsEnabled || !context || !master) return;
   const theme = audioThemes[currentMood];
-  const step = noteIndex;
+  const step = noteIndex % theme.melody.length;
   const frequency = theme.melody[step % theme.melody.length];
   noteIndex += 1;
   if (step % 4 === 0) {
-    const bass = theme.bass[Math.floor(step / 4) % theme.bass.length];
-    playThemeVoice(theme, bass, theme.volume * .52, theme.duration * 2.4, 0, 'sine');
-    playThemeVoice(theme, bass * 2, theme.volume * .16, theme.duration * 2.7, 0, 'sine');
-    playThemeVoice(theme, bass * theme.chordThirdRatio, theme.volume * .12, theme.duration * 2.7, .04, 'sine');
-    playThemeVoice(theme, bass * 3, theme.volume * .09, theme.duration * 2.55, .08, 'sine');
+    const chord = theme.chords[Math.floor(step / 4) % theme.chords.length];
+    const chordDuration = theme.interval / 1000 * 4.5;
+    playChordPad(context, master, theme, chord, chordDuration);
+    playBassVoice(context, master, theme, chord[0] / 2, chordDuration * .92);
   }
-  if (!frequency) return;
-  const emphasis = step % 8 === 0 ? 1.12 : 1;
-  playThemeVoice(theme, frequency, theme.volume * emphasis, theme.duration);
-  playThemeVoice(theme, frequency, theme.volume * .22, theme.duration * .9, .2, 'sine');
-  playThemeVoice(theme, frequency * 2, theme.volume * .14, theme.duration * .72, .045, 'sine');
+  if (frequency) playMelodyVoice(context, master, theme, frequency, theme.volume * (step % 8 === 0 ? 1.18 : 1));
+  const counter = theme.counterMelody[step % theme.counterMelody.length];
+  if (counter) playMelodyVoice(context, master, theme, counter, theme.volume * .42, theme.interval / 2000);
 };
 
 const rebuildMusic = () => {
