@@ -1,6 +1,7 @@
 import type { DialogueLine } from './types';
+import { audioThemes, type AmbienceMood, type AudioTheme } from './audioThemes';
 
-export type AmbienceMood = 'room' | 'notebook' | 'yard' | 'memory' | 'red' | 'red-empty' | 'blue' | 'finale';
+export type { AmbienceMood } from './audioThemes';
 
 let context: AudioContext | null = null;
 let master: GainNode | null = null;
@@ -8,21 +9,12 @@ let effectsMaster: GainNode | null = null;
 let melodyTimer: number | null = null;
 let effectsEnabled = true;
 let ambienceSilenced = false;
-let musicVolume = .7;
-let effectsVolume = .7;
+let musicVolume = .78;
+let effectsVolume = .82;
 let currentMood: AmbienceMood = 'room';
 let noteIndex = 0;
 
-const themes: Record<AmbienceMood, { melody: number[]; interval: number }> = {
-  room: { melody: [164.81, 220, 246.94, 220, 0, 196, 164.81, 196], interval: 820 },
-  notebook: { melody: [146.83, 196, 233.08, 0, 220, 196, 174.61, 0], interval: 880 },
-  yard: { melody: [185, 246.94, 293.66, 277.18, 246.94, 220, 246.94, 0], interval: 720 },
-  memory: { melody: [130.81, 174.61, 196, 174.61, 0, 146.83, 164.81, 0], interval: 980 },
-  red: { melody: [146.83, 138.59, 164.81, 0, 146.83, 174.61, 138.59, 0], interval: 930 },
-  'red-empty': { melody: [110, 0, 103.83, 0, 0, 116.54, 0, 0], interval: 1450 },
-  blue: { melody: [130.81, 0, 146.83, 130.81, 116.54, 0, 130.81, 0], interval: 1080 },
-  finale: { melody: [196, 246.94, 293.66, 246.94, 220, 293.66, 329.63, 0], interval: 760 },
-};
+const MUSIC_GAIN = .32;
 
 const getAudioContext = () => {
   if (!context || context.state === 'closed') context = new AudioContext();
@@ -42,7 +34,7 @@ const getEffectsOutput = () => {
 
 export function setMusicVolume(volume: number) {
   musicVolume = Math.max(0, Math.min(1, volume));
-  if (context && master) master.gain.setTargetAtTime(effectsEnabled && !ambienceSilenced ? .24 * musicVolume : .0001, context.currentTime, .05);
+  if (context && master) master.gain.setTargetAtTime(effectsEnabled && !ambienceSilenced ? MUSIC_GAIN * musicVolume : .0001, context.currentTime, .05);
 }
 
 export function setEffectsVolume(volume: number) {
@@ -50,34 +42,46 @@ export function setEffectsVolume(volume: number) {
   if (context && effectsMaster) effectsMaster.gain.setTargetAtTime(effectsEnabled ? effectsVolume : .0001, context.currentTime, .05);
 }
 
-const playMusicNote = () => {
-  if (!effectsEnabled || !context || !master) return;
-  const theme = themes[currentMood];
-  const frequency = theme.melody[noteIndex % theme.melody.length];
-  noteIndex += 1;
-  if (!frequency) return;
-  const now = context.currentTime;
+const playThemeVoice = (theme: AudioTheme, frequency: number, volume: number,
+  duration: number, startDelay = 0, wave = theme.wave) => {
+  if (!context || !master) return;
+  const now = context.currentTime + startDelay;
   const tone = context.createOscillator();
   const filter = context.createBiquadFilter();
   const gain = context.createGain();
-  tone.type = 'triangle';
+  tone.type = wave;
   tone.frequency.setValueAtTime(frequency, now);
-  tone.frequency.exponentialRampToValueAtTime(frequency * .996, now + 1.3);
+  tone.frequency.exponentialRampToValueAtTime(frequency * .997, now + duration * .82);
   filter.type = 'lowpass';
-  filter.frequency.value = 620;
+  filter.frequency.value = theme.filter;
   gain.gain.setValueAtTime(.0001, now);
-  gain.gain.exponentialRampToValueAtTime(.042, now + .025);
-  gain.gain.exponentialRampToValueAtTime(.0001, now + 1.55);
+  gain.gain.exponentialRampToValueAtTime(volume, now + .055);
+  gain.gain.exponentialRampToValueAtTime(.0001, now + duration);
   tone.connect(filter).connect(gain).connect(master);
   tone.start(now);
-  tone.stop(now + 1.6);
+  tone.stop(now + duration + .05);
+};
+
+const playMusicNote = () => {
+  if (!effectsEnabled || !context || !master) return;
+  const theme = audioThemes[currentMood];
+  const step = noteIndex;
+  const frequency = theme.melody[step % theme.melody.length];
+  noteIndex += 1;
+  if (step % 4 === 0) {
+    const bass = theme.bass[Math.floor(step / 4) % theme.bass.length];
+    playThemeVoice(theme, bass, theme.volume * .48, theme.duration * 2.15, 0, 'sine');
+  }
+  if (!frequency) return;
+  playThemeVoice(theme, frequency, theme.volume, theme.duration);
+  playThemeVoice(theme, frequency * 2, theme.volume * .14, theme.duration * .72, .045, 'sine');
 };
 
 const rebuildMusic = () => {
   if (!context || !master) return;
   if (melodyTimer !== null) window.clearInterval(melodyTimer);
   noteIndex = 0;
-  melodyTimer = window.setInterval(playMusicNote, themes[currentMood].interval);
+  melodyTimer = window.setInterval(playMusicNote, audioThemes[currentMood].interval);
   window.setTimeout(playMusicNote, 180);
 };
 
@@ -87,7 +91,7 @@ export function startAmbience(mood: AmbienceMood = currentMood) {
   if (master) return;
   master = audioContext.createGain();
   master.gain.setValueAtTime(.0001, audioContext.currentTime);
-  master.gain.exponentialRampToValueAtTime(ambienceSilenced ? .0001 : .24 * musicVolume, audioContext.currentTime + 1.2);
+  master.gain.exponentialRampToValueAtTime(ambienceSilenced ? .0001 : MUSIC_GAIN * musicVolume, audioContext.currentTime + 1.2);
   master.connect(audioContext.destination);
   rebuildMusic();
 }
@@ -107,7 +111,7 @@ export function setAmbienceEnabled(enabled: boolean) {
   const now = context.currentTime;
   master.gain.cancelScheduledValues(now);
   master.gain.setValueAtTime(Math.max(master.gain.value, .0001), now);
-  master.gain.exponentialRampToValueAtTime(enabled && !ambienceSilenced ? .24 * musicVolume : .0001, now + .45);
+  master.gain.exponentialRampToValueAtTime(enabled && !ambienceSilenced ? MUSIC_GAIN * musicVolume : .0001, now + .45);
   if (effectsMaster) effectsMaster.gain.setTargetAtTime(enabled ? effectsVolume : .0001, now, .05);
 }
 
@@ -126,7 +130,7 @@ export function restoreAmbience(duration = 1.2) {
   const now = context.currentTime;
   master.gain.cancelScheduledValues(now);
   master.gain.setValueAtTime(Math.max(master.gain.value, .0001), now);
-  master.gain.exponentialRampToValueAtTime(.24 * musicVolume, now + duration);
+  master.gain.exponentialRampToValueAtTime(MUSIC_GAIN * musicVolume, now + duration);
 }
 
 export function stopAmbience() {
@@ -163,7 +167,7 @@ export function playWritingTick(speaker?: string, kind?: DialogueLine['kind']) {
   filter.type = 'lowpass';
   filter.frequency.value = isClassmate ? 720 : isThought ? 480 : 1150;
   gain.gain.setValueAtTime(.0001, now);
-  gain.gain.exponentialRampToValueAtTime(isClassmate ? .012 : isThought ? .009 : .026, now + .008);
+  gain.gain.exponentialRampToValueAtTime(isClassmate ? .017 : isThought ? .013 : .034, now + .008);
   gain.gain.exponentialRampToValueAtTime(.0001, now + .065);
   oscillator.connect(filter).connect(gain).connect(getEffectsOutput());
   oscillator.start();
@@ -178,7 +182,7 @@ export function playPageTurn() {
   for (let index = 0; index < samples.length; index += 1) samples[index] = (Math.random() * 2 - 1) * (1 - index / samples.length);
   const source = audioContext.createBufferSource();
   const gain = audioContext.createGain();
-  gain.gain.value = .075;
+  gain.gain.value = .11;
   source.buffer = buffer;
   source.connect(gain).connect(getEffectsOutput());
   source.start();
@@ -200,7 +204,7 @@ export function playPaperCrack() {
   filter.type = 'bandpass';
   filter.frequency.value = 920;
   filter.Q.value = .7;
-  gain.gain.value = .22;
+  gain.gain.value = .28;
   source.buffer = buffer;
   source.connect(filter).connect(gain).connect(getEffectsOutput());
   source.start();
@@ -228,15 +232,15 @@ const playPaperNoise = (duration: number, frequency: number, volume: number) => 
 };
 
 export function playPaperTool(kind: 'erase' | 'draw') {
-  playPaperNoise(kind === 'erase' ? .16 : .09, kind === 'erase' ? 540 : 1450, kind === 'erase' ? .12 : .075);
+  playPaperNoise(kind === 'erase' ? .16 : .09, kind === 'erase' ? 540 : 1450, kind === 'erase' ? .15 : .095);
 }
 
 export function playInkShift() {
-  playPaperNoise(.48, 330, .095);
+  playPaperNoise(.48, 330, .13);
 }
 
 export function playPencilHandoff() {
-  playPaperNoise(.12, 1200, .08);
+  playPaperNoise(.12, 1200, .11);
   if (!effectsEnabled) return;
   const audioContext = getAudioContext();
   const oscillator = audioContext.createOscillator();
@@ -245,7 +249,7 @@ export function playPencilHandoff() {
   oscillator.type = 'triangle';
   oscillator.frequency.setValueAtTime(420, now);
   oscillator.frequency.exponentialRampToValueAtTime(260, now + .18);
-  gain.gain.setValueAtTime(.035, now);
+  gain.gain.setValueAtTime(.05, now);
   gain.gain.exponentialRampToValueAtTime(.0001, now + .2);
   oscillator.connect(gain).connect(getEffectsOutput());
   oscillator.start(now);
@@ -262,7 +266,7 @@ export function playColorConvergence() {
     oscillator.type = 'sine';
     oscillator.frequency.value = frequency;
     gain.gain.setValueAtTime(.0001, now);
-    gain.gain.exponentialRampToValueAtTime(.038, now + .12);
+    gain.gain.exponentialRampToValueAtTime(.052, now + .12);
     gain.gain.exponentialRampToValueAtTime(.0001, now + 1.4);
     oscillator.connect(gain).connect(getEffectsOutput());
     oscillator.start(now);
