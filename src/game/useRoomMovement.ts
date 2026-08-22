@@ -73,7 +73,7 @@ export function useRoomMovement(enabled: boolean, onInteract: (
   useEffect(() => {
     if (!enabled || !isMoving) return;
     playFootstep(footstepSurface);
-    const timer = window.setInterval(() => playFootstep(footstepSurface), 350);
+    const timer = window.setInterval(() => playFootstep(footstepSurface), 420);
     return () => window.clearInterval(timer);
   }, [enabled, footstepSurface, isMoving]);
 

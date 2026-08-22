@@ -184,35 +184,60 @@ export function playWritingTick(speaker?: string, kind?: DialogueLine['kind']) {
   oscillator.stop(now + .07);
 }
 
-const footstepSound: Record<FootstepSurface, { frequency: number; volume: number }> = {
-  room: { frequency: 260, volume: .105 },
-  yard: { frequency: 720, volume: .12 },
-  school: { frequency: 930, volume: .115 },
-  blue: { frequency: 180, volume: .09 },
+type FootstepSound = {
+  duration: number;
+  noiseFrequency: number;
+  noiseVolume: number;
+  thumpFrequency: number;
+  thumpVolume: number;
+  filter: BiquadFilterType;
+};
+
+const footstepSound: Record<FootstepSurface, FootstepSound> = {
+  room: { duration: .14, noiseFrequency: 420, noiseVolume: .024, thumpFrequency: 88, thumpVolume: .068, filter: 'lowpass' },
+  yard: { duration: .18, noiseFrequency: 1050, noiseVolume: .046, thumpFrequency: 74, thumpVolume: .052, filter: 'bandpass' },
+  school: { duration: .15, noiseFrequency: 680, noiseVolume: .032, thumpFrequency: 104, thumpVolume: .076, filter: 'lowpass' },
+  blue: { duration: .19, noiseFrequency: 310, noiseVolume: .018, thumpFrequency: 62, thumpVolume: .056, filter: 'lowpass' },
 };
 
 export function playFootstep(surface: FootstepSurface) {
   if (!effectsEnabled) return;
   const audioContext = getAudioContext();
   const settings = footstepSound[surface];
-  const duration = surface === 'school' ? .095 : .075;
-  const buffer = audioContext.createBuffer(1, audioContext.sampleRate * duration, audioContext.sampleRate);
+  const now = audioContext.currentTime;
+  const buffer = audioContext.createBuffer(1, audioContext.sampleRate * settings.duration, audioContext.sampleRate);
   const samples = buffer.getChannelData(0);
   footstepIndex += 1;
   for (let index = 0; index < samples.length; index += 1) {
-    const decay = Math.pow(1 - index / samples.length, 2.8);
-    samples[index] = (Math.random() * 2 - 1) * decay;
+    const progress = index / samples.length;
+    const softAttack = Math.min(1, progress / .08);
+    const decay = Math.pow(1 - progress, surface === 'yard' ? 1.7 : 2.4);
+    samples[index] = (Math.random() * 2 - 1) * softAttack * decay;
   }
   const source = audioContext.createBufferSource();
   const filter = audioContext.createBiquadFilter();
-  const gain = audioContext.createGain();
-  filter.type = 'bandpass';
-  filter.frequency.value = settings.frequency * (footstepIndex % 2 === 0 ? .92 : 1.06);
-  filter.Q.value = surface === 'school' ? 1.4 : .8;
-  gain.gain.value = settings.volume;
+  const noiseGain = audioContext.createGain();
+  const thump = audioContext.createOscillator();
+  const thumpGain = audioContext.createGain();
+  const variation = footstepIndex % 2 === 0 ? .94 : 1.04;
+  filter.type = settings.filter;
+  filter.frequency.value = settings.noiseFrequency * variation;
+  filter.Q.value = surface === 'yard' ? .7 : .45;
+  noiseGain.gain.setValueAtTime(.0001, now);
+  noiseGain.gain.exponentialRampToValueAtTime(settings.noiseVolume, now + .012);
+  noiseGain.gain.exponentialRampToValueAtTime(.0001, now + settings.duration);
+  thump.type = 'sine';
+  thump.frequency.setValueAtTime(settings.thumpFrequency * variation, now);
+  thump.frequency.exponentialRampToValueAtTime(settings.thumpFrequency * .62, now + settings.duration);
+  thumpGain.gain.setValueAtTime(.0001, now);
+  thumpGain.gain.exponentialRampToValueAtTime(settings.thumpVolume, now + .014);
+  thumpGain.gain.exponentialRampToValueAtTime(.0001, now + settings.duration);
   source.buffer = buffer;
-  source.connect(filter).connect(gain).connect(getEffectsOutput());
-  source.start();
+  source.connect(filter).connect(noiseGain).connect(getEffectsOutput());
+  thump.connect(thumpGain).connect(getEffectsOutput());
+  source.start(now);
+  thump.start(now);
+  thump.stop(now + settings.duration + .02);
 }
 
 export function playPageTurn() {
