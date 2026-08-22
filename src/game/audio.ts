@@ -75,10 +75,15 @@ const playMusicNote = () => {
   noteIndex += 1;
   if (step % 4 === 0) {
     const bass = theme.bass[Math.floor(step / 4) % theme.bass.length];
-    playThemeVoice(theme, bass, theme.volume * .48, theme.duration * 2.15, 0, 'sine');
+    playThemeVoice(theme, bass, theme.volume * .52, theme.duration * 2.4, 0, 'sine');
+    playThemeVoice(theme, bass * 2, theme.volume * .16, theme.duration * 2.7, 0, 'sine');
+    playThemeVoice(theme, bass * theme.chordThirdRatio, theme.volume * .12, theme.duration * 2.7, .04, 'sine');
+    playThemeVoice(theme, bass * 3, theme.volume * .09, theme.duration * 2.55, .08, 'sine');
   }
   if (!frequency) return;
-  playThemeVoice(theme, frequency, theme.volume, theme.duration);
+  const emphasis = step % 8 === 0 ? 1.12 : 1;
+  playThemeVoice(theme, frequency, theme.volume * emphasis, theme.duration);
+  playThemeVoice(theme, frequency, theme.volume * .22, theme.duration * .9, .2, 'sine');
   playThemeVoice(theme, frequency * 2, theme.volume * .14, theme.duration * .72, .045, 'sine');
 };
 
